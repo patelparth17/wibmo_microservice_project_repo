@@ -14,7 +14,10 @@ import com.wibmo.dao.*;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
+import com.wibmo.exception.UserIdAlreadyExists;
+import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.validator.AdminValidator;
 
@@ -83,7 +86,7 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	 * @throws CourseNotFoundException
 	 */
 	@Override
-	public void removeCourse(String courseCode, List<Course> courseList) throws CourseNotFoundException{
+	public void removeCourse(String courseCode, List<Course> courseList) throws CourseNotFoundException,CourseNotDeletedException{
 		// TODO Auto-generated method stub
 		try {
 			if(!AdminValidator.isValidDropCourse(courseCode, courseList)) {
@@ -92,7 +95,7 @@ public class AdminOperationImpl implements AdminOperationInterface{
 			}
 			adminDaoOperation.removeCourse(courseCode);
 		}
-		catch(CourseNotFoundException e) {
+		catch(CourseNotFoundException | CourseNotDeletedException e) {
 			throw e;
 		}
 	}
@@ -119,11 +122,15 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	
 	/**
 	 * courseCode, professorId
+	 * @throws Exception 
 	 */
 	@Override
-	public void assignCourse(String courseCode, String professorId){
-		// TODO Auto-generated method stub
-			adminDaoOperation.assignCourse(courseCode, professorId);
+	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException{
+			try {
+				adminDaoOperation.assignCourse(courseCode, professorId);
+			} catch (CourseNotFoundException | UserNotFoundException e) {
+				throw e;
+			}
 	}
 
 	@Override
@@ -133,9 +140,25 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	}
 
 	@Override
-	public void addUser(User user) {
+	public void addProfessor(Professor professor) throws ProfessorNotAddedException, UserIdAlreadyExists {
 		// TODO Auto-generated method stub
-		adminDaoOperation.addUser(user);
+		try {
+			adminDaoOperation.addProfessor(professor);
+		} catch (ProfessorNotAddedException | UserIdAlreadyExists e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public List<Professor> viewProfessors() {
+		// TODO Auto-generated method stub
+		return adminDaoOperation.viewProfessors();
+	}
+
+	@Override
+	public List<Student> viewPendingAdmissions() {
+		
+		return adminDaoOperation.viewPendingAdmissions();
 	}
 
 }

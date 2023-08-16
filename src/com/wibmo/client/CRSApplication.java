@@ -17,7 +17,7 @@ public class CRSApplication {
 
 
 	static boolean loggedin = false;
-	StudentInterface studentInterface=StudentOperation.getInstance();
+//	StudentInterface studentInterface=StudentOperation.getInstance();
 	UserInterface userInterface =UserOperation.getInstance();
 	
 	public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class CRSApplication {
 					break;
 				case 2:
 					//student registration
-					crsApplication.registerStudent();
+//					crsApplication.registerStudent();
 					break;	
 				case 3:
 					crsApplication.updatePassword();
@@ -77,25 +77,23 @@ public class CRSApplication {
 	}
 	
 	/**
-	 * Method for Login function2ality
+	 * Method for Login functionality
 	 */
 	public void loginUser()
 	{
-		//multiple exceptions are possible
-		//invalid credential exception
-		//user not found exception
-		//user not approved exception
 		Scanner in = new Scanner(System.in);
 
-		String userId,password;
+		String userId,password,role;
 		try
 		{
 			System.out.println("-----------------Login------------------");
-			System.out.println("Email:");
+			System.out.println("Username:");
 			userId = in.next();
 			System.out.println("Password:");
 			password = in.next();
-			loggedin = userInterface.verifyCredentials(userId, password);
+			System.out.println("Role:");
+			role = in.next();
+			loggedin = userInterface.authenticateUser(userId, password, role);
 			
 			//2 cases1
 			
@@ -103,18 +101,14 @@ public class CRSApplication {
 			//true->role->student->approved
 			if(loggedin)
 			{
-				 
 				 DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");  
 				 
 				 LocalDateTime myDateObj = LocalDateTime.now();
 				   
 				 String formattedDate = myDateObj.format(myFormatObj);  
 				
-				 String role = userInterface.getRole(userId);
+				 role = userInterface.getRole(userId);
 			
-			
-				 
-				 
 				switch(role) {
 				case "ADMIN":
 					System.out.println(formattedDate + " Login Successful");
@@ -122,24 +116,24 @@ public class CRSApplication {
 					adminMenu.createMenu();
 					break;
 				case "PROFESSOR":
-					System.out.println(formattedDate + " Login Successful");
-					ProfessorCRSMenu professorMenu=new ProfessorCRSMenu();
-					professorMenu.createMenu(userId);
+//					System.out.println(formattedDate + " Login Successful");
+//					ProfessorCRSMenu professorMenu=new ProfessorCRSMenu();
+//					professorMenu.createMenu(userId);
 					
 					break;
 				case "STUDENT":
-					
-					String studentId = userId;
-					boolean isApproved=studentInterface.isApproved(studentId);
-					if(isApproved) {
-						System.out.println(formattedDate + " Login Successful");
-						StudentCRSMenu studentMenu=new StudentCRSMenu();
-						studentMenu.create_menu(studentId);
-						
-					} else {
-						System.out.println("Failed to login, you have not been approved by the administration!");
-						loggedin=false;
-					}
+//					
+//					String studentId = userId;
+//					boolean isApproved=studentInterface.isApproved(studentId);
+//					if(isApproved) {
+//						System.out.println(formattedDate + " Login Successful");
+//						StudentCRSMenu studentMenu=new StudentCRSMenu();
+//						studentMenu.create_menu(studentId);
+//						
+//					} else {
+//						System.out.println("Failed to login, you have not been approved by the administration!");
+//						loggedin=false;
+//					}
 					break;
 				}
 				
@@ -161,63 +155,63 @@ public class CRSApplication {
 	/**
 	 * Method to help Student register themselves, pending admin approval
 	 */
-	public void registerStudent()
-	{
-		Scanner sc=new Scanner(System.in);
-
-		String userId,name,password,address,branchName;
-		GenderConstant gender;
-		int genderV, batch;
-		try
-		{
-			//input all the student details
-			System.out.println("---------------Student Registration-------------");
-			System.out.println("Name:");
-			name=sc.nextLine();
-			System.out.println("Email:");
-			userId=sc.next();
-			System.out.println("Password:");
-			password=sc.next();
-			System.out.println("GenderConstant: \t 1: Male \t 2.Female\t 3.Other");
-			genderV=sc.nextInt();
-			sc.nextLine();
-			
-			switch(genderV)
-			{
-			case 1:
-				gender=GenderConstant.MALE;
-				break;
-			case 2:
-				gender=GenderConstant.FEMALE;
-				break;
-				
-			case 3:
-				gender=GenderConstant.OTHER;
-				break;
-			default: 
-				gender=GenderConstant.OTHER;
-			}
-			
-			System.out.println("Branch:");
-			branchName=sc.nextLine();
-			System.out.println("Batch:");
-			batch=sc.nextInt();
-			sc.nextLine();
-			System.out.println("Address:");
-			address=sc.nextLine();
-			
-			
-			String newStudentId = studentInterface.register(name, userId, password, gender, batch, branchName, address);
-			
-			//notificationInterface.sendNotification(NotificationTypeConstant.REGISTRATION, newStudentId, null,0);
-			
-		}
-		catch(StudentNotRegisteredException ex)
-		{
-			System.out.println("Something went wrong! "+ex.getStudentName() +" not registered. Please try again");
-		}
-		//sc.close();
-	}
+//	public void registerStudent()
+//	{
+//		Scanner sc=new Scanner(System.in);
+//
+//		String userId,name,password,address,branchName;
+//		GenderConstant gender;
+//		int genderV, batch;
+//		try
+//		{
+//			//input all the student details
+//			System.out.println("---------------Student Registration-------------");
+//			System.out.println("Name:");
+//			name=sc.nextLine();
+//			System.out.println("Email:");
+//			userId=sc.next();
+//			System.out.println("Password:");
+//			password=sc.next();
+//			System.out.println("Enter Gender Choice: \t 1: Male \t 2.Female\t 3.Other");
+//			genderV=sc.nextInt();
+//			sc.nextLine();
+//			
+//			switch(genderV)
+//			{
+//			case 1:
+//				gender=GenderConstant.MALE;
+//				break;
+//			case 2:
+//				gender=GenderConstant.FEMALE;
+//				break;
+//				
+//			case 3:
+//				gender=GenderConstant.OTHER;
+//				break;
+//			default: 
+//				gender=GenderConstant.OTHER;
+//			}
+//			
+//			System.out.println("Branch:");
+//			branchName=sc.nextLine();
+//			System.out.println("Batch:");
+//			batch=sc.nextInt();
+//			sc.nextLine();
+//			System.out.println("Address:");
+//			address=sc.nextLine();
+//			
+//			
+//			String newStudentId = studentInterface.register(name, userId, password, gender, batch, branchName, address);
+//			
+//			//notificationInterface.sendNotification(NotificationTypeConstant.REGISTRATION, newStudentId, null,0);
+//			
+//		}
+//		catch(StudentNotRegisteredException ex)
+//		{
+//			System.out.println("Something went wrong! "+ex.getStudentName() +" not registered. Please try again");
+//		}
+//		//sc.close();
+//	}
 	
 	/**
 	 * Method to update password of User

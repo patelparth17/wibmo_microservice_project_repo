@@ -11,9 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wibmo.bean.Course;
+import com.wibmo.bean.Professor;
 import com.wibmo.bean.RegisteredCourse;
+import com.wibmo.bean.Student;
 import com.wibmo.bean.User;
+import com.wibmo.constants.GenderConstant;
+import com.wibmo.constants.RoleConstant;
 import com.wibmo.constants.SQLConstant;
+import com.wibmo.exception.CourseAlreadyExistsException;
+import com.wibmo.exception.CourseNotDeletedException;
+import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.ProfessorNotAddedException;
+import com.wibmo.exception.StudentNotFoundForApprovalException;
+import com.wibmo.exception.UserIdAlreadyExists;
+import com.wibmo.exception.UserNotAddedException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -68,42 +80,45 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	}
 
 
-	@Override
-	public void approveStudent(String studentID) {
+	public void approveStudent(String studentID)throws StudentNotFoundForApprovalException {
 		String sql = SQLConstant.APPROVE_STUDENT_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1,studentID);
 			int row = stmt.executeUpdate();
-			if(row == 1) {
-				System.out.println("Student with ID "+studentID+" approved.");
+			if(row == 0) {
+				throw new StudentNotFoundForApprovalException(studentID);
 			}
 			
-		}catch(SQLException e) {
-			System.out.println(e.getMessage());			
+			
+		}catch(SQLException se) {
+			
+			System.out.println(se.getMessage());
+			
 		}
 	}
 
 
 	@Override
-	public void removeCourse(String courseCode) {
+	public void removeCourse(String courseCode)  throws CourseNotFoundException, CourseNotDeletedException{
 		String sql = SQLConstant.REMOVE_COURSE_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1,courseCode);
 			int row = stmt.executeUpdate();
-			if(row == 1) {
-				System.out.println("Course with course code "+courseCode+" removed.");
+			if(row == 0) {
+				throw new CourseNotFoundException(courseCode);
 			}
-		}catch(SQLException e) {
-			System.out.println(e.getMessage());		
-			}
+			
+		}catch(SQLException se) {
+			throw new CourseNotDeletedException(courseCode);
+		}
 	}
 
 	@Override
-	public void addCourse(Course course) {
+	public void addCourse(Course course) throws CourseAlreadyExistsException {
 		String sql = SQLConstant.ADD_COURSE_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
@@ -113,17 +128,19 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			stmt.setInt(3, 10);
 			stmt.setString(4, "NOT_GRADED");
 			int row = stmt.executeUpdate();
-			if(row == 1) {
-				System.out.println("Course with name "+course.getCourseName()+" added.");
+			if(row == 0) {
+				throw new CourseAlreadyExistsException(course.getCourseCode());
 			}
-		}catch(SQLException e) {
-			System.out.println(e.getMessage());		
-			}
+			
+		}catch(SQLException se) {
+			throw new CourseAlreadyExistsException(course.getCourseCode());
+			
+		}
 	}
 	
 
 	@Override
-	public void assignCourse(String courseCode, String professorId) {
+	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException {
 		String sql = SQLConstant.ASSIGN_COURSE_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
@@ -131,16 +148,18 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			stmt.setString(1, professorId);
 			stmt.setString(2, courseCode);
 			int row = stmt.executeUpdate();
-			if(row == 1) {
-				System.out.println("Course with code "+courseCode+" assigned to Profesor with ID "+professorId);
+			if(row == 0) {
+				throw new CourseNotFoundException(courseCode);
 			}
-		}catch(SQLException e) {
-			System.out.println(e.getMessage());		
-			}
+			
+		}catch(SQLException se) {
+			throw new UserNotFoundException(professorId);
+			
+		}
 	}
 
 	@Override
-	public void addUser(User user) {
+	public void addUser(User user)throws UserNotAddedException, UserIdAlreadyExists {
 		String sql = SQLConstant.ADD_USER_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
@@ -152,12 +171,12 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			stmt.setString(5, user.getGender().toString());
 			stmt.setString(6, user.getAddress());
 			int row = stmt.executeUpdate();
-			if(row == 1) {
-				System.out.println("User with name "+user.getName()+" is added. ");
+			if(row == 0) {
+				throw new UserNotAddedException(user.getUserId()); 
 			}
-		}catch(SQLException e) {
-			System.out.println(e.getMessage());		
-			}
+		}catch(SQLException se) {
+			throw new UserIdAlreadyExists(user.getUserId());
+		}
 	}
 
 	@Override
@@ -195,6 +214,110 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			}
 		
 		return Courses;	
+	}
+
+	@Override
+	public void addProfessor(Professor professor) throws UserIdAlreadyExists, ProfessorNotAddedException {
+		try {
+			this.addUser(professor);
+		}catch (UserNotAddedException e) {
+			throw new ProfessorNotAddedException(professor.getUserId());		
+		}catch (UserIdAlreadyExists e) {
+			throw e;
+		}
+		
+		
+		PreparedStatement statement = null;
+		try {
+			Connection connection = DBUtils.getConnection();
+			String sql = SQLConstant.ADD_PROFESSOR_QUERY;
+			statement = connection.prepareStatement(sql);
+			
+			statement.setString(1, professor.getUserId());
+			statement.setString(2, professor.getDepartment());
+			statement.setString(3, professor.getDesignation());
+			int row = statement.executeUpdate();
+
+			if(row == 0) {
+				System.out.println("Professor with professorId: " + professor.getUserId() + " not added.");
+				throw new ProfessorNotAddedException(professor.getUserId());
+			}
+			
+			System.out.println("Professor with professorId: " + professor.getUserId() + " added."); 
+			
+		}catch(SQLException se) {
+			
+			System.out.println(se.getMessage());
+			throw new UserIdAlreadyExists(professor.getUserId());
+		} 
+		
+	}
+
+	@Override
+	public List<Professor> viewProfessors() {
+		PreparedStatement statement = null;
+	List<Professor> professorList = new ArrayList<Professor>();
+	try {
+		Connection connection = DBUtils.getConnection();
+		String sql = SQLConstant.VIEW_PROFESSOR_QUERY;
+		statement = connection.prepareStatement(sql);
+		ResultSet resultSet = statement.executeQuery();
+		
+		while(resultSet.next()) {
+			
+			Professor professor = new Professor();
+			professor.setUserId(resultSet.getString(1));
+			professor.setName(resultSet.getString(2));
+			professor.setGender(GenderConstant.stringToGender(resultSet.getString(3)));
+			professor.setDepartment(resultSet.getString(4));
+			professor.setDesignation(resultSet.getString(5));
+			professor.setAddress(resultSet.getString(6));
+			professor.setRole(RoleConstant.PROFESSOR);
+			professor.setPassword("*********");
+			professorList.add(professor);
+			
+		}
+		
+		System.out.println(professorList.size() + " professors in the institute.");
+		
+	}catch(SQLException se) {
+		
+		System.out.println(se.getMessage());
+		
+	}
+	return professorList;
+	}
+
+	@Override
+	public List<Student> viewPendingAdmissions() {
+		List<Student> studentList = new ArrayList<Student>();
+		try {
+			Connection connection = DBUtils.getConnection();
+			String sql = SQLConstant.VIEW_PENDING_ADMISSIONS_QUERY;
+			PreparedStatement statement = connection.prepareStatement(sql);
+			ResultSet resultSet = statement.executeQuery();
+
+			while(resultSet.next()) {
+				
+				Student student = new Student();
+				student.setUserId(resultSet.getString(1));
+				student.setName(resultSet.getString(2));
+				student.setPassword(resultSet.getString(3));
+				student.setRole(RoleConstant.stringToName(resultSet.getString(4)));
+				student.setGender(GenderConstant.stringToGender( resultSet.getString(5)));
+				student.setAddress(resultSet.getString(6));
+				student.setStudentId(resultSet.getString(7));
+				studentList.add(student);
+				
+			}
+			
+			
+		}catch(SQLException e) {
+			System.out.println(e.getMessage());
+			
+		}
+		
+		return studentList;
 	}
 
 	

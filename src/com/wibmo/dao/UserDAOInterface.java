@@ -3,6 +3,8 @@
  */
 package com.wibmo.dao;
 
+import com.wibmo.exception.UserNotFoundException;
+
 /**
  * 
  */
@@ -12,8 +14,9 @@ public interface UserDAOInterface {
 	 * @param userId
 	 * @param password
 	 * @return Verify credentials operation status
+	 * @throws UserNotFoundException 
 	 */
-	public boolean authenticateUser(String userId,String password);
+	public boolean authenticateUser(String userId, String password, String role) throws UserNotFoundException;
 	
 	
 	/**
@@ -23,4 +26,11 @@ public interface UserDAOInterface {
 	 * @return Update Password operation Status
 	 */
 	public boolean updatePassword(String userID,String newPassword);
+	
+	/**
+	 * Method to get RoleConstant of User from DataBase
+	 * @param userId
+	 * @return RoleConstant
+	 */
+	public String getRole(String userId);
 }

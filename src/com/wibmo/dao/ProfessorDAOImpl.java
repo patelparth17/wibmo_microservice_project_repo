@@ -43,13 +43,11 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 		return instance;
 	}
 	
-	@Override
 	public List<Course> getCoursesByProfessor(String userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<EnrolledStudent> viewStudentList(String courseId) {
 		Connection connection=DBUtils.getConnection();
 		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
@@ -81,7 +79,6 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 		return enrolledStudents;
 	}
 
-	@Override
 	public Boolean recordGrade(String studentId, String courseCode, String grade) {
 		Connection connection=DBUtils.getConnection();
 		String sql = SQLConstant.RECORD_GRADE_QUERY;
@@ -111,7 +108,6 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 		return false;
 	}
 
-	@Override
 	public String getProfessorById(String profId) {
 		// TODO Auto-generated method stub
 		return null;

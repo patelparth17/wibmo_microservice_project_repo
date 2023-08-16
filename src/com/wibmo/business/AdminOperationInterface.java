@@ -8,34 +8,22 @@ import com.wibmo.bean.*;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
+import com.wibmo.exception.UserIdAlreadyExists;
+import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 /**
  * 
  */
 public interface AdminOperationInterface {
-	/**
-	 * 
-	 * @param StudentId
-	 */
-//	public void setReportCardStatus(String StudentId);
 	
 	/**
-	 * 
-	 * @return
+	 * Method to list the courses in the catalog
+	 * @return The list of courses in the catalog
 	 */
-	
-//	public List<RegisteredCourse> generateGradeCard(String studentId);
-	
-//	public List<Professor> displayProfessorsList();
-	public void addUser(User user);
-	
 	public List<Course> viewCourses();
-	/**
-	 * 
-	 * @return
-	 */
-//	public List<Student> viewAdmissionsStatus();
+	
 	
 	/**
 	 * 
@@ -47,8 +35,17 @@ public interface AdminOperationInterface {
 	/**
 	 * 
 	 * @param professor
+	 * @throws UserNotAddedException 
+	 * @throws UserIdAlreadyExists 
+	 * @throws ProfessorNotAddedException 
 	 */
-//	public void addProfessor(Professor professor);
+	public void addProfessor(Professor professor) throws ProfessorNotAddedException, UserIdAlreadyExists;
+	
+	/**
+	 * 
+	 * Method to view the list of Professors
+	 */
+	public List<Professor> viewProfessors();
 	
 	/**
 	 * 
@@ -74,10 +71,13 @@ public interface AdminOperationInterface {
 	 * @throws UserNotFoundException 
 	 * @throws CourseNotFoundException 
 	 */
-	public void assignCourse(String courseCode, String professorId);
+	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException;
 
 	/**
 	 * @param studentId
 	 */
 	public List<RegisteredCourse> generateGradeCard(String studentId);
+
+
+	public List<Student> viewPendingAdmissions();
 }

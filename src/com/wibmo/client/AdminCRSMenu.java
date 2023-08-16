@@ -13,8 +13,9 @@ import com.wibmo.business.*;
 
 public class AdminCRSMenu {
 	
-	 AdminOperationInterface adminOperation =AdminOperationImpl.getInstance();
-	 Scanner scanner = new Scanner(System.in);
+	 AdminOperationInterface adminOperation = AdminOperationImpl.getInstance();
+	 NotificationInterface notificationObject = NotificationImpl.getInstance();
+	 Scanner adminScanner = new Scanner(System.in);
 	
 	/**
 	 * Method to Create Admin Menu
@@ -22,22 +23,23 @@ public class AdminCRSMenu {
 	 public void createMenu(){
 		
 		 while(CRSApplication.loggedin) {
-			 System.out.println("*****************************");
+			 System.out.println("=============================");
 			 System.out.println("**********Admin Menu*********");
-			 System.out.println("*****************************");
+			 System.out.println("=============================");
 			 System.out.println("1. View course in catalog");
 			 System.out.println("2. Add Course to catalog");
 			 System.out.println("3. Delete Course from catalog");
 			 System.out.println("4. Approve Students");
-			 System.out.println("5. View Pending Admission");
-			 System.out.println("6. Add Professor");
-			 System.out.println("7. Assign Courses To Professor");
-			 System.out.println("8. Logout");
+			 System.out.println("5. Add Professor");
+			 System.out.println("6. Assign Courses To Professor");
+			 System.out.println("7. Generate Report Card");
+			 System.out.println("8. View Pending Admissions");
+			 System.out.println("9. Logout");
 			 System.out.println("*****************************");
 			
-			int choice = scanner.nextInt();
+			int adminChoice = adminScanner.nextInt();
 			
-			switch(choice) {
+			switch(adminChoice) {
 			case 1:
 				viewCoursesInCatalogue();
 				break;
@@ -55,18 +57,29 @@ public class AdminCRSMenu {
 				break;
 			
 			case 5:
-				viewPendingAdmissions();
-				break;
-			
-			case 6:
 				addProfessor();
 				break;
 			
-			case 7:
+			case 6:
 				assignCourseToProfessor();
 				break;
 			
+			case 7:
+				generateReportCard();
+				break;
+				
 			case 8:
+				List<Student> pendingStudentsList =viewPendingAdmissions();
+				if(pendingStudentsList.size() == 0) {
+					System.out.println("No students pending approvals");
+				}
+				System.out.println(String.format("%20s | %20s | %20s", "StudentId", "Name", "GenderConstant"));
+				for(Student student : pendingStudentsList) {
+					System.out.println(String.format("%20s | %20s | %20s", student.getStudentId(), student.getName(), student.getGender().toString()));
+				}
+				break;
+				
+			case 9:
 				CRSApplication.loggedin = false;
 				return;
 
@@ -75,6 +88,16 @@ public class AdminCRSMenu {
 			}
 		}
 	}
+	 
+	 /**
+	  * Method to generate Report Card of a Student
+	  */
+	 private void generateReportCard() {
+		 System.out.println("Enter Student Id whose Report Card needs to be generated: ");
+		 String studentId = adminScanner.next();
+		 List<RegisteredCourse> reportCard = adminOperation.generateGradeCard(studentId);
+		 System.out.println(String.format("The Report Card for the Student with id %s is %s", studentId, reportCard.toString()));
+	 }
 	
 	/**
 	 * Method to assign Course to a Professor
@@ -89,7 +112,7 @@ public class AdminCRSMenu {
 		
 		
 		System.out.println("\n\n");
-		List<Course> courseList= adminOperation.viewCourses(1);
+		List<Course> courseList= adminOperation.viewCourses();
 		System.out.println("**************** Course ****************");
 		System.out.println(String.format("%20s | %20s", "CourseCode", "CourseName"));
 		for(Course course : courseList) {
@@ -97,10 +120,10 @@ public class AdminCRSMenu {
 		}
 		
 		System.out.println("Enter Course Code:");
-		String courseCode = scanner.next();
+		String courseCode = adminScanner.next();
 		
 		System.out.println("Enter Professor's User Id:");
-		String userId = scanner.next();
+		String userId = adminScanner.next();
 		
 		try {
 			
@@ -122,62 +145,41 @@ public class AdminCRSMenu {
 		Professor professor = new Professor();
 		
 		System.out.println("Enter Professor Name:");
-		String professorName = scanner.next();
+		String professorName = adminScanner.next();
 		professor.setName(professorName);
 		
 		System.out.println("Enter Department:");
-		String department = scanner.next();
+		String department = adminScanner.next();
 		professor.setDepartment(department);
 		
 		System.out.println("Enter Designation:");
-		String designation = scanner.next();
+		String designation = adminScanner.next();
 		professor.setDesignation(designation);
 		
 		System.out.println("Enter User Id:");
-		String userId = scanner.next();
+		String userId = adminScanner.next();
 		professor.setUserId(userId);
 		
 		System.out.println("Enter Password:");
-		String password = scanner.next();
+		String password = adminScanner.next();
 		professor.setPassword(password);
 		
 		System.out.println("Enter Gender: \t 1: Male \t 2.Female \t 3.Other ");
-		int gender = scanner.nextInt();
-		professor.setGender(Gender.getName(gender));
+		int gender = adminScanner.nextInt();
+		professor.setGender(GenderConstant.getName(gender));
 		
 		System.out.println("Enter Address:");
-		String address = scanner.next();
+		String address = adminScanner.next();
 		professor.setAddress(address);
 		
-		System.out.println("Enter Country:");
-		String country = scanner.next();
-		professor.setCountry(country);
-		
-		professor.setRole(Role.stringToName("Professor"));
+		professor.setRole(RoleConstant.stringToName("Professor"));
 		
 		try {
 			adminOperation.addProfessor(professor);
-		} catch (ProfessorNotAddedException | UserIdAlreadyInUseException e) {
+		} catch (ProfessorNotAddedException | UserIdAlreadyExists e) {
 			System.out.println(e.getMessage());
 		}
 
-	}
-
-	/**
-	 * Method to view Students who are yet to be approved
-	 * @return List of Students whose admissions are pending
-	 */
-	private List<Student> viewPendingAdmissions() {
-		
-		List<Student> pendingStudentsList= adminOperation.viewPendingAdmissions();
-		if(pendingStudentsList.size() == 0) {
-			return pendingStudentsList;
-		}
-		System.out.println(String.format("%20s | %20s | %20s | %20s", "UserId", "StudentId", "Name", "Gender"));
-		for(Student student : pendingStudentsList) {
-			System.out.println(String.format("%20s | %20d | %20s | %20s", student.getUserId(), student.getStudentId(), student.getName(), student.getGender().toString()));
-		}
-		return pendingStudentsList;
 	}
 
 	/**
@@ -191,16 +193,21 @@ public class AdminCRSMenu {
 		}
 		
 		System.out.println("Enter Student's ID:");
-		int studentUserIdApproval = scanner.nextInt();
+		String studentUserIdApproval = adminScanner.next();
 		
 		try {
 			adminOperation.approveStudent(studentUserIdApproval, studentList);
 			//send notification from system
-			notificationInterface.sendNotification(NotificationType.REGISTRATION_APPROVAL, studentUserIdApproval, null,0);
+			notificationObject.sendNotification(NotificationTypeConstant.REGISTERATION, studentUserIdApproval, null,0);
 	
 		} catch (StudentNotFoundForApprovalException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+
+	private List<Student> viewPendingAdmissions() {
+		List<Student> pendingStudentsList= adminOperation.viewPendingAdmissions();
+		return pendingStudentsList;
 	}
 
 	/**
@@ -210,10 +217,10 @@ public class AdminCRSMenu {
 	private void deleteCourse() {
 		List<Course> courseList = viewCoursesInCatalogue();
 		System.out.println("Enter Course Code:");
-		String courseCode = scanner.next();
+		String courseCode = adminScanner.next();
 		
 		try {
-			adminOperation.deleteCourse(courseCode, courseList);
+			adminOperation.removeCourse(courseCode, courseList);
 		} catch (CourseNotFoundException | CourseNotDeletedException e) {
 			System.out.println(e.getMessage());
 		}
@@ -225,21 +232,20 @@ public class AdminCRSMenu {
 	private void addCourseToCatalogue() {
 		List<Course> courseList = viewCoursesInCatalogue();
 
-		scanner.nextLine();
+		adminScanner.nextLine();
 		System.out.println("Enter Course Code:");
-		String courseCode = scanner.nextLine();
+		String courseCode = adminScanner.nextLine();
 		
 		System.out.println("Enter Course Name:");
-		String courseName = scanner.next();
+		String courseName = adminScanner.next();
 		
 		Course course = new Course(courseCode, courseName, null, 10);
 		
 		try {
 			adminOperation.addCourse(course, courseList);
-		} catch (CourseFoundException e) {
+		} catch (CourseAlreadyExistsException e) {
 			System.out.println(e.getMessage());
 		}						
-
 	}
 	
 	/**
@@ -247,7 +253,7 @@ public class AdminCRSMenu {
 	 * @return List of courses in catalogue
 	 */
 	private List<Course> viewCoursesInCatalogue() {
-		List<Course> courseList = adminOperation.viewCourses(1);
+		List<Course> courseList = adminOperation.viewCourses();
 		if(courseList.size() == 0) {
 			System.out.println("No course in the catalogue!");
 			return courseList;
