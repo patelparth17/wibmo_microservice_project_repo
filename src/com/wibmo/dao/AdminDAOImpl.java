@@ -113,6 +113,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			}
 			
 		}catch(SQLException se) {
+			System.out.println(se.getMessage());
 			throw new CourseNotDeletedException(courseCode);
 		}
 	}
@@ -126,7 +127,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			stmt.setString(1, course.getCourseCode());
 			stmt.setString(2, course.getCourseName());
 			stmt.setInt(3, 10);
-			stmt.setString(4, "NOT_GRADED");
+			stmt.setInt(4, 0);
 			int row = stmt.executeUpdate();
 			if(row == 0) {
 				throw new CourseAlreadyExistsException(course.getCourseCode());
@@ -141,21 +142,28 @@ public class AdminDAOImpl implements AdminDAOInterface{
 
 	@Override
 	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException {
-		String sql = SQLConstant.ASSIGN_COURSE_QUERY;
+		String sql1 = SQLConstant.CHECK_PROFESSOR_QUERY;
+		String sql2 = SQLConstant.ASSIGN_COURSE_QUERY;
 		try {
 			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, professorId);
-			stmt.setString(2, courseCode);
-			int row = stmt.executeUpdate();
-			if(row == 0) {
+			PreparedStatement stmt1 = connection.prepareStatement(sql1);
+			stmt1.setString(1, professorId);
+			ResultSet rs = stmt1.executeQuery();
+			if(!rs.next()) {
+				throw new UserNotFoundException(professorId);
+			}
+			PreparedStatement stmt2 = connection.prepareStatement(sql2);
+			stmt2.setString(1, professorId);
+			stmt2.setString(2, courseCode);
+			int row2 = stmt2.executeUpdate();
+			if(row2 == 0) {
 				throw new CourseNotFoundException(courseCode);
 			}
 			
 		}catch(SQLException se) {
-			throw new UserNotFoundException(professorId);
-			
+			throw new UserNotFoundException(professorId);	
 		}
+		
 	}
 
 	@Override
@@ -192,17 +200,17 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			while(rs.next()) {
 				Course course = new Course();
 				RegisteredCourse temp = new RegisteredCourse() ;
-				course.setCourseCode(rs.getString(1));
-				course.setCourseName(rs.getString(2));
-				course.setInstructorId(rs.getString(3));
-				course.setSeats(rs.getInt(4));
+				course.setCourseCode(rs.getString("courseCode"));
+				course.setCourseName(rs.getString("courseName"));
+				course.setInstructorId(rs.getString("professorID"));
+				course.setSeats(rs.getInt("seats"));
 				temp.setCourse(course);
 				temp.setstudentId(Studentid);
-				temp.setGrade(rs.getString(8));
+				temp.setGrade(rs.getString("grade"));
 				Courses.add(temp);
 			}
 					
-			String sql1 = "update student set isReportGenerated = 1 where studentId = ?";
+			String sql1 = SQLConstant.SET_STUDENT_REPORT_GENERATION;
 			stmt = connection.prepareStatement(sql1);
 			stmt.setString(1, Studentid);
 			int row = stmt.executeUpdate();
@@ -237,7 +245,6 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			statement.setString(2, professor.getDepartment());
 			statement.setString(3, professor.getDesignation());
 			int row = statement.executeUpdate();
-
 			if(row == 0) {
 				System.out.println("Professor with professorId: " + professor.getUserId() + " not added.");
 				throw new ProfessorNotAddedException(professor.getUserId());
@@ -246,7 +253,6 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			System.out.println("Professor with professorId: " + professor.getUserId() + " added."); 
 			
 		}catch(SQLException se) {
-			
 			System.out.println(se.getMessage());
 			throw new UserIdAlreadyExists(professor.getUserId());
 		} 

@@ -4,11 +4,32 @@
 package com.wibmo.business;
 
 import com.wibmo.constants.GenderConstant;
+import com.wibmo.dao.StudentDAOImpl;
+import com.wibmo.dao.StudentDAOInterface;
 
 /**
  * 
  */
 public class StudentImpl implements StudentInterface{
+	private static volatile StudentImpl instance=null;
+	StudentDAOInterface studentDaoInterface=StudentDAOImpl.getInstance();
+
+	private StudentImpl(){}
+	/**
+	 * Method to make StudentOperation Singleton
+	 * @return
+	 */
+	public static StudentImpl getInstance()
+	{
+		if(instance==null)
+		{
+			// This is a synchronized block, when multiple threads will access this instance
+			synchronized(StudentImpl.class){
+				instance=new StudentImpl();
+			}
+		}
+		return instance;
+	}
 	/**
 	 * 
 	 * @param name
@@ -44,9 +65,8 @@ public class StudentImpl implements StudentInterface{
 	 * @return student approval status: boolean
 	 */
 	@Override
-	public boolean isApproved(String studentId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isApproved(String studentName) {
+		return studentDaoInterface.isApproved(studentName);
 	}
 
 }

@@ -50,9 +50,12 @@ public class AdminValidator {
 	 * @return if studentId is still unapproved
 	 */
 	public static boolean isValidUnapprovedStudent(String studentId, List<Student> studentList) {
-		for(Student student: studentList) {
-			if(studentId == student.getStudentId()) {
-				return true;
+		if(studentList != null)
+		{
+			for(Student student: studentList) {
+				if(studentId == student.getStudentId()) {
+					return true;
+				}
 			}
 		}
 		return false;

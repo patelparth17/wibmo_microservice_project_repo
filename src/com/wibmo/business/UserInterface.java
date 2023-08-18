@@ -18,7 +18,7 @@ public interface UserInterface {
 	 * @param userId
 	 * @return RoleConstant of the User
 	 */
-	String getRole(String userId);
+	String getRole(String username);
 
 	/**
 	 * Method to verify User credentials
@@ -26,14 +26,14 @@ public interface UserInterface {
 	 * @param password
 	 * @return boolean indicating if user exists in the database
 	 */
-	boolean authenticateUser(String userID, String password, String role) throws UserNotFoundException;
+	boolean authenticateUser(String username, String password, String role) throws UserNotFoundException;
 
 	/**
 	 * Method to update password of a user
-	 * @param userID
+	 * @param username
 	 * @param newPassword
 	 * @return boolean indicating if the password is updated successfully
 	 */
-	boolean updatePassword(String userID, String newPassword);
+	boolean updatePassword(String username, String newPassword);
 	
 }

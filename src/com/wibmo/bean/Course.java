@@ -13,17 +13,19 @@ public class Course
 	private String crsName;
 	private String instructorId;
 	private int seats = 10;
+	private double fee;
 	
 	public Course()
 	{
 		
 	}
 	
-	public Course(String crsCode,String crsName,String professorId,int seats) {
+	public Course(String crsCode,String crsName,String professorId,int seats, double fee) {
 		this.crsCode=crsCode;
 		this.crsName=crsName;
 		this.instructorId=professorId;
 		this.seats=seats;
+		this.fee=fee;
 	}
 	/**
 	 * Method to get Course Code
@@ -87,6 +89,22 @@ public class Course
 	 */
 	public void setInstructorId(String instructorId) {
 		this.instructorId = instructorId;
+	}
+	
+	/**
+	 * Method to get the respective course fees
+	 * @return
+	 */
+	public double getFee() {
+		return fee;
+	}
+
+	/**
+	 * Method to set the respective course fees
+	 * @param fee
+	 */
+	public void setFee(double fee) {
+		this.fee = fee;
 	}
 	
 }

@@ -43,8 +43,8 @@ public class UserOperation implements UserInterface {
 	 */
 	
 	@Override
-	public boolean updatePassword(String userID,String newPassword) {
-		return userDaoInterface.updatePassword(userID, newPassword);
+	public boolean updatePassword(String username,String newPassword) {
+		return userDaoInterface.updatePassword(username, newPassword);
 	}
 
 	
@@ -56,11 +56,11 @@ public class UserOperation implements UserInterface {
 	 */
 
 	@Override
-	public boolean authenticateUser(String userID, String password, String role) throws UserNotFoundException {
+	public boolean authenticateUser(String username, String password, String role) throws UserNotFoundException {
 		//DAO class
 		try
 		{
-			return userDaoInterface.authenticateUser(userID, password, role);		
+			return userDaoInterface.authenticateUser(username, password, role);		
 		}
 		finally
 		{
@@ -74,8 +74,8 @@ public class UserOperation implements UserInterface {
 	 * @return RoleConstant of the User
 	 */
 	@Override
-	public String getRole(String userId) {
-		return userDaoInterface.getRole(userId);
+	public String getRole(String username) {
+		return userDaoInterface.getRole(username);
 	}
 
 	

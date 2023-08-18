@@ -30,7 +30,7 @@ public class CourseAlreadyExistsException extends Exception{
 	 * course and courseId
 	 */
 	public String getMessage() {
-		return "Course: "+ courseId + " already exists in database.";
+		return "Course code: "+ courseId + " already exists in database.";
 	}
 
 }

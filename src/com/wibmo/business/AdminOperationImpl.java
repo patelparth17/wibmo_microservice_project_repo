@@ -90,7 +90,6 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		// TODO Auto-generated method stub
 		try {
 			if(!AdminValidator.isValidDropCourse(courseCode, courseList)) {
-				System.out.println("courseCode: " + courseCode + " not present in catalog!");
 				throw new CourseNotFoundException(courseCode);
 			}
 			adminDaoOperation.removeCourse(courseCode);
@@ -109,7 +108,6 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		// TODO Auto-generated method stub
 		try {
 			if(!AdminValidator.isValidNewCourse(course, courseList)) {
-				System.out.println("courseCode: " + course.getCourseCode() + " already present in catalog!");
 				throw new CourseAlreadyExistsException(course.getCourseCode());
 			}
 			adminDaoOperation.addCourse(course);

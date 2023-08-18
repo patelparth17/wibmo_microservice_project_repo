@@ -34,5 +34,5 @@ public interface StudentInterface {
 	 * @param studentId
 	 * @return student approval status: boolean
 	 */
-	public boolean isApproved(String studentId);
+	public boolean isApproved(String studentName);
 }

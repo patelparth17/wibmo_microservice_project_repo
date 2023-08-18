@@ -92,12 +92,12 @@ public class StudentDAOImpl implements StudentDAOInterface {
 	}
 
 	@Override
-	public boolean isApproved(String studentId) {
+	public boolean isApproved(String studentName) {
 		Connection connection=DBUtils.getConnection();
 		String sql = SQLConstant.ISAPPROVED_QUERY;
 		try {
 			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, studentId);
+			stmt.setString(1, studentName);
 			ResultSet rs = stmt.executeQuery();
 			
 			if(rs.next())

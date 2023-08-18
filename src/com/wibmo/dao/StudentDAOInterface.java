@@ -29,5 +29,5 @@ public interface StudentDAOInterface {
 	 * @param studentId
 	 * @return boolean indicating if student is approved
 	 */
-	public boolean isApproved(String studentId);
+	public boolean isApproved(String studentName);
 }

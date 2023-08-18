@@ -27,7 +27,7 @@ public class RegisteredCourse
      * @param course the course to set
      */
     public void setCourse(Course course) {
-        this.course = new Course(course.getCourseCode(), course.getCourseName(), course.getInstructorId() ,course.getSeats());
+        this.course = new Course(course.getCourseCode(), course.getCourseName(), course.getInstructorId() ,course.getSeats(), course.getFee());
     }
 
     /**

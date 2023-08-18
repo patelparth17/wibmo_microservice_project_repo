@@ -16,7 +16,7 @@ public interface UserDAOInterface {
 	 * @return Verify credentials operation status
 	 * @throws UserNotFoundException 
 	 */
-	public boolean authenticateUser(String userId, String password, String role) throws UserNotFoundException;
+	public boolean authenticateUser(String username, String password, String role) throws UserNotFoundException;
 	
 	
 	/**
@@ -25,12 +25,12 @@ public interface UserDAOInterface {
 	 * @param newPassword
 	 * @return Update Password operation Status
 	 */
-	public boolean updatePassword(String userID,String newPassword);
+	public boolean updatePassword(String username,String newPassword);
 	
 	/**
 	 * Method to get RoleConstant of User from DataBase
 	 * @param userId
 	 * @return RoleConstant
 	 */
-	public String getRole(String userId);
+	public String getRole(String username);
 }

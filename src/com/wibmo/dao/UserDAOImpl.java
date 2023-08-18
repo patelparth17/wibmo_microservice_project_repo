@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import com.wibmo.constants.SQLConstant;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.DBUtils;
@@ -16,6 +18,13 @@ import com.wibmo.utils.DBUtils;
  * 
  */
 public class UserDAOImpl implements UserDAOInterface {
+	//plug logger in UserDAOImpl
+	 private static Logger logger = Logger.getLogger(UserDAOImpl.class);
+	
+	 //1. INFO -- logger.info (menu)
+	 //2. DEBUG -- logger.debug (sysout)
+	 //3. ERROR -- logger.error( in exceptions in catch block)
+	 
 	private static volatile UserDAOImpl instance=null;
 
 	/**
@@ -39,20 +48,18 @@ public class UserDAOImpl implements UserDAOInterface {
 		return instance;
 	}
 	
-	public boolean authenticateUser(String userId, String password, String role) throws UserNotFoundException {
+	public boolean authenticateUser(String username, String password, String role) throws UserNotFoundException {
 		Connection connection = DBUtils.getConnection();
 		try
 		{
-			//open db connection
 			PreparedStatement stmt=connection.prepareStatement(SQLConstant.VERIFY_CREDENTIALS);
-			stmt.setString(1,userId);
+			stmt.setString(1,username);
 			ResultSet resultSet = stmt.executeQuery();
 			if(!resultSet.next())
-				throw new UserNotFoundException(userId);
+				throw new UserNotFoundException(username);
 
 			else if(password.equals(resultSet.getString("password")) && role.equals(resultSet.getString("role")))
 			{
-				System.out.println("Connection successful");
 				return true;
 			}
 			else
@@ -69,12 +76,12 @@ public class UserDAOImpl implements UserDAOInterface {
 		return false;
 	}
 	
-	public boolean updatePassword(String userID, String newPassword) {
+	public boolean updatePassword(String username, String newPassword) {
 		Connection connection=DBUtils.getConnection();
 		try {
 			PreparedStatement stmt = connection.prepareStatement(SQLConstant.UPDATE_PASSWORD);
 			stmt.setString(1, newPassword);
-			stmt.setString(2, userID);
+			stmt.setString(2, username);
 			int row = stmt.executeUpdate();
 			
 			if(row==1)
@@ -93,30 +100,21 @@ public class UserDAOImpl implements UserDAOInterface {
 
 
 	@Override
-	public String getRole(String userId) {
-		// TODO Auto-generated method stub
+	public String getRole(String username) {
 		Connection connection=DBUtils.getConnection();
 		try {
-			System.out.println("Username:");
-			
 			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_ROLE);
-			statement.setString(1, userId);
+			statement.setString(1, username);
 			ResultSet rs = statement.executeQuery();
-			System.out.println("Query executed.");
-			
 			if(rs.next())
 			{
 				return rs.getString("role");
-			}
-				
+			}		
 		}
 		catch(Exception e)
 		{
 			System.out.println(e.getMessage());
-			
 		}
-		
 		return null;
 	}
-
 }

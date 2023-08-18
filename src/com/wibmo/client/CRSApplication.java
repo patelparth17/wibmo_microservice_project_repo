@@ -3,7 +3,8 @@
  */
 package com.wibmo.client;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
@@ -14,21 +15,24 @@ import com.wibmo.business.*;
 
 
 public class CRSApplication {
-
-
 	static boolean loggedin = false;
+<<<<<<< Updated upstream
 //	StudentInterface studentInterface=StudentOperation.getInstance();
+=======
+	StudentInterface studentInterface=StudentImpl.getInstance();
+>>>>>>> Stashed changes
 	UserInterface userInterface =UserOperation.getInstance();
+	NotificationInterface notificationInterface = NotificationImpl.getInstance();
 	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		CRSApplication crsApplication=new CRSApplication();
-		int userInput;	
-		//create the main menu
 		createMainMenu();
+		int userInput;
 		userInput=sc.nextInt();
 		try
 		{
+<<<<<<< Updated upstream
 			
 		//until user do not exit the application
 		while(userInput!=4)
@@ -48,12 +52,30 @@ public class CRSApplication {
 					break;
 				default:
 					System.out.println("Invalid Input");
+=======
+			while(userInput!=4)
+			{
+				switch(userInput)
+				{	
+					case 1:
+						//login
+						crsApplication.loginUser();
+						break;
+					case 2:
+						//student registration
+//						crsApplication.registerStudent();
+						break;	
+					case 3:
+						crsApplication.updatePassword();
+						break;
+					default:
+						System.out.println("Invalid Input");
+				}
+				createMainMenu();
+				userInput=sc.nextInt();
+>>>>>>> Stashed changes
 			}
-			createMainMenu();
-			userInput=sc.nextInt();
-		}
-		}
-		catch(Exception ex)
+		}catch(Exception ex)
 		{
 			System.out.println("Error occured "+ex);
 		}
@@ -68,7 +90,12 @@ public class CRSApplication {
 	 */
 	public static void createMainMenu()
 	{
-		System.out.println("----------Welcome to Course Management System---------");
+		LocalDate localDate = LocalDate.now();
+        LocalTime localTime = LocalTime.now();
+        System.out.println("---------------------------------------------------------------");
+		System.out.println("               Welcome to Course Management System");
+		System.out.printf("%30s %5s %n",localDate,localTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+		System.out.println("---------------------------------------------------------------");
 		System.out.println("1. Login");
 		System.out.println("2. Student Registration");
 		System.out.println("3. Update password");
@@ -82,17 +109,17 @@ public class CRSApplication {
 	public void loginUser()
 	{
 		Scanner in = new Scanner(System.in);
-
-		String userId,password,role;
+		String username, password, role;
 		try
 		{
 			System.out.println("-----------------Login------------------");
 			System.out.println("Username:");
-			userId = in.next();
+			username = in.next();
 			System.out.println("Password:");
 			password = in.next();
 			System.out.println("Role:");
 			role = in.next();
+<<<<<<< Updated upstream
 			loggedin = userInterface.authenticateUser(userId, password, role);
 			
 			//2 cases1
@@ -135,26 +162,50 @@ public class CRSApplication {
 //						loggedin=false;
 //					}
 					break;
-				}
-				
-				
-			}
-			else
+=======
+			loggedin = userInterface.authenticateUser(username, password, role);
+
+			//true->role->student->approved
+			if(loggedin)
 			{
-				System.out.println("Invalid Credentials!");
-			}
-			
-		}
-		catch(UserNotFoundException ex)
+				 role = userInterface.getRole(username);
+				 switch(role) {
+				 	case "ADMIN":
+				 		System.out.println("Login Successful as an Admin");
+				 		AdminCRSMenu adminMenu = new AdminCRSMenu();
+				 		adminMenu.createMenu();
+				 		break;
+				 	case "PROFESSOR":
+				 		System.out.println("Login Successful as a Professor");
+				 		ProfessorCRSMenu professorMenu=new ProfessorCRSMenu();
+				 		professorMenu.createMenu(username);
+				 		break;
+				 	case "STUDENT":
+						boolean isApproved=studentInterface.isApproved(username);
+						if(isApproved) {
+							System.out.println("Login Successful as a Student");
+							StudentCRSMenu studentMenu=new StudentCRSMenu();
+							studentMenu.createMenu(username);	
+						} else {
+							System.out.println("Failed to login, you have not been approved by the administration!");
+							loggedin=false;
+						}
+				 		break;
+				 	}
+>>>>>>> Stashed changes
+				}
+				else
+					System.out.println("Invalid Credentials!");			
+		}catch(UserNotFoundException ex)
 		{
 			System.out.println(ex.getMessage());
 		}
-		
 	}
 	
 	/**
 	 * Method to help Student register themselves, pending admin approval
 	 */
+<<<<<<< Updated upstream
 //	public void registerStudent()
 //	{
 //		Scanner sc=new Scanner(System.in);
@@ -206,26 +257,88 @@ public class CRSApplication {
 //			//notificationInterface.sendNotification(NotificationTypeConstant.REGISTRATION, newStudentId, null,0);
 //			
 //		}
+=======
+
+	public void registerStudent()
+	{
+		Scanner sc=new Scanner(System.in);
+
+		String userId,name,password,address,dept;
+		GenderConstant gender;
+		int genderChoice, gradYear;
+		try
+		{
+			//input all the student details
+			System.out.println("---------------Student Registration-------------");
+			System.out.println("Name:");
+			name=sc.nextLine();
+			System.out.println("Email:");
+			userId=sc.next();
+			System.out.println("Password:");
+			password=sc.next();
+			System.out.println("Enter Gender Choice: \t 1: Male \t 2.Female\t 3.Other");
+			genderChoice=sc.nextInt();
+			sc.nextLine();
+			
+			switch(genderChoice)
+			{
+			case 1:
+				gender=GenderConstant.MALE;
+				break;
+			case 2:
+				gender=GenderConstant.FEMALE;
+				break;
+				
+			case 3:
+				gender=GenderConstant.OTHER;
+				break;
+			default: 
+				gender=GenderConstant.OTHER;
+			}
+			
+			System.out.println("Department:");
+			dept=sc.nextLine();
+			System.out.println("Graduation Year:");
+			gradYear=sc.nextInt();
+			sc.nextLine();
+			System.out.println("Address:");
+			address=sc.nextLine();
+			
+			
+			String newStudentId = studentInterface.register(name, userId, password, gender, gradYear, dept, address);
+			
+//			notificationInterface.sendNotification(NotificationTypeConstant.REGISTERATION, newStudentId, null,0);
+			
+		}
+>>>>>>> Stashed changes
 //		catch(StudentNotRegisteredException ex)
 //		{
 //			System.out.println("Something went wrong! "+ex.getStudentName() +" not registered. Please try again");
 //		}
+<<<<<<< Updated upstream
 //		//sc.close();
 //	}
+=======
+		finally {
+		sc.close();
+		}
+	}
+
+>>>>>>> Stashed changes
 	
 	/**
 	 * Method to update password of User
 	 */
 	public void updatePassword() {
 		Scanner in = new Scanner(System.in);
-		String userId,newPassword;
+		String username,newPassword;
 		try {
 			System.out.println("------------------Update Password--------------------");
-			System.out.println("Email");
-			userId=in.next();
+			System.out.println("Username:");
+			username=in.next();
 			System.out.println("New Password:");
 			newPassword=in.next();
-			boolean isUpdated=userInterface.updatePassword(userId, newPassword);
+			boolean isUpdated=userInterface.updatePassword(username, newPassword);
 			if(isUpdated)
 				System.out.println("Password updated successfully!");
 

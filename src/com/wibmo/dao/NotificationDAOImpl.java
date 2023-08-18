@@ -56,29 +56,24 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 	 * @throws SQLException
 	 */
 	@Override
-	public int sendNotification(NotificationTypeConstant type, String studentId,PaymentModeConstant modeOfPayment,double amount) throws SQLException{
-		int notificationId=0;
+	public void sendNotification(NotificationTypeConstant type, String studentId,PaymentModeConstant modeOfPayment,double amount) {
 		Connection connection=DBUtils.getConnection();
 		try
 		{
 			//INSERT_NOTIFICATION = "insert into notification(studentId,type,referenceId) values(?,?,?);";
-			PreparedStatement ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY,Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY);
 			ps.setString(1, studentId);
 			ps.setString(2,type.toString());
 			if(type==NotificationTypeConstant.PAID)
 			{
 				//insert into payment, get reference id and add here
-				UUID referenceId=addPayment(studentId, modeOfPayment,amount);
-				ps.setString(3, referenceId.toString());	
+					UUID referenceId=addPayment(studentId, modeOfPayment,amount);
+					ps.setString(3, referenceId.toString());
 			}
 			else
 				ps.setString(3,"");
 				
 			ps.executeUpdate();
-			ResultSet results=ps.getGeneratedKeys();
-			if(results.next())
-				notificationId=results.getInt(1);
-			
 			switch(type)
 			{
 			case REGISTERATION:
@@ -94,9 +89,8 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 		}
 		catch(SQLException ex)
 		{
-			throw ex;
+			System.out.println(ex.getMessage());
 		}
-		return notificationId;
 	}
 
 	/**
@@ -109,7 +103,7 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 	 */
 	public UUID addPayment(String studentId, PaymentModeConstant modeOfPayment,double amount) throws SQLException
 	{
-		UUID referenceId;
+		UUID referenceId = null;
 		Connection connection=DBUtils.getConnection();
 		try
 		{
@@ -118,8 +112,9 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 			PreparedStatement statement = connection.prepareStatement(SQLConstant.INSERT_PAYMENT_QUERY);
 			statement.setString(1, studentId);
 			statement.setString(2, modeOfPayment.toString());
-			statement.setString(3,referenceId.toString());
-			statement.setDouble(4, amount);
+			statement.setDouble(3, amount);
+			statement.setString(4, "PAID");
+			statement.setString(5, referenceId.toString());
 			statement.executeUpdate();
 			//check if record is added
 		}

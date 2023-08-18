@@ -3,8 +3,6 @@
  */
 package com.wibmo.business;
 
-import java.util.UUID;
-
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.dao.NotificationDAOImpl;
@@ -54,10 +52,9 @@ public class NotificationImpl implements NotificationInterface{
 	 */
 
 	@Override
-	public int sendNotification(NotificationTypeConstant type, String studentId, PaymentModeConstant modeOfPayment,
+	public void sendNotification(NotificationTypeConstant type, String studentId, PaymentModeConstant modeOfPayment,
 			double amount) {
-		// TODO Auto-generated method stub
-		return 0;
+		notificationDaoObject.sendNotification(type, studentId, modeOfPayment, amount);
 	}
 	
 

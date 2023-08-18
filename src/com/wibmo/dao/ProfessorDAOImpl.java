@@ -13,6 +13,7 @@ import java.util.List;
 import com.wibmo.bean.Course;
 import com.wibmo.bean.EnrolledStudent;
 import com.wibmo.constants.SQLConstant;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.DBUtils;
 
 /**
@@ -43,74 +44,120 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 		return instance;
 	}
 	
-	public List<Course> getCoursesByProfessor(String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<EnrolledStudent> viewStudentList(String courseId) {
+	/**
+	 * Method to get Courses by Professor Id using SQL Commands
+	 * @param userId, prof id of the professor
+	 * @return get the courses offered by the professor.
+	 * @throws UserNotFoundException 
+	 */
+	@Override
+	public List<Course> getCoursesByProfessor(String username) {
 		Connection connection=DBUtils.getConnection();
-		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
-		String sql = SQLConstant.VIEW_STUDENTLIST_QUERY;
+		List<Course> courseList=new ArrayList<Course>();
+		
 		try {
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, courseId);
+//			PreparedStatement stmt = connection.prepareStatement(SQLConstant.GET_PROF_ID);
+//			stmt.setString(1, username);
+//			ResultSet result = stmt.executeQuery();
 			
-			ResultSet rs = stmt.executeQuery();
+			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_COURSES);
+			statement.setString(1, username);
+			ResultSet rs=statement.executeQuery();
 			while(rs.next())
 			{
-				//public EnrolledStudent(String courseCode, String courseName, int studentId) 
-				enrolledStudents.add(new EnrolledStudent(rs.getString("courseCode"),rs.getString("courseName"),rs.getString("studentId")));
+				courseList.add(new Course(rs.getString("courseCode"),rs.getString("courseName"),rs.getString("professorId"),rs.getInt("seats"), rs.getDouble("courseFee")));
 			}
 		}
 		catch(SQLException e)
 		{
-			System.out.println(e.getMessage());
+			e.getMessage();
 		}
-		finally
-		{
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		return courseList;
+		
+	}
+
+	/**
+	 * Method to view list of enrolled Students using SQL Commands
+	 * @param: username: professor id 
+	 * @param: courseCode: course code of the professor
+	 * @return: return the enrolled students for the corresponding professor and course code.
+	 * @throws UserNotFoundException 
+	 */
+	@Override
+	public List<EnrolledStudent> getEnrolledStudents(String username) {
+		Connection connection=DBUtils.getConnection();
+		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
+		try {
+			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_ENROLLED_STUDENTS);
+			statement.setString(1, username);
+			
+			ResultSet results = statement.executeQuery();
+			while(results.next())
+			{ 
+				enrolledStudents.add(new EnrolledStudent(results.getString("courseCode"),results.getString("courseName"),results.getString("studentId")));
 			}
+		}
+		catch(SQLException e)
+		{
+			e.getMessage();
 		}
 		return enrolledStudents;
 	}
-
-	public Boolean recordGrade(String studentId, String courseCode, String grade) {
+	
+	/**
+	 * Method to GradeConstant a student using SQL Commands
+	 * @param: username: professor id 
+	 * @param: courseCode: course code for the corresponding 
+	 * @return: returns the status after adding the grade
+	 */
+	public Boolean addGrade(String studentId,String courseCode,String grade) {
 		Connection connection=DBUtils.getConnection();
-		String sql = SQLConstant.RECORD_GRADE_QUERY;
 		try {
-			PreparedStatement stmt = connection.prepareStatement(sql);
-			stmt.setString(1, grade);
-			stmt.setString(2, courseCode);
-			stmt.setString(3, studentId);
-			int row = stmt.executeUpdate();
+			PreparedStatement statement = connection.prepareStatement(SQLConstant.ADD_GRADE);
 			
-			if(row==1)
-				return true;
+			statement.setString(1, grade);
+			statement.setString(2, courseCode);
+			statement.setString(3, studentId);
+			
+			int row = statement.executeUpdate();
+			
+			return (row==1);
 		}
 		catch(SQLException e)
 		{
-			System.out.println(e.getMessage());
-		}
-		finally
-		{
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			e.getMessage();
 		}
 		return false;
 	}
+	
 
-	public String getProfessorById(String profId) {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Method to Get professor name by id
+	 * @param username
+	 * @return Professor Id in string
+	 */
+	@Override
+	public String getProfessorById(String username)
+	{
+		String prof_Name = null;
+		Connection connection=DBUtils.getConnection();
+		try 
+		{
+			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_PROF_NAME);
+			
+			statement.setString(1, username);
+			ResultSet rs = statement.executeQuery();
+			rs.next();
+			
+			prof_Name = rs.getString(1);
+			
+		}
+		catch(SQLException e)
+		{
+			e.getMessage();
+		}
+		
+		return prof_Name;
 	}
 
 }
