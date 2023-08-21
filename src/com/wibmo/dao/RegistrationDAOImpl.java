@@ -21,7 +21,6 @@ import com.wibmo.utils.DBUtils;
 public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	private static Logger logger = Logger.getLogger(RegistrationDAOImpl.class);
 	private static volatile RegistrationDAOImpl instance=null;
-	private PreparedStatement stmt = null;
 	
 	/**
 	 * Default Constructor
@@ -43,10 +42,12 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		return instance;
 	}
 
+	Connection conn = DBUtils.getConnection();
+	private PreparedStatement stmt = null;
+	
 	@Override
 	public boolean getRegistrationStatus(String studentName) throws SQLException
 	{
-		Connection conn = DBUtils.getConnection();
 		boolean status = false;
 		try 
 		{
@@ -66,7 +67,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public boolean addCourse(String courseCode, String studentName) throws SQLException{
-		Connection conn = DBUtils.getConnection();
 		try 
 		{
 			stmt = conn.prepareStatement(SQLConstant.GET_USER_ID);
@@ -96,10 +96,8 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	
 	@Override
 	public int numOfRegisteredCourses(String studentName) throws SQLException{
-		Connection conn = DBUtils.getConnection();
 		int count = 0;
 		try {
-
 			stmt = conn.prepareStatement(SQLConstant.NUMBER_OF_REGISTERED_COURSES);
 			stmt.setString(1, studentName);
 			ResultSet rs = stmt.executeQuery();
@@ -121,7 +119,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public boolean seatAvailable(String courseCode) throws SQLException {
-		Connection conn = DBUtils.getConnection();
 		try 
 		{
 			stmt = conn.prepareStatement(SQLConstant.GET_SEATS);
@@ -139,7 +136,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public boolean isRegistered(String courseCode, String studentName) throws SQLException{
-		Connection conn = DBUtils.getConnection();
 		try
 		{
 			stmt = conn.prepareStatement(SQLConstant.GET_REGISTRATION_STATUS);
@@ -159,7 +155,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public boolean dropCourse(String courseCode, String studentName) throws SQLException {
-		Connection conn = DBUtils.getConnection();
 		try
 		{
 			stmt = conn.prepareStatement(SQLConstant.DROP_COURSE_QUERY);
@@ -184,7 +179,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	@Override
 	public double calculateFee(String studentId) throws SQLException
 	{
-		Connection conn = DBUtils.getConnection();
 		double fee = 0;
 		try
 		{
@@ -204,8 +198,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public List<Grade> viewGradeCard(String studentId) throws SQLException {
-		
-		Connection conn = DBUtils.getConnection();
 		List<Grade> grade_List = new ArrayList<Grade>();
 		try
 		{
@@ -233,7 +225,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	@Override
 	public List<Course> viewCourses(String studentName) throws SQLException {
 		List<Course> availableCourseList = new ArrayList<>();
-		Connection conn = DBUtils.getConnection();
 		try 
 		{
 			stmt = conn.prepareStatement(SQLConstant.VIEW_AVAILABLE_COURSES);
@@ -255,7 +246,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 
 	@Override
 	public List<Course> viewRegisteredCourses(String studentName) throws SQLException {
-		Connection conn = DBUtils.getConnection();
 		List<Course> registeredCourseList = new ArrayList<>();
 		try 
 		{
@@ -277,7 +267,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	@Override
 	public void setRegistrationStatus(String studentName) throws SQLException
 	{
-		Connection conn = DBUtils.getConnection();
 		try 
 		{
 			stmt = conn.prepareStatement(SQLConstant.SET_REGISTRATION_STATUS);
@@ -293,7 +282,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	@Override
 	public boolean isReportGenerated(String studentName) throws SQLException
 	{
-		Connection conn = DBUtils.getConnection();
 		boolean status = false;
 		try 
 		{
@@ -313,29 +301,24 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	@Override
 	public boolean getPaymentStatus(String studentId) throws SQLException 
 	{
+		boolean status = false;
+		try 
 		{
-			Connection conn = DBUtils.getConnection();
-			boolean status = false;
-			try 
-			{
-				stmt = conn.prepareStatement(SQLConstant.GET_PAYMENT_STATUS);
-				stmt.setString(1, studentId);
-				ResultSet rs = stmt.executeQuery();
-				rs.next();
-				status = rs.getBoolean(1);	
-			} 
-			catch (SQLException e) 
-			{
-				logger.error(e.getMessage());
-
-			} 
-			return status;
-		}
+			stmt = conn.prepareStatement(SQLConstant.GET_PAYMENT_STATUS);
+			stmt.setString(1, studentId);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			status = rs.getBoolean(1);	
+		} 
+		catch (SQLException e) 
+		{
+			logger.error(e.getMessage());
+		} 
+		return status;
 	}
 
 	@Override
 	public void setPaymentStatus(String studentId, PaymentModeConstant modeOfPayment, double amount) throws SQLException {
-		Connection conn = DBUtils.getConnection();
 		try 
 		{
 			stmt = conn.prepareStatement(SQLConstant.SET_PAYMENT_STATUS);

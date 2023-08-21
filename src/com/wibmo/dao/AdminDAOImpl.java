@@ -56,14 +56,15 @@ public class AdminDAOImpl implements AdminDAOInterface{
 		}
 		return instance;
 	}
+	Connection connection = DBUtils.getConnection();
+	PreparedStatement stmt,stmt1,stmt2,statement=null;
 	
 	@Override
 	public List<Course> viewCourses() {
 		List<Course> courseList = new ArrayList<>();
 		String sql = SQLConstant.VIEW_COURSE_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()) {
@@ -82,22 +83,31 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	}
 
 
-	public void approveStudent(String studentID)throws StudentNotFoundForApprovalException {
+	public String approveStudent(String studentID)throws StudentNotFoundForApprovalException {
 		String sql = SQLConstant.APPROVE_STUDENT_QUERY;
+		String name = null;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			stmt.setString(1,studentID);
 			int row = stmt.executeUpdate();
+			
 			if(row == 0) {
 				throw new StudentNotFoundForApprovalException(studentID);
 			}
 			
+			sql = SQLConstant.GET_USER_NAME;
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1,studentID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()) {
+				name = rs.getString("username");
+			}
 			
 		}catch(SQLException se) {
 			logger.error(se.getMessage());
 			
 		}
+		return name;
 	}
 
 
@@ -105,8 +115,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	public void removeCourse(String courseCode)  throws CourseNotFoundException, CourseNotDeletedException{
 		String sql = SQLConstant.REMOVE_COURSE_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			stmt.setString(1,courseCode);
 			int row = stmt.executeUpdate();
 			if(row == 0) {
@@ -123,8 +132,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	public void addCourse(Course course) throws CourseAlreadyExistsException {
 		String sql = SQLConstant.ADD_COURSE_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, course.getCourseCode());
 			stmt.setString(2, course.getCourseName());
 			stmt.setInt(3, 10);
@@ -147,14 +155,13 @@ public class AdminDAOImpl implements AdminDAOInterface{
 		String sql1 = SQLConstant.CHECK_PROFESSOR_QUERY;
 		String sql2 = SQLConstant.ASSIGN_COURSE_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt1 = connection.prepareStatement(sql1);
+			stmt1 = connection.prepareStatement(sql1);
 			stmt1.setString(1, professorId);
 			ResultSet rs = stmt1.executeQuery();
 			if(!rs.next()) {
 				throw new UserNotFoundException(professorId);
 			}
-			PreparedStatement stmt2 = connection.prepareStatement(sql2);
+			stmt2 = connection.prepareStatement(sql2);
 			stmt2.setString(1, professorId);
 			stmt2.setString(2, courseCode);
 			int row2 = stmt2.executeUpdate();
@@ -172,8 +179,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	public void addUser(User user)throws UserNotAddedException, UserIdAlreadyExists {
 		String sql = SQLConstant.ADD_USER_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, user.getUserId());
 			stmt.setString(2, user.getName());
 			stmt.setString(3, user.getPassword());
@@ -194,8 +200,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 		List<RegisteredCourse> Courses = new ArrayList<RegisteredCourse>();
 		String sql = SQLConstant.GENERATE_REPORTCARD_QUERY;
 		try {
-			Connection connection = DBUtils.getConnection();
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, Studentid);
 			ResultSet rs = stmt.executeQuery();
 					
@@ -237,9 +242,8 @@ public class AdminDAOImpl implements AdminDAOInterface{
 		}
 		
 		
-		PreparedStatement statement = null;
+		statement = null;
 		try {
-			Connection connection = DBUtils.getConnection();
 			String sql = SQLConstant.ADD_PROFESSOR_QUERY;
 			statement = connection.prepareStatement(sql);
 			
@@ -262,10 +266,9 @@ public class AdminDAOImpl implements AdminDAOInterface{
 
 	@Override
 	public List<Professor> viewProfessors() {
-		PreparedStatement statement = null;
+		statement = null;
 		List<Professor> professorList = new ArrayList<Professor>();
 		try {
-			Connection connection = DBUtils.getConnection();
 			String sql = SQLConstant.VIEW_PROFESSOR_QUERY;
 			statement = connection.prepareStatement(sql);
 			ResultSet resultSet = statement.executeQuery();
@@ -295,9 +298,8 @@ public class AdminDAOImpl implements AdminDAOInterface{
 	public List<Student> viewPendingAdmissions() {
 		List<Student> studentList = new ArrayList<Student>();
 		try {
-			Connection connection = DBUtils.getConnection();
 			String sql = SQLConstant.VIEW_PENDING_ADMISSIONS_QUERY;
-			PreparedStatement statement = connection.prepareStatement(sql);
+			statement = connection.prepareStatement(sql);
 			ResultSet resultSet = statement.executeQuery();
 
 			while(resultSet.next()) {
@@ -317,5 +319,16 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			logger.error(e.getMessage());
 		}
 		return studentList;
+	}
+
+	@Override
+	public void approveAllStudents(List<Student> studentList) {
+		String sql = SQLConstant.APPROVE_ALL_STUDENTS_QUERY;
+		try {
+			statement = connection.prepareStatement(sql);
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+		}
 	}
 }

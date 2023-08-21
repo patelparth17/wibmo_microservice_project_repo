@@ -41,12 +41,14 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 		return instance;
 	}
 	
+	Connection connection=DBUtils.getConnection();
+	PreparedStatement ps = null;
+	
 	@Override
 	public void sendNotification(NotificationTypeConstant type, String studentName,PaymentModeConstant modeOfPayment,double amount) {
-		Connection connection=DBUtils.getConnection();
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY);
+			ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY);
 			ps.setString(1, studentName);
 			ps.setString(2,type.toString());
 			if(type==NotificationTypeConstant.PAID)
@@ -64,10 +66,10 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 				logger.debug("Registration successfull. Administration will verify the details and approve it!");
 				break;
 			case APPROVED:
-				logger.debug("Student with id "+studentName+" has been approved!");
+				logger.debug("Student with name "+studentName+" has been approved!");
 				break;
 			case PAID:
-				logger.debug("Student with id "+studentName+" fee has been paid");
+				logger.debug("Student with name "+studentName+" has paid the fee!");
 			}
 			
 		}
@@ -88,17 +90,16 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 	public UUID addPayment(String studentId, PaymentModeConstant modeOfPayment,double amount) throws SQLException
 	{
 		UUID referenceId = null;
-		Connection connection=DBUtils.getConnection();
 		try
 		{
 			referenceId=UUID.randomUUID();
-			PreparedStatement statement = connection.prepareStatement(SQLConstant.INSERT_PAYMENT_QUERY);
-			statement.setString(1, studentId);
-			statement.setString(2, modeOfPayment.toString());
-			statement.setDouble(3, amount);
-			statement.setString(4, "PAID");
-			statement.setString(5, referenceId.toString());
-			statement.executeUpdate();
+			ps = connection.prepareStatement(SQLConstant.INSERT_PAYMENT_QUERY);
+			ps.setString(1, studentId);
+			ps.setString(2, modeOfPayment.toString());
+			ps.setDouble(3, amount);
+			ps.setString(4, "PAID");
+			ps.setString(5, referenceId.toString());
+			ps.executeUpdate();
 		}
 		catch(SQLException ex)
 		{

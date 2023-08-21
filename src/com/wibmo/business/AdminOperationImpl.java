@@ -48,17 +48,15 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	}
 	
 	@Override
-	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException{
+	public String approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException{
 		try {
 			
-			if(AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {
-				
+			if(AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {				
 				throw new StudentNotFoundForApprovalException(studentId);
 			}
-			adminDaoOperation.approveStudent(studentId);
+			return adminDaoOperation.approveStudent(studentId);
 		}
 		catch(StudentNotFoundForApprovalException e) {
-			
 			throw e;
 		}
 	}
@@ -120,5 +118,10 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	@Override
 	public List<Student> viewPendingAdmissions() {
 		return adminDaoOperation.viewPendingAdmissions();
+	}
+
+	@Override
+	public void approveAllStudents(List<Student> studentList) {
+		adminDaoOperation.approveAllStudents(studentList);
 	}
 }

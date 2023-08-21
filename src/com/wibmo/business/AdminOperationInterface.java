@@ -30,7 +30,7 @@ public interface AdminOperationInterface {
 	 * @param studentList
 	 * @throws StudentNotFoundForApprovalException
 	 */
-	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException;
+	public String approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException;
 	
 	/**
 	 * Method to add Professor
@@ -82,4 +82,7 @@ public interface AdminOperationInterface {
 	 * @return The list of students
 	 */
 	public List<Student> viewPendingAdmissions();
+
+
+	public void approveAllStudents(List<Student> studentList);
 }

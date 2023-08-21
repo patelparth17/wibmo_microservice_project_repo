@@ -10,6 +10,7 @@ public class SQLConstant {
 	//Admin's Queries
 	public static final String VIEW_COURSE_QUERY = "SELECT courseCode, courseName, professorId FROM course";
 	public static final String APPROVE_STUDENT_QUERY = "UPDATE Student SET isApproved = 1 WHERE studentId = ?";
+	public static final String APPROVE_ALL_STUDENTS_QUERY = "UPDATE student SET isApproved = 1";
 	public static final String REMOVE_COURSE_QUERY = "DELETE FROM Course WHERE courseCode = ?";
 	public static final String ADD_COURSE_QUERY = "INSERT INTO Course(courseCode, courseName, seats, professorId,courseFee) values (?, ?, ?, ?, ?)";
 	public static final String ASSIGN_COURSE_QUERY = "UPDATE Course SET professorId = ? WHERE courseCode = ?";

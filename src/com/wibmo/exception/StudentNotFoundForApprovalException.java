@@ -28,6 +28,6 @@ public class StudentNotFoundForApprovalException extends Exception{
 	 */
 	@Override
 	public String getMessage() {
-		return "StudentId: " + StudentId + " not registered!";
+		return "StudentId: " + StudentId + " not approved!";
 	}
 }

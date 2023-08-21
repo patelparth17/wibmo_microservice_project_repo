@@ -65,6 +65,7 @@ public class ProfessorCRSMenu {
 	public void getCourses(String username) {
 		try {
 			List<Course> coursesEnrolled = professorInterface.viewCourses(username);
+			logger.debug("List of courses:");
 			logger.debug(String.format("%20s %20s","COURSE CODE","COURSE NAME"));
 			for(Course obj: coursesEnrolled) {
 				logger.debug(String.format("%20s %20s",obj.getCourseCode(), obj.getCourseName()));
@@ -79,6 +80,7 @@ public class ProfessorCRSMenu {
 	 * @param username
 	 */
 	public void viewEnrolledStudents(String username) {
+		logger.debug("The list of enrolled students:");
 		logger.debug(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","StudentId" ));
 		try {
 			List<EnrolledStudent> enrolledStudents = professorInterface.viewEnrolledStudents(username);
@@ -106,6 +108,7 @@ public class ProfessorCRSMenu {
 			} catch (UserNotFoundException | SQLException e) {
 				logger.error(e.getMessage());
 			}
+			logger.debug("The list of enrolled students:");
 			logger.debug(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","Student ID" ));
 			for (EnrolledStudent obj: enrolledStudents) {
 				logger.debug(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
@@ -126,12 +129,12 @@ public class ProfessorCRSMenu {
 			if (!(ProfessorValidator.isValidStudent(enrolledStudents, studentId)
 					&& ProfessorValidator.isValidCourse(coursesEnrolled, courseCode))) {
 				professorInterface.addGrade(studentId, courseCode, grade);
-				logger.debug("GradeConstant added successfully for "+studentId);
+				logger.debug("GradeConstant added successfully for student ID : "+studentId);
 			} else {
 				logger.debug("Invalid data entered, try again!");
 			}
 		} catch(GradeNotAllotedException ex) {
-			logger.error("GradeConstant cannot be added for"+ex.getStudentId());
+			logger.error("GradeConstant cannot be added for student ID : "+ex.getStudentId());
 		}
 	}
 }

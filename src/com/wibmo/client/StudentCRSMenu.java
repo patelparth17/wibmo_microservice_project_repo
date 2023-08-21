@@ -111,7 +111,12 @@ public class StudentCRSMenu {
 			logger.debug(" Registration is already completed");
 			return;
 		}
-		int indexOfUnregisteredCourse = viewRegisteredCourse(studentName).size()+1 ;
+		int indexOfUnregisteredCourse;
+		if(viewRegisteredCourse(studentName)==null) {
+			indexOfUnregisteredCourse=1;
+		}
+		else
+			indexOfUnregisteredCourse = viewRegisteredCourse(studentName).size()+1 ;
 		while(indexOfUnregisteredCourse <= 6)
 		{
 			try

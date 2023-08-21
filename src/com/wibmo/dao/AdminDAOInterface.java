@@ -34,9 +34,10 @@ public interface AdminDAOInterface {
 	/**
 	 * Method to approve a Student
 	 * @param studentName
+	 * @return 
 	 * @throws StudentNotFoundForApprovalException
 	 */
-	public void approveStudent(String studentName) throws StudentNotFoundForApprovalException;
+	public String approveStudent(String studentName) throws StudentNotFoundForApprovalException;
 	
 	
 	/**
@@ -93,4 +94,6 @@ public interface AdminDAOInterface {
 	 * @return the list of students having pending approvals
 	 */
 	public List<Student> viewPendingAdmissions();
+
+	public void approveAllStudents(List<Student> studentList);
 }

@@ -39,13 +39,9 @@ public class RegistrationImpl implements RegistrationInterface{
 	@Override
 	public boolean addCourse(String courseCode, String studentName,List<Course> availableCourseList) throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, SQLException 
 	{
-		if (registrationDAOInterface.numOfRegisteredCourses(studentName) > 6)
+		if (registrationDAOInterface.numOfRegisteredCourses(studentName) >= 6)
 		{	
 			throw new CourseLimitExceededException(6);
-		}
-		else if (registrationDAOInterface.isRegistered(courseCode, studentName)) 
-		{
-			return false;
 		} 
 		else if (!registrationDAOInterface.seatAvailable(courseCode)) 
 		{
