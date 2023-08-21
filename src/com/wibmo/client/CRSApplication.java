@@ -48,14 +48,14 @@ public class CRSApplication {
 						crsApplication.updatePassword();
 						break;
 					default:
-						logger.debug("Invalid Input");
+						logger.info("Invalid Input");
 				}
 				createMainMenu();
 				userInput=sc.nextInt();
 			}
 		}catch(Exception ex)
 		{
-			logger.debug("Error occured "+ex);
+			logger.info("Error occured "+ex);
 		}
 		finally
 		{
@@ -105,30 +105,30 @@ public class CRSApplication {
 				 role = userInterface.getRole(username);
 				 switch(role) {
 				 	case "ADMIN":
-				 		logger.debug("Login Successful as an Admin");
+				 		logger.info("Login Successful as an Admin");
 				 		AdminCRSMenu adminMenu = new AdminCRSMenu();
 				 		adminMenu.createMenu();
 				 		break;
 				 	case "PROFESSOR":
-				 		logger.debug("Login Successful as a Professor");
+				 		logger.info("Login Successful as a Professor");
 				 		ProfessorCRSMenu professorMenu=new ProfessorCRSMenu();
 				 		professorMenu.createMenu(username);
 				 		break;
 				 	case "STUDENT":
 						boolean isApproved=studentInterface.isApproved(username);
 						if(isApproved) {
-							logger.debug("Login Successful as a Student");
+							logger.info("Login Successful as a Student");
 							StudentCRSMenu studentMenu=new StudentCRSMenu();
 							studentMenu.createMenu(username);	
 						} else {
-							logger.debug("Failed to login, you have not been approved by the administration!");
+							logger.info("Failed to login, you have not been approved by the administration!");
 							loggedin=false;
 						}
 				 		break;
 				 	}
 				}
 				else
-					logger.debug("Invalid Credentials!");			
+					logger.info("Invalid Credentials!");			
 		}catch(UserNotFoundException ex)
 		{
 			logger.error(ex.getMessage());
@@ -189,7 +189,7 @@ public class CRSApplication {
 		}
 		catch(StudentNotRegisteredException ex)
 		{
-			logger.error("Something went wrong! "+ex.getStudentName() +" not registered. Please try again");
+			logger.error("Something went wrong! " + ex.getStudentName() +" not registered. Please try again");
 		}
 	}
 	
@@ -207,10 +207,10 @@ public class CRSApplication {
 			newPassword=in.next();
 			boolean isUpdated=userInterface.updatePassword(username, newPassword);
 			if(isUpdated)
-				logger.debug("Password updated successfully!");
+				logger.info("Password updated successfully!");
 
 			else
-				logger.debug("Something went wrong, please try again!");
+				logger.info("Something went wrong, please try again!");
 		} catch(Exception ex) {
 			logger.error("Error Occured "+ex.getMessage());
 		}

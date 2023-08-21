@@ -76,7 +76,7 @@ public class AdminCRSMenu {
 				return;
 
 			default:
-				logger.debug("***** Wrong Choice *****");
+				logger.info("***** Wrong Choice *****");
 			}
 		}
 	}
@@ -85,12 +85,12 @@ public class AdminCRSMenu {
 	 * Method to generate Report Card of a Student
 	 */
 	private void generateReportCard() {
-		logger.debug("Enter Student Id whose Report Card needs to be generated: ");
+		logger.info("Enter Student Id whose Report Card needs to be generated: ");
 		String studentId = adminScanner.next();
 		List<RegisteredCourse> reportCard = adminOperation.generateGradeCard(studentId);
-		logger.debug(String.format("The Report Card details for the Student with id %s are as follows:", studentId));
+		logger.info(String.format("The Report Card details for the Student with id %s are as follows:", studentId));
 		for (RegisteredCourse registeredCourse : reportCard) {
-			logger.debug(String.format("%20s |%20s | %20s | %20s ", registeredCourse.getstudentId(),
+			logger.info(String.format("%20s |%20s | %20s | %20s ", registeredCourse.getstudentId(),
 					registeredCourse.getCourse().getCourseCode(), registeredCourse.getCourse().getCourseName(),
 					registeredCourse.getGrade()));
 		}
@@ -101,30 +101,30 @@ public class AdminCRSMenu {
 	 */
 	private void assignCourseToProfessor() {
 		List<Professor> professorList = adminOperation.viewProfessors();
-		logger.debug("*************************** Professor *************************** ");
-		logger.debug(String.format("%20s | %20s | %20s ", "ProfessorId", "Name", "Designation"));
+		logger.info("*************************** Professor *************************** ");
+		logger.info(String.format("%20s | %20s | %20s ", "ProfessorId", "Name", "Designation"));
 		for (Professor professor : professorList) {
 			logger.info(String.format("%20s | %20s | %20s ", professor.getUserId(), professor.getName(),
 					professor.getDesignation()));
 		}
 
-		logger.debug("\n\n");
+		logger.info("\n\n");
 		List<Course> courseList = adminOperation.viewCourses();
-		logger.debug("**************** Course ****************");
-		logger.debug(String.format("%20s | %20s", "CourseCode", "CourseName"));
+		logger.info("**************** Course ****************");
+		logger.info(String.format("%20s | %20s", "CourseCode", "CourseName"));
 		for (Course course : courseList) {
-			logger.debug(String.format("%20s | %20s ", course.getCourseCode(), course.getCourseName()));
+			logger.info(String.format("%20s | %20s ", course.getCourseCode(), course.getCourseName()));
 		}
 
-		logger.debug("Enter Course Code:");
+		logger.info("Enter Course Code:");
 		String courseCode = adminScanner.next();
 
-		logger.debug("Enter Professor's User Id:");
+		logger.info("Enter Professor's User Id:");
 		String userId = adminScanner.next();
 
 		try {
 			adminOperation.assignCourse(courseCode, userId);
-			logger.debug("Professor with id " + userId + " assigned to Course Code " + courseCode + " successfully!");
+			logger.info("Professor with id " + userId + " assigned to Course Code " + courseCode + " successfully!");
 		} catch (CourseNotFoundException | UserNotFoundException e) {
 			logger.error(e.getMessage());
 		}
@@ -138,31 +138,31 @@ public class AdminCRSMenu {
 
 		Professor professor = new Professor();
 
-		logger.debug("Enter Professor Name:");
+		logger.info("Enter Professor Name:");
 		String professorName = adminScanner.next();
 		professor.setName(professorName);
 
-		logger.debug("Enter Department:");
+		logger.info("Enter Department:");
 		String department = adminScanner.next();
 		professor.setDepartment(department);
 
-		logger.debug("Enter Designation:");
+		logger.info("Enter Designation:");
 		String designation = adminScanner.next();
 		professor.setDesignation(designation);
 
-		logger.debug("Enter User Id:");
+		logger.info("Enter User Id:");
 		String userId = adminScanner.next();
 		professor.setUserId(userId);
 
-		logger.debug("Enter Password:");
+		logger.info("Enter Password:");
 		String password = adminScanner.next();
 		professor.setPassword(password);
 
-		logger.debug("Enter Gender: \t 1: Male \t 2.Female \t 3.Other ");
+		logger.info("Enter Gender: \t 1: Male \t 2.Female \t 3.Other ");
 		int gender = adminScanner.nextInt();
 		professor.setGender(GenderConstant.getName(gender));
 
-		logger.debug("Enter Address:");
+		logger.info("Enter Address:");
 		String address = adminScanner.next();
 		professor.setAddress(address);
 
@@ -170,7 +170,7 @@ public class AdminCRSMenu {
 
 		try {
 			adminOperation.addProfessor(professor);
-			logger.debug("Professor is successfully addaed");
+			logger.info("Professor is successfully addaed");
 		} catch (ProfessorNotAddedException | UserIdAlreadyExists e) {
 			logger.error(e.getMessage());
 		}
@@ -193,7 +193,7 @@ public class AdminCRSMenu {
 				approveAllStudents();
 				break;
 			default:
-				logger.debug("Enter valid choice");
+				logger.info("Enter valid choice");
 		}
 				
 	}
@@ -206,12 +206,12 @@ public class AdminCRSMenu {
 		List<Student> studentList = viewPendingAdmissions();
 		if(studentList==null)
 			return;
-		logger.debug("Enter Student's ID:");
+		logger.info("Enter Student's ID:");
 		String studentUserIdApproval = adminScanner.next();
 
 		try {
 			String name = adminOperation.approveStudent(studentUserIdApproval, studentList);
-			logger.debug("Student with studentId " + studentUserIdApproval + " approved!");
+			logger.info("Student with studentId " + studentUserIdApproval + " approved!");
 			// send notification from system
 			notificationObject.sendNotification(NotificationTypeConstant.APPROVED, name, null, 0);
 
@@ -228,7 +228,7 @@ public class AdminCRSMenu {
 		if(studentList == null)
 			return;
 		adminOperation.approveAllStudents(studentList);
-		logger.debug("Successfully approved all the pending approvals!");
+		logger.info("Successfully approved all the pending approvals!");
 		for(Student studentObj:studentList) {
 			String name = studentObj.getName();	
 			notificationObject.sendNotification(NotificationTypeConstant.APPROVED, name, null, 0);
@@ -243,13 +243,13 @@ public class AdminCRSMenu {
 	private List<Student> viewPendingAdmissions() {
 		List<Student> pendingStudentsList = adminOperation.viewPendingAdmissions();
 		if (pendingStudentsList.size() == 0) {
-			logger.debug("No students pending approvals");
+			logger.info("No students pending approvals");
 			return null;
 		}
-		logger.debug("List of the pending approvals:\n");
-		logger.debug(String.format("%20s | %20s | %20s", "StudentId", "Name", "Gender"));
+		logger.info("List of the pending approvals:\n");
+		logger.info(String.format("%20s | %20s | %20s", "StudentId", "Name", "Gender"));
 		for (Student student : pendingStudentsList) {
-			logger.debug(String.format("%20s | %20s | %20s", student.getStudentId(), student.getName(),
+			logger.info(String.format("%20s | %20s | %20s", student.getStudentId(), student.getName(),
 					student.getGender().toString()));
 		}
 		return pendingStudentsList;
@@ -262,14 +262,14 @@ public class AdminCRSMenu {
 	 */
 	private void deleteCourse() {
 		List<Course> courseList = viewCoursesInCatalogue();
-		logger.debug("Enter number of courses you want to delete:");
+		logger.info("Enter number of courses you want to delete:");
 		int numberOfCourses = adminScanner.nextInt();
 		while (numberOfCourses > 0) {
-			logger.debug("Enter Course Code:");
+			logger.info("Enter Course Code:");
 			String courseCode = adminScanner.next();
 			try {
 				adminOperation.removeCourse(courseCode, courseList);
-				logger.debug("Course with course code "+courseCode+" is successfully deleted.");
+				logger.info("Course with course code "+courseCode+" is successfully deleted.");
 			} catch (CourseNotFoundException | CourseNotDeletedException e) {
 				logger.error(e.getMessage());
 			}
@@ -282,24 +282,24 @@ public class AdminCRSMenu {
 	 */
 	private void addCourseToCatalogue() {
 		List<Course> courseList = viewCoursesInCatalogue();
-		logger.debug("Enter number of courses you want to add:");
+		logger.info("Enter number of courses you want to add:");
 		int numberOfCourses = adminScanner.nextInt();
 
 		while (numberOfCourses > 0) {
-			logger.debug("Enter Course Code:");
+			logger.info("Enter Course Code:");
 			String courseCode = adminScanner.next();
 
-			logger.debug("Enter Course Name:");
+			logger.info("Enter Course Name:");
 			String courseName = adminScanner.next();
 
-			logger.debug("Enter Course Fee:");
+			logger.info("Enter Course Fee:");
 			double courseFee = adminScanner.nextDouble();
 
 			Course course = new Course(courseCode, courseName, null, 10, courseFee);
 
 			try {
 				adminOperation.addCourse(course, courseList);
-				logger.debug("Course with course code "+courseCode+" is added successfully.");
+				logger.info("Course with course code "+courseCode+" is added successfully.");
 			} catch (CourseAlreadyExistsException e) {
 				logger.error(e.getMessage());
 			}
@@ -315,13 +315,13 @@ public class AdminCRSMenu {
 	private List<Course> viewCoursesInCatalogue() {
 		List<Course> courseList = adminOperation.viewCourses();
 		if (courseList.size() == 0) {
-			logger.debug("No course in the catalog!");
+			logger.info("No course in the catalog!");
 			return courseList;
 		}
-		logger.debug("The current courses in the course Catalog are as follows:");
-		logger.debug(String.format("%20s | %20s | %20s", "COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
+		logger.info("The current courses in the course Catalog are as follows:");
+		logger.info(String.format("%20s | %20s | %20s", "COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
 		for (Course course : courseList) {
-			logger.debug(String.format("%20s | %20s | %20s", course.getCourseCode(), course.getCourseName(),
+			logger.info(String.format("%20s | %20s | %20s", course.getCourseCode(), course.getCourseName(),
 					course.getInstructorId()));
 		}
 		return courseList;

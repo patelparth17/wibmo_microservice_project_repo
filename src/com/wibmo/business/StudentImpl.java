@@ -43,7 +43,6 @@ public class StudentImpl implements StudentInterface{
 		try
 		{
 			Student newStudent=new Student(userId,name,RoleConstant.STUDENT,password,gender,address,dept,userId,gradYear,false);
-			logger.debug("\nYour account has been created and pending for Approval by Admin.\n");
 			studentDaoInterface.registerStudent(newStudent);
 		}
 		catch(StudentNotRegisteredException ex)

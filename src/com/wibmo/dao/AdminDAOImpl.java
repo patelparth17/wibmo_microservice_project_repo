@@ -104,8 +104,7 @@ public class AdminDAOImpl implements AdminDAOInterface{
 			}
 			
 		}catch(SQLException se) {
-			logger.error(se.getMessage());
-			
+			logger.error(se.getMessage());		
 		}
 		return name;
 	}

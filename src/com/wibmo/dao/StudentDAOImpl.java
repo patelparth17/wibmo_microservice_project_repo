@@ -71,10 +71,7 @@ public class StudentDAOImpl implements StudentDAOInterface {
 				stmt1.setBoolean(5, false);
 				stmt1.setBoolean(6, false);
 				stmt1.setBoolean(7, false);
-				int row =stmt1.executeUpdate();
-				
-				if(row==1) 
-					logger.debug("Row Inserted");
+				stmt1.executeUpdate();
 			}
 		}
 		catch(SQLException ex)

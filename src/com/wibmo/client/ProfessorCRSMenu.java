@@ -52,7 +52,7 @@ public class ProfessorCRSMenu {
 				CRSApplication.loggedin = false;
 				return;
 			default:
-				logger.debug("Please select appropriate option...");
+				logger.info("Please select appropriate option...");
 			}
 		}
 		professorScanner.close();
@@ -65,10 +65,10 @@ public class ProfessorCRSMenu {
 	public void getCourses(String username) {
 		try {
 			List<Course> coursesEnrolled = professorInterface.viewCourses(username);
-			logger.debug("List of courses:");
-			logger.debug(String.format("%20s %20s","COURSE CODE","COURSE NAME"));
+			logger.info("List of courses:");
+			logger.info(String.format("%20s %20s","COURSE CODE","COURSE NAME"));
 			for(Course obj: coursesEnrolled) {
-				logger.debug(String.format("%20s %20s",obj.getCourseCode(), obj.getCourseName()));
+				logger.info(String.format("%20s %20s",obj.getCourseCode(), obj.getCourseName()));
 			}
 		} catch(Exception ex) {
 			logger.error("Something went wrong!"+ex.getMessage());
@@ -80,12 +80,12 @@ public class ProfessorCRSMenu {
 	 * @param username
 	 */
 	public void viewEnrolledStudents(String username) {
-		logger.debug("The list of enrolled students:");
-		logger.debug(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","StudentId" ));
+		logger.info("The list of enrolled students:");
+		logger.info(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","StudentId" ));
 		try {
 			List<EnrolledStudent> enrolledStudents = professorInterface.viewEnrolledStudents(username);
 			for (EnrolledStudent obj: enrolledStudents) {
-				logger.debug(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
+				logger.info(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
 			}
 
 		} catch(Exception ex) {
@@ -108,10 +108,10 @@ public class ProfessorCRSMenu {
 			} catch (UserNotFoundException | SQLException e) {
 				logger.error(e.getMessage());
 			}
-			logger.debug("The list of enrolled students:");
-			logger.debug(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","Student ID" ));
+			logger.info("The list of enrolled students:");
+			logger.info(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","Student ID" ));
 			for (EnrolledStudent obj: enrolledStudents) {
-				logger.debug(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
+				logger.info(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
 			}
 			List<Course> coursesEnrolled = new ArrayList<>();
 			try {
@@ -119,19 +119,19 @@ public class ProfessorCRSMenu {
 			} catch (UserNotFoundException e) {
 				logger.error(e.getMessage());
 			}
-			logger.debug("----------------Add Grade--------------");
+			logger.info("----------------Add Grade--------------");
 			System.out.printf("Enter student id: ");
 			studentId = in.nextLine();
 			System.out.printf("Enter course code: ");
 			courseCode = in.nextLine();
-			logger.debug("Enter grade: ");
+			logger.info("Enter grade: ");
 			grade = in.nextLine();
 			if (!(ProfessorValidator.isValidStudent(enrolledStudents, studentId)
 					&& ProfessorValidator.isValidCourse(coursesEnrolled, courseCode))) {
 				professorInterface.addGrade(studentId, courseCode, grade);
-				logger.debug("GradeConstant added successfully for student ID : "+studentId);
+				logger.info("GradeConstant added successfully for student ID : "+studentId);
 			} else {
-				logger.debug("Invalid data entered, try again!");
+				logger.info("Invalid data entered, try again!");
 			}
 		} catch(GradeNotAllotedException ex) {
 			logger.error("GradeConstant cannot be added for student ID : "+ex.getStudentId());

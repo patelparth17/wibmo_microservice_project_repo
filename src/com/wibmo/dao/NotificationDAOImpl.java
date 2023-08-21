@@ -63,13 +63,13 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 			switch(type)
 			{
 			case REGISTERATION:
-				logger.debug("Registration successfull. Administration will verify the details and approve it!");
+				logger.info("Registration successfull. Administration will verify the details and approve it!");
 				break;
 			case APPROVED:
-				logger.debug("Student with name "+studentName+" has been approved!");
+				logger.info("Student with name "+studentName+" has been approved!");
 				break;
 			case PAID:
-				logger.debug("Student with name "+studentName+" has paid the fee!");
+				logger.info("Student with name "+studentName+" has paid the fee!");
 			}
 			
 		}

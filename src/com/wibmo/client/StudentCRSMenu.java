@@ -35,7 +35,7 @@ public class StudentCRSMenu {
 			logger.info("1. Course Registration");
 			logger.info("2. Add Course");
 			logger.info("3. Drop Course");
-			logger.info("4. View Available Course");
+			logger.info("4. View Available Courses");
 			logger.info("5. View Registered Courses");
 			logger.info("6. View grade card");
 			logger.info("7. Make Payment");
@@ -77,7 +77,7 @@ public class StudentCRSMenu {
 				break;			
 
 			default:
-				logger.debug("Incorrect Choice!");
+				logger.info("Incorrect Choice!");
 			}
 		}
 	}
@@ -108,7 +108,7 @@ public class StudentCRSMenu {
 	{
 		if(is_registered)
 		{
-			logger.debug(" Registration is already completed");
+			logger.info("Registration is already completed");
 			return;
 		}
 		int indexOfUnregisteredCourse;
@@ -124,16 +124,16 @@ public class StudentCRSMenu {
 				List<Course> courseList=viewCourse(studentName);
 				if(courseList==null)
 					return;
-				logger.debug(String.format("Enter Course Code for Course %d: ", indexOfUnregisteredCourse));
+				logger.info(String.format("Enter Course Code for Course %d: ", indexOfUnregisteredCourse));
 				String courseCode = sc.next();
 				if(registrationInterface.addCourse(courseCode,studentName,courseList))
 				{
-					logger.debug("Course " + courseCode + " registered sucessfully.");
+					logger.info("Course " + courseCode + " registered sucessfully.");
 					indexOfUnregisteredCourse++;
 				}
 				else
 				{
-					logger.debug(" You have already registered for Course : " + courseCode);
+					logger.info(" You have already registered for Course : " + courseCode);
 				}
 			}	
 			catch(CourseNotFoundException | CourseLimitExceededException | SQLException | SeatNotAvailableException e)
@@ -142,9 +142,9 @@ public class StudentCRSMenu {
 			}
 		}
 
-		logger.debug("\n*******************************************************");
-		logger.debug("             Registration Successful");
-		logger.debug("*******************************************************\n");
+		logger.info("\n*******************************************************");
+		logger.info("             Registration Successful");
+		logger.info("*******************************************************\n");
 
 		try {
 			registrationInterface.setRegistrationStatus(studentName);
@@ -173,11 +173,11 @@ public class StudentCRSMenu {
 				String courseCode = sc.next();
 				if(registrationInterface.addCourse(courseCode, studentName,availableCourseList))
 				{
-					logger.debug(" You have successfully registered for Course : " + courseCode);
+					logger.info(" You have successfully registered for Course : " + courseCode);
 				}
 				else
 				{
-					logger.debug(" You have already registered for Course : " + courseCode);
+					logger.info(" You have already registered for Course : " + courseCode);
 				}
 			}
 			catch(SQLException e){
@@ -192,7 +192,7 @@ public class StudentCRSMenu {
 		}
 		else 
 		{
-			logger.debug("Please complete registration");
+			logger.info("Please complete registration");
 		}
 	}
 
@@ -206,12 +206,12 @@ public class StudentCRSMenu {
 			List<Course> registeredCourseList=viewRegisteredCourse(studentName);
 			if(registeredCourseList==null)
 				return;
-			logger.debug("Enter the Course Code to drop: ");
+			logger.info("Enter the Course Code to drop: ");
 			String courseCode = sc.next();
 			try
 			{
 				registrationInterface.dropCourse(courseCode, studentName,registeredCourseList);
-				logger.debug("You have successfully dropped Course : " + courseCode);
+				logger.info("You have successfully dropped Course : " + courseCode);
 
 			}
 			catch(CourseNotFoundException e)
@@ -225,7 +225,7 @@ public class StudentCRSMenu {
 		}
 		else
 		{
-			logger.debug("Please complete registration");
+			logger.info("Please complete registration");
 		}
 	}
 
@@ -251,34 +251,34 @@ public class StudentCRSMenu {
 
 		if(!isreg)
 		{
-			logger.debug("You have not registered yet");
+			logger.info("You have not registered yet");
 		}
 		else if(isreg && !ispaid)
 		{
-			logger.debug("Your total fee  = " + fee);
-			logger.debug("Want to continue Fee Payment(y/n)");
+			logger.info("Your total fee  = " + fee);
+			logger.info("Want to continue Fee Payment(y/n)");
 			String ch = sc.next();
 			if(ch.equals("y"))
 			{
-				logger.debug("Select Mode of Payment:");
+				logger.info("Select Mode of Payment:");
 
 				int index = 1;
 				for(PaymentModeConstant mode : PaymentModeConstant.values())
 				{
-					logger.debug(index + " " + mode);
+					logger.info(index + " " + mode);
 					index = index + 1;
 				}
 
 				PaymentModeConstant mode = PaymentModeConstant.getPaymentMode(sc.nextInt());
 
 				if(mode == null)
-					logger.debug("Invalid Input");
+					logger.info("Invalid Input");
 				else
 				{
 					try 
 					{
 						registrationInterface.setPaymentStatus(studentName, mode, fee);
-						logger.debug("Payment Successful by studentName :" + studentName);
+						logger.info("Payment Successful by studentName :" + studentName);
 						notificationInterface.sendNotification(NotificationTypeConstant.PAID, studentName, mode, fee);		
 					}
 					catch (Exception e) 
@@ -290,7 +290,7 @@ public class StudentCRSMenu {
 		}
 		else
 		{
-			logger.debug("You have already paid the fees");
+			logger.info("You have already paid the fees");
 		}
 	}
 
@@ -311,14 +311,14 @@ public class StudentCRSMenu {
 		}
 		if(course_available.isEmpty())
 		{
-			logger.debug("NO COURSE AVAILABLE");
+			logger.info("NO COURSE AVAILABLE");
 			return null;
 		}
-		logger.debug("List of Available Courses:");
-		logger.debug(String.format("%-20s %-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR", "SEATS"));
+		logger.info("List of Available Courses:");
+		logger.info(String.format("%-20s %-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR", "SEATS"));
 		for(Course obj : course_available)
 		{
-			logger.debug(String.format("%-20s %-20s %-20s %-20s",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId(), obj.getSeats()));
+			logger.info(String.format("%-20s %-20s %-20s %-20s",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId(), obj.getSeats()));
 		}
 
 		return course_available;
@@ -337,21 +337,21 @@ public class StudentCRSMenu {
 			isReportGenerated = registrationInterface.isReportGenerated(studentName);
 			if(isReportGenerated) {
 				grade_card = registrationInterface.viewGradeCard(studentName);
-				logger.debug(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "GRADE"));
+				logger.info(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "GRADE"));
 
 				if(grade_card.isEmpty())
 				{
-					logger.debug("You haven't registered for any course");
+					logger.info("You haven't registered for any course");
 					return;
 				}
 
 				for(Grade obj : grade_card)
 				{
-					logger.debug(String.format("%-20s %-20s %-20s",obj.getCourseCode(), obj.getcourseName(),obj.getGrade()));
+					logger.info(String.format("%-20s %-20s %-20s",obj.getCourseCode(), obj.getcourseName(),obj.getGrade()));
 				}
 			}
 			else
-				logger.debug("Report card not yet generated");
+				logger.info("Report card not yet generated");
 		} 
 		catch (SQLException e) 
 		{
@@ -377,14 +377,14 @@ public class StudentCRSMenu {
 
 		if(course_registered.isEmpty())
 		{
-			logger.debug("You haven't registered for any course");
+			logger.info("You haven't registered for any course");
 			return null;
 		}
 
-		logger.debug(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
+		logger.info(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
 		for(Course obj : course_registered)
 		{
-			logger.debug(String.format("%-20s %-20s %-20s ",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId()));
+			logger.info(String.format("%-20s %-20s %-20s ",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId()));
 		}
 		return course_registered;
 	}
