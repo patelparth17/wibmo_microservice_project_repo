@@ -11,18 +11,18 @@ public class SQLConstant {
 	public static final String VIEW_COURSE_QUERY = "SELECT courseCode, courseName, professorId FROM course";
 	public static final String APPROVE_STUDENT_QUERY = "UPDATE Student SET isApproved = 1 WHERE studentId = ?";
 	public static final String REMOVE_COURSE_QUERY = "DELETE FROM Course WHERE courseCode = ?";
-	public static final String ADD_COURSE_QUERY = "INSERT INTO Course(courseCode, courseName, seats, professorId) values (?, ?, ?, ?)";
+	public static final String ADD_COURSE_QUERY = "INSERT INTO Course(courseCode, courseName, seats, professorId,courseFee) values (?, ?, ?, ?, ?)";
 	public static final String ASSIGN_COURSE_QUERY = "UPDATE Course SET professorId = ? WHERE courseCode = ?";
 	public static final String ADD_USER_QUERY = "INSERT INTO User(userId, username, password, role, gender, address) values (?, ?, ?, ?, ?, ?)";
 	public static final String GENERATE_REPORTCARD_QUERY = "SELECT * FROM course inner join registeredcourse ON course.courseCode = registeredcourse.courseCode WHERE registeredcourse.studentId = ?";
 	public static final String VIEW_PENDING_ADMISSIONS_QUERY = "SELECT userId,username, password, role, gender, address, studentId FROM student, user WHERE isApproved = 0 AND studentId = userId";
 	public static final String INSERT_PAYMENT_QUERY = "INSERT INTO payment(studentname,modeofPayment,amount,paymentstatus,referenceId) VALUES(?,?,?,?,?);";
-	public static final String INSERT_NOTIFICATION_QUERY = "INSERT INTO notification(studentId,type,referenceId) VALUES(?,?,?);";
+	public static final String INSERT_NOTIFICATION_QUERY = "INSERT INTO notification(studentName,type,referenceId) VALUES(?,?,?);";
 	public static final String SET_STUDENT_REPORT_GENERATION = "UPDATE student SET isReportGenerated = 1 WHERE studentId = ?";
 	
 	//Student's Queries
 	public static final String REGISTER_USER_QUERY = "INSERT INTO user values(?,?,?,?,?,?)";
-	public static final String REGISTER_STUDENT_QUERY = "INSERT INTO student (userID,gradYear,dept,isApproved) values (?,?,?,?)";
+	public static final String REGISTER_STUDENT_QUERY = "INSERT INTO student (studentID,gradYear,dept,isApproved,isReportGenerated,isRegistered,isPaid) values (?,?,?,?,?,?,?)";
 	public static final String ISAPPROVED_QUERY = "SELECT isApproved FROM student JOIN user ON user.userId = student.studentId WHERE username = ? ";
 	
 	public static final String GET_REGISTRATION_STATUS=" SELECT isRegistered FROM student JOIN user ON user.userId = student.studentId WHERE username = ? ";
@@ -54,12 +54,13 @@ public class SQLConstant {
 	public static final String GET_COURSES="SELECT * FROM course JOIN user ON user.userId=course.professorID WHERE username=?";
 	public static final String GET_ENROLLED_STUDENTS="SELECT course.courseCode,course.courseName,registeredcourse.studentId FROM course INNER JOIN registeredcourse ON course.courseCode = registeredcourse.courseCode JOIN user ON course.professorID = user.userID WHERE user.username = ? order by course.courseCode";
 	public static final String ADD_GRADE="UPDATE registeredcourse SET Grade=? WHERE courseCode=? AND studentId=?";
-	public static final String GET_PROF_NAME = "SELECT username FROM user WHERE userId = ?";
+	
 	
 	//User DDL Queries
 	public static final String VERIFY_CREDENTIALS = "SELECT password, role FROM user WHERE username = ?";
 	public static final String UPDATE_PASSWORD="UPDATE user SET password=? WHERE username = ? ";
 	public static final String GET_ROLE="SELECT role FROM user WHERE username = ?;";
-	public static final String GET_USER_ID = "SELECT userId FROM user WHERE username = ?";
+	public static final String GET_USER_ID = "SELECT userID FROM user WHERE username = ?";
+	public static final String GET_USER_NAME = "SELECT username FROM user WHERE userID = ?";
 
 }

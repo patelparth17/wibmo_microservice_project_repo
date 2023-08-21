@@ -5,10 +5,10 @@ package com.wibmo.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
 
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
@@ -19,26 +19,21 @@ import com.wibmo.utils.DBUtils;
  *
  */
 public class NotificationDAOImpl implements NotificationDAOInterface{
-
-	
+	private static Logger logger = Logger.getLogger(NotificationDAOImpl.class);
 	private static volatile NotificationDAOImpl instance=null;
 	/**
 	 * Default Constructor
 	 */
-	private NotificationDAOImpl()
-	{
-
-	}
+	private NotificationDAOImpl(){}
 	
 	/**
-	 * Method to make NotificationDaoOperation Singleton
-	 * @return
+	 * Method to make NotificationDaoImpl Singleton
+	 * @return instance
 	 */
 	public static NotificationDAOImpl getInstance()
 	{
 		if(instance==null)
 		{
-			// This is a synchronized block, when multiple threads will access this instance
 			synchronized(NotificationDAOImpl.class){
 				instance=new NotificationDAOImpl();
 			}
@@ -46,28 +41,17 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 		return instance;
 	}
 	
-	/**
-	 * Send Notification using SQL commands
-	 * @param type: type of the notification to be sent
-	 * @param studentId: student to be notified
-	 * @param modeOfPayment: mode of payment used, defined in enum
-	 * @param amount
-	 * @return notification id for the record added in the database
-	 * @throws SQLException
-	 */
 	@Override
-	public void sendNotification(NotificationTypeConstant type, String studentId,PaymentModeConstant modeOfPayment,double amount) {
+	public void sendNotification(NotificationTypeConstant type, String studentName,PaymentModeConstant modeOfPayment,double amount) {
 		Connection connection=DBUtils.getConnection();
 		try
 		{
-			//INSERT_NOTIFICATION = "insert into notification(studentId,type,referenceId) values(?,?,?);";
 			PreparedStatement ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY);
-			ps.setString(1, studentId);
+			ps.setString(1, studentName);
 			ps.setString(2,type.toString());
 			if(type==NotificationTypeConstant.PAID)
 			{
-				//insert into payment, get reference id and add here
-					UUID referenceId=addPayment(studentId, modeOfPayment,amount);
+					UUID referenceId=addPayment(studentName, modeOfPayment,amount);
 					ps.setString(3, referenceId.toString());
 			}
 			else
@@ -77,28 +61,28 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 			switch(type)
 			{
 			case REGISTERATION:
-				System.out.println("Registration successfull. Administration will verify the details and approve it!");
+				logger.debug("Registration successfull. Administration will verify the details and approve it!");
 				break;
 			case APPROVED:
-				System.out.println("Student with id "+studentId+" has been approved!");
+				logger.debug("Student with id "+studentName+" has been approved!");
 				break;
 			case PAID:
-				System.out.println("Student with id "+studentId+" fee has been paid");
+				logger.debug("Student with id "+studentName+" fee has been paid");
 			}
 			
 		}
 		catch(SQLException ex)
 		{
-			System.out.println(ex.getMessage());
+			logger.error(ex.getMessage());
 		}
 	}
 
 	/**
-	 * Perform Payment actions using SQL commands
-	 * @param studentId: Id of the student for which the payment is done
-	 * @param modeOfPayment: mode of payment used, defined in enum
+	 * Method to perform payment
+	 * @param studentName
+	 * @param modeOfPayment
 	 * @param amount 
-	 * @return: reference id of the transaction
+	 * @return reference id of the transaction
 	 * @throws SQLException
 	 */
 	public UUID addPayment(String studentId, PaymentModeConstant modeOfPayment,double amount) throws SQLException
@@ -108,7 +92,6 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 		try
 		{
 			referenceId=UUID.randomUUID();
-			//INSERT_NOTIFICATION = "insert into notification(studentId,type,referenceId) values(?,?,?);";
 			PreparedStatement statement = connection.prepareStatement(SQLConstant.INSERT_PAYMENT_QUERY);
 			statement.setString(1, studentId);
 			statement.setString(2, modeOfPayment.toString());
@@ -116,7 +99,6 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 			statement.setString(4, "PAID");
 			statement.setString(5, referenceId.toString());
 			statement.executeUpdate();
-			//check if record is added
 		}
 		catch(SQLException ex)
 		{

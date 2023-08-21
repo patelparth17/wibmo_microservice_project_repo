@@ -9,20 +9,31 @@ package com.wibmo.bean;
  */
 public class Course 
 {
-	private String crsCode;
-	private String crsName;
+	private String courseCode;
+	private String courseName;
 	private String instructorId;
 	private int seats = 10;
 	private double fee;
 	
+	/**
+	 * Default constructor
+	 */
 	public Course()
 	{
 		
 	}
 	
-	public Course(String crsCode,String crsName,String professorId,int seats, double fee) {
-		this.crsCode=crsCode;
-		this.crsName=crsName;
+	/**
+	 * Parametrized Constructor 
+	 * @param courseCode
+	 * @param courseName
+	 * @param professorId
+	 * @param seats
+	 * @param fee
+	 */
+	public Course(String courseCode,String courseName,String professorId,int seats, double fee) {
+		this.courseCode=courseCode;
+		this.courseName=courseName;
 		this.instructorId=professorId;
 		this.seats=seats;
 		this.fee=fee;
@@ -32,7 +43,7 @@ public class Course
 	 * @return Course Code
 	 */
 	public String getCourseCode() {
-		return crsCode;
+		return courseCode;
 	}
 	
 	/**
@@ -40,7 +51,7 @@ public class Course
 	 * @param courseCode
 	 */
 	public void setCourseCode(String courseCode) {
-		this.crsCode = courseCode;
+		this.courseCode = courseCode;
 	}
 	
 	/**
@@ -48,7 +59,7 @@ public class Course
 	 * @return Course Name
 	 */
 	public String getCourseName() {
-		return crsName;
+		return courseName;
 	}
 	
 	/**
@@ -56,7 +67,7 @@ public class Course
 	 * @param courseName
 	 */
 	public void setCourseName(String courseName) {
-		this.crsName = courseName;
+		this.courseName = courseName;
 	}
 
 	/**
@@ -106,5 +117,4 @@ public class Course
 	public void setFee(double fee) {
 		this.fee = fee;
 	}
-	
 }

@@ -17,70 +17,82 @@ public class Student extends User
 	private int gradYear;
 	boolean isApproved;
 	
-	//Constructing User of a Student type.
-	public Student(String userId, String name, RoleConstant role, String password, GenderConstant gender, String address,String branchName,String studentId,int batch,boolean isApproved) {
+	/**
+	 * Constructing User of a Student type.
+	 * @param userId
+	 * @param name
+	 * @param role
+	 * @param password
+	 * @param gender
+	 * @param address
+	 * @param dept
+	 * @param studentId
+	 * @param gradYear
+	 * @param isApproved
+	 */
+	public Student(String userId, String name, RoleConstant role, String password, GenderConstant gender, String address,String dept,String studentId,int gradYear,boolean isApproved) {
 		super(userId, name, role, password,gender,address);
-		this.department = branchName;
+		this.department = dept;
 		this.studentId = studentId;
-		this.gradYear = batch;
+		this.gradYear = gradYear;
 		this.isApproved = isApproved;
 	}
 
 	public Student() {
 		
 	}
+	
 	/**
-	 * @return the department
+	 * Method to get the department of student
+	 * @return department
 	 */
 	public String getDepartment() 
 	{
 		return department;
 	}
 	
-	
 	/**
-	 * @param department the department to set
+	 * Method to set the department of student
+	 * @param department
 	 */
 	public void setDepartment(String department) 
 	{
 		this.department = department;
 	}
 	
-	
 	/**
-	 * @return the studentID
+	 * Method to get the studentID
+	 * @return studentID
 	 */
 	public String getStudentId() 
 	{
 		return studentId;
 	}
 	
-	
 	/**
-	 * @param studentID the studentID to set
+	 * Method to set the studentID
+	 * @param studentID
 	 */
 	public void setStudentId(String studentId) 
 	{
 		this.studentId = studentId;
 	}
 	
-	
 	/**
-	 * @return the gradYear
+	 * Method to get the graduation year of student
+	 * @return gradYear
 	 */
 	public int getGradYear() 
 	{
 		return gradYear;
 	}
 	
-	
 	/**
-	 * @param gradYear the gradYear to set
+	 * Method to set the graduation year of student
+	 * @param gradYear
 	 */
 	public void setGradYear(int gradYear) 
 	{
 		this.gradYear = gradYear;
 	}
-		
-	
 }

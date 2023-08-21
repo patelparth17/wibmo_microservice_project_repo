@@ -12,6 +12,12 @@ public class Grade {
 	private String courseName;
 	private String grade;
 	
+	/**
+	 * Parametrized Constructor
+	 * @param courseCode
+	 * @param courseName
+	 * @param grade
+	 */
 	public Grade(String courseCode, String courseName, String grade) {
 		this.courseCode = courseCode;
 		this.courseName = courseName;
@@ -20,7 +26,8 @@ public class Grade {
 
 
 	/**
-	 * @return the courseCode
+	 * Method to get the course code
+	 * @return courseCode
 	 */
 	public String getCourseCode() {
 		return courseCode;
@@ -28,7 +35,8 @@ public class Grade {
 	
 	
 	/**
-	 * @param crsCode the courseCode to set
+	 * Method to set the course code
+	 * @param courseCode
 	 */
 	public void setCourseCode(String courseCode) {
 		this.courseCode = courseCode;
@@ -36,7 +44,8 @@ public class Grade {
 	
 	
 	/**
-	 * @return the courseName
+	 * Method to get the course name
+	 * @return Course Name
 	 */
 	public String getcourseName() {
 		return courseName;
@@ -44,7 +53,8 @@ public class Grade {
 	
 	
 	/**
-	 * @param courseName the courseName to set
+	 * Method to set the course name
+	 * @param courseName
 	 */
 	public void setCourseName(String courseName) {
 		this.courseName = courseName;
@@ -52,7 +62,8 @@ public class Grade {
 	
 	
 	/**
-	 * @return the grade
+	 * Method to get the grade of the respective course
+	 * @return grade
 	 */
 	public String getGrade() {
 		return grade;
@@ -60,7 +71,8 @@ public class Grade {
 	
 	
 	/**
-	 * @param grade the grade to set
+	 * Method to set the grade of the respective course
+	 * @param grade
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;

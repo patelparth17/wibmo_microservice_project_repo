@@ -33,14 +33,13 @@ public class UserDAOImpl implements UserDAOInterface {
 	private UserDAOImpl() {	}
 	
 	/**
-	 * Method to make UserDaoOperation Singleton
-	 * @return
+	 * Method to make UserDAOImpl Singleton
+	 * @return instance
 	 */
 	public static UserDAOImpl getInstance()
 	{
 		if(instance==null)
 		{
-			// This is a synchronized block, when multiple threads will access this instance
 			synchronized(UserDAOImpl.class){
 				instance=new UserDAOImpl();
 			}
@@ -58,7 +57,7 @@ public class UserDAOImpl implements UserDAOInterface {
 			if(!resultSet.next())
 				throw new UserNotFoundException(username);
 
-			else if(password.equals(resultSet.getString("password")) && role.equals(resultSet.getString("role")))
+			else if(password.equals(resultSet.getString("password")) && role.equalsIgnoreCase(resultSet.getString("role")))
 			{
 				return true;
 			}
@@ -70,7 +69,7 @@ public class UserDAOImpl implements UserDAOInterface {
 		}
 		catch(SQLException ex)
 		{
-			System.out.println("Error :"+ ex.getMessage());
+			logger.error("Error :"+ ex.getMessage());
 		}
 		
 		return false;
@@ -91,7 +90,7 @@ public class UserDAOImpl implements UserDAOInterface {
 		}
 		catch(SQLException e)
 		{
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 		return false;
@@ -113,7 +112,7 @@ public class UserDAOImpl implements UserDAOInterface {
 		}
 		catch(Exception e)
 		{
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}

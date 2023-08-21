@@ -9,14 +9,13 @@ import com.wibmo.dao.NotificationDAOImpl;
 import com.wibmo.dao.NotificationDAOInterface;
 
 public class NotificationImpl implements NotificationInterface{
-	
 	private static volatile NotificationImpl instance=null;
 	NotificationDAOInterface notificationDaoObject = NotificationDAOImpl.getInstance();
 	private NotificationImpl() {}
 	
 	/**
-	 * Method to make NotificationDaoOperation Singleton
-	 * @return
+	 * Method to make NotificationImpl Singleton
+	 * @return instance
 	 */
 	public static NotificationImpl getInstance()
 	{
@@ -29,36 +28,10 @@ public class NotificationImpl implements NotificationInterface{
 		}
 		return instance;
 	}
-	
-	
-//
-//	/**
-//	 * Method to return UUID for a transaction
-//	 * @param notificationId: notification id added in the database
-//	 * @return transaction id of the payment
-//	 */
-//	@Override
-//	public UUID getReferenceId(int notificationId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-	/**
-	 * Method to send notification
-	 * @param type: type of the notification to be sent
-	 * @param studentId: student to be notified
-	 * @param modeOfPayment: payment mode used
-	 * @return notification id for the record added in the database
-	 */
 
 	@Override
-	public void sendNotification(NotificationTypeConstant type, String studentId, PaymentModeConstant modeOfPayment,
+	public void sendNotification(NotificationTypeConstant type, String studentName, PaymentModeConstant modeOfPayment,
 			double amount) {
-		notificationDaoObject.sendNotification(type, studentId, modeOfPayment, amount);
+		notificationDaoObject.sendNotification(type, studentName, modeOfPayment, amount);
 	}
-	
-
-	
-	
-	
 }

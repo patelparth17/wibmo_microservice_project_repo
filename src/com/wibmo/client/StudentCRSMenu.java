@@ -1,6 +1,9 @@
 package com.wibmo.client;
 
 import java.util.*;
+
+import org.apache.log4j.Logger;
+
 import java.sql.*;
 
 import com.wibmo.bean.*;
@@ -9,43 +12,35 @@ import com.wibmo.exception.*;
 import com.wibmo.business.*;
 
 public class StudentCRSMenu {
+	
+	private static Logger logger = Logger.getLogger(StudentCRSMenu.class);
 	Scanner sc = new Scanner(System.in);
-<<<<<<< Updated upstream
-	RegistrationInterface registrationInterface = RegistrationOperation.getInstance();
-	AdminOperationInterface adminInterface = AdminOperation.getInstance();
-	ProfessorInterface professorInterface = ProfessorOperation.getInstance();
-	NotificationInterface notificationInterface = NotificationOperation.getInstance();
-	private boolean is_registered;
-
-
-
-	private void addCourse(String studentId) {
-		if(is_registered)
-		{
-			List<Course> availableCourseList=viewCourse(studentId);
-=======
 	RegistrationInterface registrationInterface = RegistrationImpl.getInstance();
 	AdminOperationInterface adminInterface = AdminOperationImpl.getInstance();
 	ProfessorInterface professorInterface = ProfessorImpl.getInstance();
 	NotificationInterface notificationInterface = NotificationImpl.getInstance();
 	private boolean is_registered;
 	
+	/**
+	 * Method to create Student menu
+	 * @param studentName
+	 */
 	public void createMenu(String studentName) {
 		is_registered = getRegistrationStatus(studentName);
 		while(CRSApplication.loggedin) {
 
-			System.out.println("*****************************");
-			System.out.println("**********Student Menu*********");
-			System.out.println("*****************************");
-			System.out.println("1. Course Registration");
-			System.out.println("2. Add Course");
-			System.out.println("3. Drop Course");
-			System.out.println("4. View Available Course");
-			System.out.println("5. View Registered Courses");
-			System.out.println("6. View grade card");
-			System.out.println("7. Make Payment");
-			System.out.println("8. Logout");
-			System.out.println("*****************************");
+			logger.info("*****************************");
+			logger.info("**********Student Menu*********");
+			logger.info("*****************************");
+			logger.info("1. Course Registration");
+			logger.info("2. Add Course");
+			logger.info("3. Drop Course");
+			logger.info("4. View Available Course");
+			logger.info("5. View Registered Courses");
+			logger.info("6. View grade card");
+			logger.info("7. Make Payment");
+			logger.info("8. Logout");
+			logger.info("*****************************");
 
 			int choice = sc.nextInt();
 			switch (choice) {
@@ -82,7 +77,7 @@ public class StudentCRSMenu {
 				break;			
 
 			default:
-				System.out.println("Incorrect Choice!");
+				logger.debug("Incorrect Choice!");
 			}
 		}
 	}
@@ -100,16 +95,20 @@ public class StudentCRSMenu {
 		} 
 		catch (SQLException e)
 		{
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return false;
 	}
 	
+	/**
+	 * Method to register for courses
+	 * @param studentName
+	 */
 	private void registerCourses(String studentName)
 	{
 		if(is_registered)
 		{
-			System.out.println(" Registration is already completed");
+			logger.debug(" Registration is already completed");
 			return;
 		}
 		int indexOfUnregisteredCourse = viewRegisteredCourse(studentName).size()+1 ;
@@ -120,180 +119,80 @@ public class StudentCRSMenu {
 				List<Course> courseList=viewCourse(studentName);
 				if(courseList==null)
 					return;
-				System.out.println(String.format("Enter Course Code for Course %d: ", indexOfUnregisteredCourse));
+				logger.debug(String.format("Enter Course Code for Course %d: ", indexOfUnregisteredCourse));
 				String courseCode = sc.next();
 				if(registrationInterface.addCourse(courseCode,studentName,courseList))
 				{
-					System.out.println("Course " + courseCode + " registered sucessfully.");
+					logger.debug("Course " + courseCode + " registered sucessfully.");
 					indexOfUnregisteredCourse++;
 				}
 				else
 				{
-					System.out.println(" You have already registered for Course : " + courseCode);
+					logger.debug(" You have already registered for Course : " + courseCode);
 				}
 			}	
-			catch(CourseNotFoundException | CourseLimitExceededException | SQLException e)
+			catch(CourseNotFoundException | CourseLimitExceededException | SQLException | SeatNotAvailableException e)
 			{
-				System.out.println(e.getMessage());
-			} catch (SeatNotAvailableException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage());
 			}
 		}
 
-		System.out.println("\n*******************************************************");
-		System.out.println("             Registration Successful");
-		System.out.println("*******************************************************\n");
+		logger.debug("\n*******************************************************");
+		logger.debug("             Registration Successful");
+		logger.debug("*******************************************************\n");
 
 		try {
 			registrationInterface.setRegistrationStatus(studentName);
 		}
 		catch(SQLException e)
 		{
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		is_registered = true;
 	}
 	
+	/**
+	 * Method to add course 
+	 * @param studentName
+	 */
 	private void addCourse(String studentName) {
 		if(is_registered)
 		{
 			List<Course> availableCourseList=viewCourse(studentName);
->>>>>>> Stashed changes
-
 			if(availableCourseList==null)
 				return;
 
 			try
 			{
-				System.out.println("Enter Course Code : " );
+				logger.info("Enter Course Code : " );
 				String courseCode = sc.next();
-<<<<<<< Updated upstream
-				if(registrationInterface.addCourse(courseCode, studentId,availableCourseList))
-=======
 				if(registrationInterface.addCourse(courseCode, studentName,availableCourseList))
->>>>>>> Stashed changes
 				{
-					System.out.println(" You have successfully registered for Course : " + courseCode);
+					logger.debug(" You have successfully registered for Course : " + courseCode);
 				}
 				else
 				{
-					System.out.println(" You have already registered for Course : " + courseCode);
+					logger.debug(" You have already registered for Course : " + courseCode);
 				}
 			}
-			catch(SQLException e)
-			{
-				System.out.println(e.getMessage());
-			} catch (CourseNotFoundException e) {
-				System.out.println(e.getMessage());
-
-			} catch (CourseLimitExceededException e) {
-				System.out.println(e.getMessage());
-
-			} catch (SeatNotAvailableException e) {
-				System.out.println(e.getMessage());
-
+			catch(SQLException e){
+				logger.error(e.getMessage());
+			}catch(CourseNotFoundException e) {
+				logger.error(e.getMessage());
+			}catch(CourseLimitExceededException e) {
+				logger.error(e.getMessage());
+			}catch(SeatNotAvailableException e) {
+				logger.error(e.getMessage());
 			}
 		}
 		else 
 		{
-			System.out.println("Please complete registration");
+			logger.debug("Please complete registration");
 		}
-
 	}
 
-<<<<<<< Updated upstream
-
-
-
-
-
-	public void create_menu(String studentId) {
-
-		is_registered = getRegistrationStatus(studentId);
-
-		while(CRSApplication.loggedin) {
-
-			System.out.println("*****************************");
-			System.out.println("**********Student Menu*********");
-			System.out.println("*****************************");
-			System.out.println("1. Course Registration");
-			System.out.println("2. Add Course");
-			System.out.println("3. Drop Course");
-			System.out.println("4. View Course");
-			System.out.println("5. View Registered Courses");
-			System.out.println("6. View grade card");
-			System.out.println("7. Make Payment");
-			System.out.println("8. Logout");
-			System.out.println("*****************************");
-
-			int choice = sc.nextInt();
-
-			switch (choice) {
-
-			case 1: 
-				registerCourses(studentId);
-				break;
-
-			case 2:
-				addCourse(studentId);
-				break;
-
-			case 3:
-				dropCourse(studentId);
-				break;
-
-			case 4:
-				viewCourse(studentId);
-				break;
-
-			case 5:
-				viewRegisteredCourse(studentId);
-				break;
-
-			case 6:
-				viewGradeCard(studentId);
-				break;
-
-			case 7:
-				make_payment(studentId);
-				break;
-
-			case 8:
-				CRSApplication.loggedin = false;
-				break;			
-
-			default:
-				System.out.println("Incorrect Choice!");
-
-
-			}
-
-		}
-
-	}
-
-
 	/**
-	 * Drop Course
-	 * @param studentId
-	 */
-	private void dropCourse(String studentId) {
-		if(is_registered)
-		{
-			List<Course> registeredCourseList=viewRegisteredCourse(studentId);
-
-			if(registeredCourseList==null)
-				return;
-
-			System.out.println("Enter the Course Code : ");
-			String courseCode = sc.next();
-
-			try
-			{
-				registrationInterface.dropCourse(courseCode, studentId,registeredCourseList);
-=======
-	/**
-	 * Drop Course
+	 * Method to drop Course
 	 * @param studentName
 	 */
 	private void dropCourse(String studentName) {
@@ -302,236 +201,96 @@ public class StudentCRSMenu {
 			List<Course> registeredCourseList=viewRegisteredCourse(studentName);
 			if(registeredCourseList==null)
 				return;
-			System.out.println("Enter the Course Code to drop: ");
+			logger.debug("Enter the Course Code to drop: ");
 			String courseCode = sc.next();
 			try
 			{
 				registrationInterface.dropCourse(courseCode, studentName,registeredCourseList);
->>>>>>> Stashed changes
-				System.out.println("You have successfully dropped Course : " + courseCode);
+				logger.debug("You have successfully dropped Course : " + courseCode);
 
 			}
 			catch(CourseNotFoundException e)
 			{
-				System.out.println("You have not registered for course : " + e.getCourseCode());
+				logger.error("You have not registered for course : " + e.getCourseCode());
 			} 
 			catch (SQLException e) 
 			{
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 		else
 		{
-			System.out.println("Please complete registration");
+			logger.debug("Please complete registration");
 		}
 	}
 
-<<<<<<< Updated upstream
 	/**
-	 * Method to check if student is already registered
-	 * @param studentId
-	 * @return Registration Status
+	 * Method to pay fee
+	 * @param studentName
 	 */
-	private boolean getRegistrationStatus(String studentId)
-	{
-		try 
-		{
-			return registrationInterface.getRegistrationStatus(studentId);
-		} 
-		catch (SQLException e)
-		{
-			System.out.println(e.getMessage());
-		}
-		return false;
-	}
-
-
-	private void make_payment(String studentId)
-=======
-
 	private void make_payment(String studentName)
->>>>>>> Stashed changes
 	{
-
 		double fee = 1000.0;
 		boolean isreg = false;
 		boolean ispaid = false;
 		try
 		{
-<<<<<<< Updated upstream
-			isreg = registrationInterface.getRegistrationStatus(studentId);
-			ispaid = registrationInterface.getPaymentStatus(studentId);
-			//		fee=registrationInterface.calculateFee(studentId);
-		} 
-		catch (SQLException e) 
-		{
-
-=======
 			isreg = registrationInterface.getRegistrationStatus(studentName);
 			ispaid = registrationInterface.getPaymentStatus(studentName);
 			fee=registrationInterface.calculateFee(studentName);
-		} 
-		catch (SQLException e) 
+		}catch (SQLException e) 
 		{
->>>>>>> Stashed changes
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 
 		if(!isreg)
 		{
-			System.out.println("You have not registered yet");
+			logger.debug("You have not registered yet");
 		}
 		else if(isreg && !ispaid)
 		{
-
-			System.out.println("Your total fee  = " + fee);
-			System.out.println("Want to continue Fee Payment(y/n)");
+			logger.debug("Your total fee  = " + fee);
+			logger.debug("Want to continue Fee Payment(y/n)");
 			String ch = sc.next();
 			if(ch.equals("y"))
 			{
-				System.out.println("Select Mode of Payment:");
+				logger.debug("Select Mode of Payment:");
 
 				int index = 1;
 				for(PaymentModeConstant mode : PaymentModeConstant.values())
 				{
-					System.out.println(index + " " + mode);
+					logger.debug(index + " " + mode);
 					index = index + 1;
 				}
 
 				PaymentModeConstant mode = PaymentModeConstant.getPaymentMode(sc.nextInt());
 
 				if(mode == null)
-					System.out.println("Invalid Input");
+					logger.debug("Invalid Input");
 				else
 				{
 					try 
 					{
-<<<<<<< Updated upstream
-						notificationInterface.sendNotification(NotificationTypeConstant.PAYED, studentId, mode, fee);
-						System.out.println("Payment Successful by StudentId :" + studentId);
-						registrationInterface.setPaymentStatus(studentId);				
-					}
-					catch (Exception e) 
-					{
-
-						System.out.println(e.getMessage());
-					}
-				}
-
-
-
-
-=======
 						registrationInterface.setPaymentStatus(studentName, mode, fee);
-						System.out.println("Payment Successful by studentName :" + studentName);
+						logger.debug("Payment Successful by studentName :" + studentName);
 						notificationInterface.sendNotification(NotificationTypeConstant.PAID, studentName, mode, fee);		
 					}
 					catch (Exception e) 
 					{
-						System.out.println(e.getMessage());
+						logger.error(e.getMessage());
 					}
 				}
->>>>>>> Stashed changes
 			}
-
 		}
-
 		else
 		{
-			System.out.println("You have already paid the fees");
+			logger.debug("You have already paid the fees");
 		}
-
 	}
 
-
-<<<<<<< Updated upstream
-	private void registerCourses(String studentId)
-	{
-
-
-		if(is_registered)
-		{
-			System.out.println(" Registration is already completed");
-			return;
-		}
-
-		int count = 0;
-		while(count < 6)
-		{
-			try
-			{
-				List<Course> courseList=viewCourse(studentId);
-
-				if(courseList==null)
-					return;
-
-				System.out.println("Enter Course Code : " + (count+1));
-				String courseCode = sc.next();
-
-				if(registrationInterface.addCourse(courseCode,studentId,courseList))
-				{
-					System.out.println("Course " + courseCode + " registered sucessfully.");
-					count++;
-				}
-				else
-				{
-					System.out.println(" You have already registered for Course : " + courseCode);
-				}
-			}	
-			catch(CourseNotFoundException | CourseLimitExceededException | SQLException e)
-			{
-				System.out.println(e.getMessage());
-			} catch (SeatNotAvailableException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-			}
-		}
-
-		System.out.println("\n*******************************************************");
-		System.out.println("Registration Successful");
-		System.out.println("*******************************************************\n");
-
-		try {
-			registrationInterface.setRegistrationStatus(studentId);
-		}
-		catch(SQLException e)
-		{
-			System.out.println(e.getMessage());
-		}
-		is_registered = true;
-
-		//    try 
-		//    {
-		//		registrationInterface.setRegistrationStatus(studentId);
-		//	} 
-		//    catch (SQLException e) 
-		//    {
-		//    	System.out.println(e.getMessage());
-		//	}
-	}
-
-
 	/**
-	 * View all available Courses 
-	 * @param studentId
-	 * @return List of available Courses 
-	 */
-	private List<Course> viewCourse(String studentId){
-		List<Course> course_available=null;
-
-
-		try 
-		{
-			course_available = registrationInterface.viewCourses(studentId);
-=======
-
-	/**
-	 * View all available Courses 
+	 * Method to view all available Courses 
 	 * @param studentName
 	 * @return List of available Courses 
 	 */
@@ -540,104 +299,63 @@ public class StudentCRSMenu {
 		try 
 		{
 			course_available = registrationInterface.viewCourses(studentName);
->>>>>>> Stashed changes
 		}
 		catch (SQLException e) 
 		{
-
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 		if(course_available.isEmpty())
 		{
-			System.out.println("NO COURSE AVAILABLE");
+			logger.debug("NO COURSE AVAILABLE");
 			return null;
 		}
-<<<<<<< Updated upstream
-
-
-=======
-		System.out.println("List of Available Courses:");
->>>>>>> Stashed changes
-		System.out.println(String.format("%-20s %-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR", "SEATS"));
+		logger.debug("List of Available Courses:");
+		logger.debug(String.format("%-20s %-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR", "SEATS"));
 		for(Course obj : course_available)
 		{
-			System.out.println(String.format("%-20s %-20s %-20s %-20s",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId(), obj.getSeats()));
+			logger.debug(String.format("%-20s %-20s %-20s %-20s",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId(), obj.getSeats()));
 		}
 
 		return course_available;
 	}
 
 	/**
-	 * View grade card for particular student  
-<<<<<<< Updated upstream
-	 * @param studentId
-	 */
-	private void viewGradeCard(String studentId) {
-=======
+	 * Method to view grade card for particular student  
 	 * @param studentName
 	 */
 	private void viewGradeCard(String studentName) {
->>>>>>> Stashed changes
 		List<Grade> grade_card=null;
 		boolean isReportGenerated = false;
 
 		try 
 		{
-<<<<<<< Updated upstream
-			isReportGenerated = registrationInterface.isReportGenerated(studentId);
-			if(isReportGenerated) {
-				grade_card = registrationInterface.viewGradeCard(studentId);
-=======
 			isReportGenerated = registrationInterface.isReportGenerated(studentName);
 			if(isReportGenerated) {
 				grade_card = registrationInterface.viewGradeCard(studentName);
->>>>>>> Stashed changes
-				System.out.println(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "GRADE"));
+				logger.debug(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "GRADE"));
 
 				if(grade_card.isEmpty())
 				{
-					System.out.println("You haven't registered for any course");
+					logger.debug("You haven't registered for any course");
 					return;
 				}
 
 				for(Grade obj : grade_card)
 				{
-<<<<<<< Updated upstream
-					System.out.println(String.format("%-20s %-20s %-20s",obj.getCrsCode(), obj.getCrsName(),obj.getGrade()));
-=======
-					System.out.println(String.format("%-20s %-20s %-20s",obj.getCourseCode(), obj.getcourseName(),obj.getGrade()));
->>>>>>> Stashed changes
+					logger.debug(String.format("%-20s %-20s %-20s",obj.getCourseCode(), obj.getcourseName(),obj.getGrade()));
 				}
 			}
 			else
-				System.out.println("Report card not yet generated");
+				logger.debug("Report card not yet generated");
 		} 
 		catch (SQLException e) 
 		{
-
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
-
-
 	}
 
 	/**
-	 * View Registered Courses
-<<<<<<< Updated upstream
-	 * @param studentId
-	 * @return List of Registered Courses
-	 */
-	private List<Course> viewRegisteredCourse(String studentId){
-		List<Course> course_registered=null;
-		try 
-		{
-			course_registered = registrationInterface.viewRegisteredCourses(studentId);
-=======
+	 * Method to view Registered Courses
 	 * @param studentName
 	 * @return List of Registered Courses
 	 */
@@ -646,32 +364,23 @@ public class StudentCRSMenu {
 		try 
 		{
 			course_registered = registrationInterface.viewRegisteredCourses(studentName);
->>>>>>> Stashed changes
 		} 
 		catch (SQLException e) 
 		{
-
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 
 		if(course_registered.isEmpty())
 		{
-			System.out.println("You haven't registered for any course");
+			logger.debug("You haven't registered for any course");
 			return null;
 		}
 
-		System.out.println(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
-
+		logger.debug(String.format("%-20s %-20s %-20s","COURSE CODE", "COURSE NAME", "INSTRUCTOR"));
 		for(Course obj : course_registered)
 		{
-<<<<<<< Updated upstream
-
-
-=======
->>>>>>> Stashed changes
-			System.out.println(String.format("%-20s %-20s %-20s ",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId()));
+			logger.debug(String.format("%-20s %-20s %-20s ",obj.getCourseCode(), obj.getCourseName(),obj.getInstructorId()));
 		}
-
 		return course_registered;
 	}
 }

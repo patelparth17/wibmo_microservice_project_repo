@@ -16,33 +16,32 @@ import com.wibmo.exception.*;
  * 
  */
 public interface AdminDAOInterface {
+	
 	/**
 	 * Method to view courses
-	 * @return
+	 * @return list of courses
 	 */
 	public List<Course> viewCourses();
 	
 	/**
 	 * Method to generate grade card of a Student 
-	 * studentid 
-	 * @return  
+	 * studentName
+	 * @return list of registered courses with grades
 	 */
-	public List<RegisteredCourse> generateReportCard(String Studentid);
+	public List<RegisteredCourse> generateReportCard(String StudentName);
 	
 	
 	/**
-	 * Method to approve a Student 
-	 * studentid
-	 * studentlist
-	 * @throws StudentNotFoundForApprovalException 
+	 * Method to approve a Student
+	 * @param studentName
+	 * @throws StudentNotFoundForApprovalException
 	 */
-	public void approveStudent(String studentid) throws StudentNotFoundForApprovalException;
+	public void approveStudent(String studentName) throws StudentNotFoundForApprovalException;
 	
 	
 	/**
 	 * Method to Delete Course from Course Catalog
 	 * @param courseCode
-	 * @param courseList : Courses available in the catalog
 	 * @throws CourseNotDeletedException 
 	 * @throws CourseNotFoundException 
 	 */
@@ -51,8 +50,7 @@ public interface AdminDAOInterface {
 	
 	/**
 	 * Method to add Course to Course Catalog
-	 * @param course : Course object storing details of a course
-	 * @param courseList : Courses available in the catalog
+	 * @param course
 	 * @throws CourseExistsAlreadyException
 	 */
 	
@@ -76,7 +74,7 @@ public interface AdminDAOInterface {
 	
 	/**
 	 * Method to add Professor to DB
-	 * professor : Professor Object storing details of a professor 
+	 * @param professor
 	 * @throws UserNotAddedException 
 	 * @throws UserIdAlreadyExists 
 	 */
@@ -86,9 +84,13 @@ public interface AdminDAOInterface {
 	
 	/**
 	 * Method to view professors
-	 * @return
+	 * @return list of professors
 	 */
 	public List<Professor> viewProfessors();
 
+	/**
+	 * Method to view the pending approvals
+	 * @return the list of students having pending approvals
+	 */
 	public List<Student> viewPendingAdmissions();
 }

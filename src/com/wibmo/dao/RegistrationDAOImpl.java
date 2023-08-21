@@ -10,17 +10,16 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.wibmo.bean.Course;
 import com.wibmo.bean.Grade;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.constants.SQLConstant;
 import com.wibmo.utils.DBUtils;
 
-/**
- * 
- */
 public class RegistrationDAOImpl implements RegistrationDAOInterface{
-
+	private static Logger logger = Logger.getLogger(RegistrationDAOImpl.class);
 	private static volatile RegistrationDAOImpl instance=null;
 	private PreparedStatement stmt = null;
 	
@@ -30,8 +29,8 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 	private RegistrationDAOImpl() {}
 	
 	/**
-	 * Method to make RegistrationDaoOperation Singleton
-	 * @return
+	 * Method to make RegistrationDAOImpl Singleton
+	 * @return instance
 	 */
 	public static RegistrationDAOImpl getInstance()
 	{
@@ -44,12 +43,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		return instance;
 	}
 
-	/**
-	 * Method to retrieve Student's registration status
-	 * @param studentId
-	 * @return Student's registration status
-	 * @throws SQLException
-	 */
 	@Override
 	public boolean getRegistrationStatus(String studentName) throws SQLException
 	{
@@ -61,13 +54,11 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 			stmt.setString(1, studentName);
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			status = rs.getBoolean(1);
-			//System.out.println(status);	
+			status = rs.getBoolean(1);	
 		} 
 		catch (SQLException e) 
 		{
-			e.getMessage();
-
+			logger.error(e.getMessage());
 		} 
 
 		return status;
@@ -97,21 +88,12 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		}
 		catch (SQLException e) 
 		{
-			System.out.println(e.getMessage());
-			e.getMessage();
+			logger.error(e.getMessage());
 		}
 		
 		return false;
-		
 	}
 	
-	
-	/**
-	 * Number of registered courses for a student
-	 * @param studentId
-	 * @return Number of registered courses for a student
-	 * @throws SQLException 
-	 */
 	@Override
 	public int numOfRegisteredCourses(String studentName) throws SQLException{
 		Connection conn = DBUtils.getConnection();
@@ -137,13 +119,6 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		return count;
 	}
 
-
-	/**
-	 * Check if seat is available for that particular course
-	 * @param courseCode
-	 * @return status of seat availablity
-	 * @throws SQLException 
-	 */
 	@Override
 	public boolean seatAvailable(String courseCode) throws SQLException {
 		Connection conn = DBUtils.getConnection();
@@ -157,22 +132,14 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 			}
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		return true;
 	}
 
-	/**
-	 * Method checks if the student is registered for that course
-	 * @param courseCode
-	 * @param studentId
-	 * @return Students registration status
-	 * @throws SQLException 
-	 */
 	@Override
 	public boolean isRegistered(String courseCode, String studentName) throws SQLException{
 		Connection conn = DBUtils.getConnection();
-
 		try
 		{
 			stmt = conn.prepareStatement(SQLConstant.GET_REGISTRATION_STATUS);
@@ -183,22 +150,13 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 					return true;
 			}
 		}
-		catch(Exception e)
+		catch(SQLException e)
 		{
-			e.getClass();
-			e.getMessage();
+			logger.error(e.getMessage());
 		}
 		return false;
 	}
 
-
-	/**
-	 * Drop Course selected by student
-	 * @param courseCode : code for selected course
-	 * @param studentId
-	 * @return status of drop course operation
-	 * @throws CourseNotFoundException 
-	 */
 	@Override
 	public boolean dropCourse(String courseCode, String studentName) throws SQLException {
 		Connection conn = DBUtils.getConnection();
@@ -214,20 +172,14 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 			stmt.close();
 			return true;
 			}
-			catch(Exception e)
+			catch(SQLException e)
 			{
-				System.out.println("Exception found" + e.getMessage());
+				logger.error("Exception found" + e.getMessage());
 			}
 		
 		return false;
 	}
 	
-	/**
-	 * Method to retrieve fee for the selected courses from the database and calculate total fee
-	 * @param studentId
-	 * @return Fee Student has to pay
-	 * @throws SQLException 
-	 */
 	
 	@Override
 	public double calculateFee(String studentId) throws SQLException
@@ -244,22 +196,12 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		}
 		catch(SQLException e)
 		{
-			e.getErrorCode();
-			e.getMessage();
-		}
-		catch(Exception e)
-		{
-			e.getMessage();
+			logger.error(e.getMessage());
 		}
 		return fee;
 	}
 
-	/**
-	 * Method to view grade card of the student
-	 * @param studentId
-	 * @throws SQLException 
-	 * @return Studen's grade card
-	 */
+
 	@Override
 	public List<Grade> viewGradeCard(String studentId) throws SQLException {
 		
@@ -282,21 +224,12 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		}
 		catch(SQLException e)
 		{
-			e.getMessage();
-		}
-		catch(Exception e)
-		{
-			e.getMessage();
+			logger.error(e.getMessage());
 		}
 		return grade_List;
 	}
 
-	/**
-	 * Method to get the list of courses available from course catalog 
-	 * @param studentId
-	 * @return list of courses
-	 * @throws SQLException
-	 */
+
 	@Override
 	public List<Course> viewCourses(String studentName) throws SQLException {
 		List<Course> availableCourseList = new ArrayList<>();
@@ -313,25 +246,15 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		} 
 		catch (SQLException e) 
 		{
-			e.getMessage();
-		} 
-		catch (Exception e)
-		{
-			e.getMessage();
+			logger.error(e.getMessage());
 		}		
 		return availableCourseList;
 		
 	}
 
-	/**
-	 * Method to get the list of courses registered by the student
-	 * @param studentId
-	 * @return list of courses registered by student
-	 * @throws SQLException 
-	 */
+
 	@Override
 	public List<Course> viewRegisteredCourses(String studentName) throws SQLException {
-
 		Connection conn = DBUtils.getConnection();
 		List<Course> registeredCourseList = new ArrayList<>();
 		try 
@@ -346,17 +269,11 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		} 
 		catch (SQLException e) 
 		{
-			e.getMessage();
+			logger.error(e.getMessage());
 		} 
 		return registeredCourseList;
 	}
 
-	
-	/**
-	 * Method to set Student's registration status
-	 * @param studentId
-	 * @throws SQLException
-	 */
 	@Override
 	public void setRegistrationStatus(String studentName) throws SQLException
 	{
@@ -366,14 +283,11 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 			stmt = conn.prepareStatement(SQLConstant.SET_REGISTRATION_STATUS);
 			stmt.setString(1, studentName);
 			stmt.executeUpdate();
-
 		} 
 		catch (SQLException e) 
 		{
-			e.getMessage();
-
+			logger.error(e.getMessage());
 		} 
-	
 	}
 
 	@Override
@@ -388,14 +302,11 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			status = rs.getBoolean(1);
-			//System.out.println(status);	
 		} 
 		catch (SQLException e) 
 		{
-			System.out.println(e.getMessage());
-	
-		} 
-
+			logger.error(e.getMessage());
+		}
 		return status;
 	}
 
@@ -411,18 +322,15 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 				stmt.setString(1, studentId);
 				ResultSet rs = stmt.executeQuery();
 				rs.next();
-				status = rs.getBoolean(1);
-				//System.out.println(status);	
+				status = rs.getBoolean(1);	
 			} 
 			catch (SQLException e) 
 			{
-				e.getMessage();
+				logger.error(e.getMessage());
 
 			} 
 			return status;
-	}
-
-
+		}
 	}
 
 	@Override
@@ -436,9 +344,7 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 		} 
 		catch (SQLException e) 
 		{
-			System.out.println(e.getMessage());
-
+			logger.error(e.getMessage());
 		} 
 	}
-
 }

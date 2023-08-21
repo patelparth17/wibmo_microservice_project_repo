@@ -17,10 +17,11 @@ public class Payment {
 	
 
 	/**
-	 * 
+	 * Parametrized Constructor
 	 * @param amount
 	 * @param transcationId
 	 * @param paymentStatus
+	 * @param paymentMode
 	 */
 	public Payment(double amount, int transcationId, boolean paymentStatus, PaymentModeConstant paymentMode) {
 		super();
@@ -31,7 +32,7 @@ public class Payment {
 	}
 	
 	/**
-	 * 
+	 * Method to get the payment fee
 	 * @return amount
 	 */
 	public double getAmount() {
@@ -39,15 +40,15 @@ public class Payment {
 	}
 	
 	/**
+	 * Method to set the payment fee
 	 * @param amount
-	 * set amount
 	 */
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 	
 	/**
-	 * 
+	 * Method to get the transaction ID of payment
 	 * @return transcationId
 	 */
 	public int getTranscationId() {
@@ -55,15 +56,15 @@ public class Payment {
 	}
 	
 	/**
+	 * Method to set the transaction ID of payment
 	 * @param transcationId
-	 * set transcationId
 	 */
 	public void setTranscationId(int transcationId) {
 		this.transcationId = transcationId;
 	}
 	
 	/**
-	 * 
+	 * Method to get the payment status
 	 * @return payment status
 	 */
 	public boolean getPaymentStatus() {
@@ -71,8 +72,8 @@ public class Payment {
 	}
 	
 	/**
-	 * @return payment status
-	 * set payment status
+	 * Method to set the payment status
+	 * @param paymentStatus
 	 */
 	public void setPaymentStatus(boolean paymentStatus) {
 		this.paymentStatus = paymentStatus;
@@ -80,8 +81,8 @@ public class Payment {
 	
 
 	/**
-	 * @return payment status
-	 * get payment mode
+	 * Method to get the payment mode
+	 * @return payment mode
 	 */
 	public PaymentModeConstant getPaymentMode() {
 		return paymentMode;
@@ -89,8 +90,8 @@ public class Payment {
 	
 
 	/**
-	 * @return payment status
-	 * set payment mode
+	 * Method to set the payment mode
+	 * @param paymentMode
 	 */
 	public void setPaymentMode(PaymentModeConstant paymentMode) {
 		this.paymentMode = paymentMode;

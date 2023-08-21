@@ -9,7 +9,6 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Professor;
 import com.wibmo.bean.RegisteredCourse;
 import com.wibmo.bean.Student;
-import com.wibmo.bean.User;
 import com.wibmo.dao.*;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
@@ -17,18 +16,10 @@ import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
-import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.validator.AdminValidator;
 
-/**
- * 
- */
 public class AdminOperationImpl implements AdminOperationInterface{
-	
-	/**
-	 * @param StudentId
-	 */
 	AdminDAOInterface adminDaoOperation = AdminDAOImpl.getInstance();
 	private static volatile AdminOperationImpl instance = null;
 
@@ -38,7 +29,7 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	}
 	
 	/**
-	 * Method to make AdminOperation Singleton
+	 * Method to make AdminOperationImpl Singleton
 	 */
 	public static AdminOperationImpl getInstance()
 	{
@@ -51,22 +42,13 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		return instance;
 	}
 	
-	/**
-	 * @param studentId
-	 * @return report card of a student
-	 */
 	@Override
 	public List<RegisteredCourse> generateGradeCard(String studentId){
 		return adminDaoOperation.generateReportCard(studentId);
 	}
 	
-	/**
-	 * @param studentId, studentList
-	 * @throws StudentNotFoundForApprovalException
-	 */
 	@Override
 	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException{
-		// TODO Auto-generated method stub
 		try {
 			
 			if(AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {
@@ -81,13 +63,8 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		}
 	}
 	
-	/**
-	 * @param courseCode, courseList
-	 * @throws CourseNotFoundException
-	 */
 	@Override
 	public void removeCourse(String courseCode, List<Course> courseList) throws CourseNotFoundException,CourseNotDeletedException{
-		// TODO Auto-generated method stub
 		try {
 			if(!AdminValidator.isValidDropCourse(courseCode, courseList)) {
 				throw new CourseNotFoundException(courseCode);
@@ -99,13 +76,8 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		}
 	}
 	
-	/**
-	 * @param course, courseList
-	 * @throws CourseAlreadyExistsException 
-	 */
 	@Override
 	public void addCourse(Course course, List<Course> courseList) throws CourseAlreadyExistsException {
-		// TODO Auto-generated method stub
 		try {
 			if(!AdminValidator.isValidNewCourse(course, courseList)) {
 				throw new CourseAlreadyExistsException(course.getCourseCode());
@@ -115,13 +87,8 @@ public class AdminOperationImpl implements AdminOperationInterface{
 		catch(CourseAlreadyExistsException e) {
 			throw e;
 		}
-		
 	}
 	
-	/**
-	 * courseCode, professorId
-	 * @throws Exception 
-	 */
 	@Override
 	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException{
 			try {
@@ -133,13 +100,11 @@ public class AdminOperationImpl implements AdminOperationInterface{
 
 	@Override
 	public List<Course> viewCourses() {
-		// TODO Auto-generated method stub
 		return adminDaoOperation.viewCourses();
 	}
 
 	@Override
 	public void addProfessor(Professor professor) throws ProfessorNotAddedException, UserIdAlreadyExists {
-		// TODO Auto-generated method stub
 		try {
 			adminDaoOperation.addProfessor(professor);
 		} catch (ProfessorNotAddedException | UserIdAlreadyExists e) {
@@ -149,14 +114,11 @@ public class AdminOperationImpl implements AdminOperationInterface{
 
 	@Override
 	public List<Professor> viewProfessors() {
-		// TODO Auto-generated method stub
 		return adminDaoOperation.viewProfessors();
 	}
 
 	@Override
 	public List<Student> viewPendingAdmissions() {
-		
 		return adminDaoOperation.viewPendingAdmissions();
 	}
-
 }

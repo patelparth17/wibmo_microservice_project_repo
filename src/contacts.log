@@ -1,0 +1,97 @@
+21:38:16,754  INFO AdminCRSMenu,main:28 - =============================
+21:38:16,761  INFO AdminCRSMenu,main:29 - **********Admin Menu*********
+21:38:16,762  INFO AdminCRSMenu,main:30 - =============================
+21:38:16,763  INFO AdminCRSMenu,main:31 - 1. View course in catalog
+21:38:16,765  INFO AdminCRSMenu,main:32 - 2. Add Course to catalog
+21:38:16,766  INFO AdminCRSMenu,main:33 - 3. Delete Course from catalog
+21:38:16,766  INFO AdminCRSMenu,main:34 - 4. Approve Students
+21:38:16,766  INFO AdminCRSMenu,main:35 - 5. Add Professor
+21:38:16,766  INFO AdminCRSMenu,main:36 - 6. Assign Courses To Professor
+21:38:16,766  INFO AdminCRSMenu,main:37 - 7. Generate Report Card
+21:38:16,766  INFO AdminCRSMenu,main:38 - 8. View Pending Admissions
+21:38:16,788  INFO AdminCRSMenu,main:39 - 9. Logout
+21:38:16,790  INFO AdminCRSMenu,main:40 - =============================
+21:41:07,055 DEBUG AdminCRSMenu,main:28 - =============================
+21:41:07,059 DEBUG AdminCRSMenu,main:29 - **********Admin Menu*********
+21:41:07,059 DEBUG AdminCRSMenu,main:30 - =============================
+21:41:07,059 DEBUG AdminCRSMenu,main:31 - 1. View course in catalog
+21:41:07,061 DEBUG AdminCRSMenu,main:32 - 2. Add Course to catalog
+21:41:07,061 DEBUG AdminCRSMenu,main:33 - 3. Delete Course from catalog
+21:41:07,061 DEBUG AdminCRSMenu,main:34 - 4. Approve Students
+21:41:07,062 DEBUG AdminCRSMenu,main:35 - 5. Add Professor
+21:41:07,062 DEBUG AdminCRSMenu,main:36 - 6. Assign Courses To Professor
+21:41:07,062 DEBUG AdminCRSMenu,main:37 - 7. Generate Report Card
+21:41:07,063 DEBUG AdminCRSMenu,main:38 - 8. View Pending Admissions
+21:41:07,063 DEBUG AdminCRSMenu,main:39 - 9. Logout
+21:41:07,063 DEBUG AdminCRSMenu,main:40 - =============================
+21:43:09,253 DEBUG AdminCRSMenu,main:274 - The current courses in the course Catalog are as follows:
+21:43:09,253 DEBUG AdminCRSMenu,main:279 -          COURSE CODE |          COURSE NAME |           INSTRUCTOR
+21:43:09,254 DEBUG AdminCRSMenu,main:281 -                  224 |                  Eng |                  666
+21:43:09,256 DEBUG AdminCRSMenu,main:281 -                  225 |             Computer |                  666
+21:43:09,256 DEBUG AdminCRSMenu,main:281 -                  226 |                  Sci |                  777
+21:43:09,257 DEBUG AdminCRSMenu,main:281 -                  227 |                   AI |                  777
+21:43:09,257 DEBUG AdminCRSMenu,main:281 -                  228 |                   ML |                  123
+21:43:09,258 DEBUG AdminCRSMenu,main:281 -                  229 |                  Art |                  444
+21:43:09,259 DEBUG AdminCRSMenu,main:242 - Enter number of courses you want to add:
+21:43:21,502 DEBUG AdminCRSMenu,main:247 - Enter Course Code:
+21:43:24,803 DEBUG AdminCRSMenu,main:250 - Enter Course Name:
+21:43:30,747 DEBUG AdminCRSMenu,main:253 - Enter Course Fee:
+21:43:33,864 DEBUG AdminCRSMenu,main:28 - =============================
+21:43:33,864 DEBUG AdminCRSMenu,main:29 - **********Admin Menu*********
+21:43:33,865 DEBUG AdminCRSMenu,main:30 - =============================
+21:43:33,865 DEBUG AdminCRSMenu,main:31 - 1. View course in catalog
+21:43:33,865 DEBUG AdminCRSMenu,main:32 - 2. Add Course to catalog
+21:43:33,865 DEBUG AdminCRSMenu,main:33 - 3. Delete Course from catalog
+21:43:33,865 DEBUG AdminCRSMenu,main:34 - 4. Approve Students
+21:43:33,865 DEBUG AdminCRSMenu,main:35 - 5. Add Professor
+21:43:33,865 DEBUG AdminCRSMenu,main:36 - 6. Assign Courses To Professor
+21:43:33,865 DEBUG AdminCRSMenu,main:37 - 7. Generate Report Card
+21:43:33,865 DEBUG AdminCRSMenu,main:38 - 8. View Pending Admissions
+21:43:33,865 DEBUG AdminCRSMenu,main:39 - 9. Logout
+21:43:33,866 DEBUG AdminCRSMenu,main:40 - =============================
+21:45:22,050 DEBUG AdminCRSMenu,main:28 - =============================
+21:45:22,054 DEBUG AdminCRSMenu,main:29 - **********Admin Menu*********
+21:45:22,054 DEBUG AdminCRSMenu,main:30 - =============================
+21:45:22,055 DEBUG AdminCRSMenu,main:31 - 1. View course in catalog
+21:45:22,056 DEBUG AdminCRSMenu,main:32 - 2. Add Course to catalog
+21:45:22,056 DEBUG AdminCRSMenu,main:33 - 3. Delete Course from catalog
+21:45:22,056 DEBUG AdminCRSMenu,main:34 - 4. Approve Students
+21:45:22,057 DEBUG AdminCRSMenu,main:35 - 5. Add Professor
+21:45:22,057 DEBUG AdminCRSMenu,main:36 - 6. Assign Courses To Professor
+21:45:22,057 DEBUG AdminCRSMenu,main:37 - 7. Generate Report Card
+21:45:22,057 DEBUG AdminCRSMenu,main:38 - 8. View Pending Admissions
+21:45:22,058 DEBUG AdminCRSMenu,main:39 - 9. Logout
+21:45:22,058 DEBUG AdminCRSMenu,main:40 - =============================
+21:51:40,904  INFO CRSApplication,main:73 - ---------------------------------------------------------------
+21:51:40,910  INFO CRSApplication,main:74 -                Welcome to Course Management System
+21:51:40,955  INFO CRSApplication,main:75 -                      20-August-2023 21:51:40 
+
+21:51:40,955  INFO CRSApplication,main:76 - ---------------------------------------------------------------
+21:51:40,956  INFO CRSApplication,main:77 - 1. Login
+21:51:40,956  INFO CRSApplication,main:78 - 2. Student Registration
+21:51:40,960  INFO CRSApplication,main:79 - 3. Update password
+21:51:40,960  INFO CRSApplication,main:80 - 4. Exit
+21:51:40,961  INFO CRSApplication,main:81 - Enter user input
+21:51:43,236  INFO CRSApplication,main:151 - ---------------Student Registration-------------
+21:51:43,237  INFO CRSApplication,main:152 - Name:
+21:51:48,259  INFO CRSApplication,main:154 - UserID:
+21:51:50,136  INFO CRSApplication,main:156 - Password:
+21:51:57,972  INFO CRSApplication,main:158 - Enter Gender Choice: 	 1: Male 	 2.Female	 3.Other
+21:51:59,454  INFO CRSApplication,main:178 - Department:
+21:52:03,787  INFO CRSApplication,main:180 - Graduation Year:
+21:52:07,017  INFO CRSApplication,main:182 - Address:
+21:52:07,025 DEBUG StudentImpl,main:46 - 
+Your account has been created and pending for Approval by Admin.
+
+21:52:07,901 DEBUG StudentDAOImpl,main:75 - Row Inserted
+21:52:07,923 ERROR NotificationDAOImpl,main:76 - Unknown column 'studentId' in 'field list'
+21:52:07,923  INFO CRSApplication,main:73 - ---------------------------------------------------------------
+21:52:07,923  INFO CRSApplication,main:74 -                Welcome to Course Management System
+21:52:07,924  INFO CRSApplication,main:75 -                      20-August-2023 21:52:07 
+
+21:52:07,924  INFO CRSApplication,main:76 - ---------------------------------------------------------------
+21:52:07,924  INFO CRSApplication,main:77 - 1. Login
+21:52:07,924  INFO CRSApplication,main:78 - 2. Student Registration
+21:52:07,924  INFO CRSApplication,main:79 - 3. Update password
+21:52:07,924  INFO CRSApplication,main:80 - 4. Exit
+21:52:07,925  INFO CRSApplication,main:81 - Enter user input

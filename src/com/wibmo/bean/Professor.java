@@ -15,54 +15,78 @@ public class Professor extends User {
 	private String department;
 	private String designation;
 	
-	
+	/**
+	 * 
+	 * @param userID
+	 */
 	public Professor(String userID) {
 		super(userID);
 	}
+	
+	/**
+	 * Parametrized Constructor
+	 * @param userID
+	 * @param name
+	 * @param gender
+	 * @param role
+	 * @param password
+	 * @param address
+	 */
 	public Professor(String userID, String name, GenderConstant gender, RoleConstant role, String password, String address) {
 		super(userID, name, role, password, gender, address);
 	}
-	public Professor() {
-		// TODO Auto-generated constructor stub
-	}
+	
 	/**
-	 * @return the professorID
+	 * Default constructor
+	 */
+	public Professor() {
+	}
+	
+	/**
+	 * Method to get the professor ID
+	 * @return professorID
 	 */
 	public String getProfessorID() {
 		return professorID;
 	}
+	
 	/**
-	 * @param professorID the professorID to set
+	 * Method to set the professor ID
+	 * @param professorID
 	 */
 	public void setProfessorID(String professorID) {
 		this.professorID = professorID;
 	}
+	
 	/**
-	 * @return the department
+	 * Method to get the department of professor
+	 * @return department
 	 */
 	public String getDepartment() {
 		return department;
 	}
+	
 	/**
-	 * @param department the department to set
+	 * Method to set the department of professor
+	 * @param department
 	 */
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+	
 	/**
-	 * @return the designation
+	 * Method to get the designation of professor
+	 * @return designation
 	 */
 	public String getDesignation() {
 		return designation;
 	}
+	
 	/**
-	 * @param designation the designation to set
+	 * Method to set the designation of professor
+	 * @param designation
 	 */
 	public void setDesignation(String designation) {
 		this.designation = designation;
 	}
-	/**
-	 * @return the dateOfJoining
-	 */
-	
 }

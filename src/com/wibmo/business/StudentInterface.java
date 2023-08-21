@@ -4,34 +4,30 @@
 package com.wibmo.business;
 
 import com.wibmo.constants.GenderConstant;
+import com.wibmo.exception.StudentNotRegisteredException;
 
 /**
  * 
  */
 public interface StudentInterface {
 	/**
-	 * 
+	 * Method to register by student
 	 * @param name
 	 * @param userId
 	 * @param password
 	 * @param gender
-	 * @param batch
-	 * @param branch
+	 * @param gradYear
+	 * @param dept
 	 * @param address
 	 * @return registration status: String
+	 * @throws StudentNotRegisteredException 
 	 */
-	public String register(String name,String userId,String password,GenderConstant gender,int batch,String branch,String address);
+	public void register(String name,String userId,String password,GenderConstant gender,int gradYear,String dept,String address) throws StudentNotRegisteredException;
+	
 	
 	/**
-	 * 
-	 * @param userId
-	 * @return studentId: String
-	 */
-	public String getStudentId(String userId);
-	
-	/**
-	 * 
-	 * @param studentId
+	 * Method to get the approval status of student
+	 * @param studentName
 	 * @return student approval status: boolean
 	 */
 	public boolean isApproved(String studentName);

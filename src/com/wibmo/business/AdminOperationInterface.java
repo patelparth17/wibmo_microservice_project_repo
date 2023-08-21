@@ -11,7 +11,6 @@ import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
-import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 /**
  * 
@@ -26,58 +25,61 @@ public interface AdminOperationInterface {
 	
 	
 	/**
-	 * 
+	 * Method to approve the student by admin
 	 * @param studentId
 	 * @param studentList
+	 * @throws StudentNotFoundForApprovalException
 	 */
 	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException;
 	
 	/**
-	 * 
+	 * Method to add Professor
 	 * @param professor
-	 * @throws UserNotAddedException 
-	 * @throws UserIdAlreadyExists 
-	 * @throws ProfessorNotAddedException 
+	 * @throws ProfessorNotAddedException
+	 * @throws UserIdAlreadyExists
 	 */
 	public void addProfessor(Professor professor) throws ProfessorNotAddedException, UserIdAlreadyExists;
 	
 	/**
-	 * 
 	 * Method to view the list of Professors
 	 */
 	public List<Professor> viewProfessors();
 	
 	/**
-	 * 
-	 * @param coursecode
-	 * @param courselist
-	 * @throws CourseNotDeletedException 
-	 * @throws CourseNotFoundException 
+	 * Method to drop course from the catalog
+	 * @param courseCode
+	 * @param courseList
+	 * @throws CourseNotFoundException
+	 * @throws CourseNotDeletedException
 	 */
 	public void removeCourse(String courseCode, List<Course> courseList) throws CourseNotFoundException, CourseNotDeletedException;
 	
 	/**
-	 * 
+	 * Method to add course to the catalog
 	 * @param course
-	 * @param courselist
-	 * @throws CourseAlreadyExistsException 
+	 * @param courseList
+	 * @throws CourseAlreadyExistsException
 	 */
 	public void addCourse(Course course, List<Course> courseList) throws CourseAlreadyExistsException;
 	
 	/**
-	 * 
+	 * Method to assign course to the professor
 	 * @param courseCode
 	 * @param professorId
-	 * @throws UserNotFoundException 
-	 * @throws CourseNotFoundException 
+	 * @throws CourseNotFoundException
+	 * @throws UserNotFoundException
 	 */
 	public void assignCourse(String courseCode, String professorId) throws CourseNotFoundException, UserNotFoundException;
 
 	/**
+	 * Method to generate grade card of the student
 	 * @param studentId
 	 */
 	public List<RegisteredCourse> generateGradeCard(String studentId);
 
-
+	/**
+	 * Method to view pending admissions
+	 * @return The list of students
+	 */
 	public List<Student> viewPendingAdmissions();
 }
