@@ -22,7 +22,7 @@ public class DBUtils {
             	//from particular resource/location
             	Properties prop = new Properties();
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/crs", "root", "enstage-123");
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/crs", "root", "Kchitra@02");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (SQLException e) {

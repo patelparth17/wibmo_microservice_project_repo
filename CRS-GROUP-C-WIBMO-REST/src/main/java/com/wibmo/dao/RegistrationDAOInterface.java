@@ -135,4 +135,10 @@ public interface RegistrationDAOInterface {
 	 * @throws SQLException
 	 */
 	public void setPaymentStatus(String studentId, PaymentModeConstant modeOfPayment, double amount) throws SQLException;
+
+
+	public int numSecondaryCourses(String studentName);
+
+
+	public boolean addSecondaryCourse(String courseCode, String studentName);
 }

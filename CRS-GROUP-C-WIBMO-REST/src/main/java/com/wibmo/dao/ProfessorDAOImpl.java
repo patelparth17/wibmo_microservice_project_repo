@@ -26,13 +26,16 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 	
     private static Logger logger ;
 	
+    Connection connection=DBUtils.getConnection();
+    PreparedStatement statement = null;
+    
 	@Override
 	public List<Course> getCoursesByProfessor(String username) {
-		Connection connection=DBUtils.getConnection();
+		
 		List<Course> courseList=new ArrayList<Course>();
 		
 		try {			
-			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_COURSES);
+			statement = connection.prepareStatement(SQLConstant.GET_COURSES);
 			statement.setString(1, username);
 			ResultSet rs=statement.executeQuery();
 			while(rs.next())
@@ -50,10 +53,9 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 
 	@Override
 	public List<EnrolledStudent> getEnrolledStudents(String username) throws UserNotFoundException {
-		Connection connection=DBUtils.getConnection();
 		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_ENROLLED_STUDENTS);
+			statement = connection.prepareStatement(SQLConstant.GET_ENROLLED_STUDENTS);
 			statement.setString(1, username);
 			ResultSet results = statement.executeQuery();
 			while(results.next())
@@ -69,9 +71,8 @@ public class ProfessorDAOImpl implements ProfessorDAOInterface{
 	}
 	
 	public Boolean addGrade(String studentId,String courseCode,String grade) {
-		Connection connection=DBUtils.getConnection();
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQLConstant.ADD_GRADE);
+			statement = connection.prepareStatement(SQLConstant.ADD_GRADE);
 			statement.setString(1, grade);
 			statement.setString(2, courseCode);
 			statement.setString(3, studentId);

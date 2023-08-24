@@ -27,15 +27,13 @@ public class StudentDAOImpl implements StudentDAOInterface {
 	@Autowired
 	private static Logger logger;
 	
+	Connection connection=DBUtils.getConnection();
+	
 	@Override
 	public void registerStudent(Student student)throws StudentNotRegisteredException {
-		Connection connection=DBUtils.getConnection();
-		
-		String sql=null;
-		sql= SQLConstant.REGISTER_USER_QUERY;
 		try
 		{
-			PreparedStatement stmt=connection.prepareStatement(sql);
+			PreparedStatement stmt=connection.prepareStatement(SQLConstant.REGISTER_USER_QUERY);
 			stmt.setString(1, student.getUserId());
 			stmt.setString(2, student.getName());
 			stmt.setString(3, student.getPassword());
@@ -45,8 +43,7 @@ public class StudentDAOImpl implements StudentDAOInterface {
 			int rows = stmt.executeUpdate();
 			if(rows==1)
 			{
-				sql = SQLConstant.REGISTER_STUDENT_QUERY;
-				PreparedStatement stmt1 = connection.prepareStatement(sql);
+				PreparedStatement stmt1 = connection.prepareStatement(SQLConstant.REGISTER_STUDENT_QUERY);
 				stmt1.setString(1,student.getUserId());
 				stmt1.setInt(2, student.getGradYear());
 				stmt1.setString(3, student.getDepartment());
@@ -70,10 +67,8 @@ public class StudentDAOImpl implements StudentDAOInterface {
 
 	@Override
 	public boolean isApproved(String studentName) {
-		Connection connection=DBUtils.getConnection();
-		String sql = SQLConstant.ISAPPROVED_QUERY;
 		try {
-			PreparedStatement stmt = connection.prepareStatement(sql);
+			PreparedStatement stmt = connection.prepareStatement(SQLConstant.ISAPPROVED_QUERY);
 			stmt.setString(1, studentName);
 			ResultSet rs = stmt.executeQuery();
 			

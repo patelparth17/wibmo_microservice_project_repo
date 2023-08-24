@@ -6,8 +6,6 @@ package com.wibmo.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import org.apache.log4j.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +22,9 @@ import com.wibmo.service.ProfessorImpl;
 import com.wibmo.validator.ProfessorValidator;
 
 @RestController
+@RequestMapping("/professor")
 public class ProfessorCRSMenuController {
 
-	@Autowired
-	private static Logger logger = Logger.getLogger(ProfessorCRSMenuController.class);
-	
 	@Autowired
 	private ProfessorImpl professorImpl;
 	
@@ -38,7 +34,7 @@ public class ProfessorCRSMenuController {
 	 */
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/professor/courses/{username}")
+	@RequestMapping(value = "/courses/{username}")
 	public ResponseEntity getCourses(@PathVariable("username") String username) {
 			return new ResponseEntity(professorImpl.viewCourses(username),HttpStatus.OK);
 	}
@@ -50,7 +46,7 @@ public class ProfessorCRSMenuController {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 
-	    @RequestMapping(value = "/professor/enrolledstudents")
+	    @RequestMapping(value = "/enrolledstudents")
 
 	    public ResponseEntity viewEnrolledStudents(@RequestParam("username") String username) {
 	        try {
@@ -66,7 +62,7 @@ public class ProfessorCRSMenuController {
 	 */
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping("/professor/addgrade/{username}")
+	@RequestMapping("/addgrade/{username}")
 	public ResponseEntity addGrade(@PathVariable("username") String username) {
 		Scanner in = new Scanner(System.in);
 

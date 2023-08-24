@@ -41,7 +41,16 @@ public class CRSApplicationController {
     @Autowired
     private  NotificationImpl notificationImpl;
 
-    @RequestMapping(value = "/authenticateUser", method = RequestMethod.GET)
+    /**
+     * Method to authenticate user
+     * @param username
+     * @param password
+     * @param role
+     * @return status
+     * @throws UserNotFoundException
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/authenticateUser", method = RequestMethod.GET)
     public ResponseEntity authenticateUser(
             @RequestParam String username, 
             @RequestParam String password, 
@@ -55,7 +64,20 @@ public class CRSApplicationController {
             return new ResponseEntity("Authentication failed. User deatils not found.", HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(value = "/registerStudent")
+    /**
+     * Method for student registration
+     * @param name
+     * @param userId
+     * @param password
+     * @param gender
+     * @param gradYear
+     * @param dept
+     * @param address
+     * @return status
+     * @throws StudentNotRegisteredException
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/registerStudent")
     public ResponseEntity registerStudent(
             @RequestParam String name, 
             @RequestParam String userId,
@@ -77,7 +99,15 @@ public class CRSApplicationController {
         }
     }
 
-    @RequestMapping(value = "/updatePassword/{newPassword}")
+    
+    /**
+     * Method to update password
+     * @param newPassword
+     * @param userName
+     * @return status
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/updatePassword/{newPassword}")
     public ResponseEntity updatePassword(
             @PathVariable String newPassword, 
             @RequestParam String userName) {

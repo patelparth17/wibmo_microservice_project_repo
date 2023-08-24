@@ -27,12 +27,13 @@ public class UserDAOImpl implements UserDAOInterface {
 	@Autowired
 	private static Logger logger;
 
+	Connection connection = DBUtils.getConnection();
+	PreparedStatement stmt;
 	
 	public boolean authenticateUser(String username, String password, String role) throws UserNotFoundException {
-		Connection connection = DBUtils.getConnection();
 		try
 		{
-			PreparedStatement stmt=connection.prepareStatement(SQLConstant.VERIFY_CREDENTIALS);
+			stmt=connection.prepareStatement(SQLConstant.VERIFY_CREDENTIALS);
 			stmt.setString(1,username);
 			ResultSet resultSet = stmt.executeQuery();
 			if(!resultSet.next())
@@ -57,9 +58,8 @@ public class UserDAOImpl implements UserDAOInterface {
 	}
 	
 	public boolean updatePassword(String username, String newPassword) {
-		Connection connection=DBUtils.getConnection();
 		try {
-			PreparedStatement stmt = connection.prepareStatement(SQLConstant.UPDATE_PASSWORD);
+			stmt = connection.prepareStatement(SQLConstant.UPDATE_PASSWORD);
 			stmt.setString(1, newPassword);
 			stmt.setString(2, username);
 			int row = stmt.executeUpdate();
@@ -81,11 +81,10 @@ public class UserDAOImpl implements UserDAOInterface {
 
 	@Override
 	public String getRole(String username) {
-		Connection connection=DBUtils.getConnection();
 		try {
-			PreparedStatement statement = connection.prepareStatement(SQLConstant.GET_ROLE);
-			statement.setString(1, username);
-			ResultSet rs = statement.executeQuery();
+			stmt = connection.prepareStatement(SQLConstant.GET_ROLE);
+			stmt.setString(1, username);
+			ResultSet rs = stmt.executeQuery();
 			if(rs.next())
 			{
 				return rs.getString("role");

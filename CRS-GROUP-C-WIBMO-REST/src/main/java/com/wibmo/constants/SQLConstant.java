@@ -8,8 +8,10 @@ package com.wibmo.constants;
  */
 public class SQLConstant {
 	//Admin's Queries
-	public static final String VIEW_COURSE_QUERY = "SELECT courseCode, courseName, professorId FROM course";
+	public static final String VIEW_COURSE_QUERY = "SELECT courseCode, courseName, professorId,seats,courseFee FROM course";
 	public static final String APPROVE_STUDENT_QUERY = "UPDATE Student SET isApproved = 1 WHERE studentId = ?";
+	
+	public static final String APPROVE_ALL_STUDENTS_QUERY = "UPDATE student SET isApproved = 1";
 	public static final String REMOVE_COURSE_QUERY = "DELETE FROM Course WHERE courseCode = ?";
 	public static final String ADD_COURSE_QUERY = "INSERT INTO Course(courseCode, courseName, seats, professorId,courseFee) values (?, ?, ?, ?, ?)";
 	public static final String ASSIGN_COURSE_QUERY = "UPDATE Course SET professorId = ? WHERE courseCode = ?";
@@ -21,6 +23,8 @@ public class SQLConstant {
 	public static final String SET_STUDENT_REPORT_GENERATION = "UPDATE student SET isReportGenerated = 1 WHERE studentId = ?";
 	
 	//Student's Queries
+	public static final String CHECK_APPROVAL_STATUS = "SELECT isApproved FROM student WHERE studentId = ?";
+	
 	public static final String REGISTER_USER_QUERY = "INSERT INTO user values(?,?,?,?,?,?)";
 	public static final String REGISTER_STUDENT_QUERY = "INSERT INTO student (studentID,gradYear,dept,isApproved,isReportGenerated,isRegistered,isPaid) values (?,?,?,?,?,?,?)";
 	public static final String ISAPPROVED_QUERY = "SELECT isApproved FROM student JOIN user ON user.userId = student.studentId WHERE username = ? ";
@@ -32,7 +36,14 @@ public class SQLConstant {
 	public static final String NUMBER_OF_REGISTERED_COURSES=" SELECT studentId FROM registeredcourse JOIN user ON user.userId = registeredCourse.studentId WHERE username =? ";
 	public static final String IS_REGISTERED=" SELECT courseCode FROM registeredcourse JOIN user ON user.userId = registeredCourse.studentId WHERE username = ? AND courseCode=?";
 	public static final String VIEW_REGISTERED_COURSES=" SELECT * FROM course INNER JOIN registeredcourse ON course.courseCode = registeredcourse.courseCode JOIN user ON user.userId = registeredCourse.studentId WHERE username = ?";
-	public static final String VIEW_AVAILABLE_COURSES=" SELECT * FROM course WHERE courseCode NOT IN  (SELECT courseCode  FROM registeredcourse JOIN user ON user.userId = registeredCourse.studentId WHERE username = ?) AND seats > 0";
+	
+	public static final String VIEW_AVAILABLE_COURSES=" SELECT * FROM course WHERE courseCode NOT IN  (SELECT courseCode  FROM registeredcourse JOIN user ON user.userId = registeredCourse.studentId WHERE username = ? "
+			+ "UNION SELECT courseCode  FROM secondarycourse JOIN user ON user.userId = secondarycourse.studentId WHERE username = ?) AND seats > 0";
+	public static final String ADD_SECONDARY_COURSE = "INSERT INTO secondarycourse (studentId,courseCode) VALUES ( ? , ?)";
+	public static final String GET_SECONDARY_COURSES = "SELECT courseCode FROM secondarycourse JOIN user ON user.userID = secondaryCourse.studentID WHERE user.username = ?";
+	public static final String DROP_SECONDARY_COURSE = "DELETE secondarycourse FROM secondarycourse  JOIN user ON user.userId = secondarycourse.studentId WHERE username = ? AND courseCode = ?";
+	public static final String NUMBER_OF_SECONDARY_COURSES = "SELECT studentId FROM secondarycourse JOIN user ON user.userId = secondarycourse.studentId WHERE username =?";
+	
 	public static final String CHECK_COURSE_AVAILABILITY=" SELECT courseCode from registeredcourse JOIN user ON user.userId = registeredCourse.studentId WHERE username = ?";
 	public static final String DECREMENT_COURSE_SEATS="UPDATE course SET seats = seats-1 WHERE courseCode = ? ";
 	public static final String ADD_COURSE="INSERT INTO registeredcourse (studentId,courseCode,grade) VALUES ( ? , ?, ?)";
@@ -62,5 +73,6 @@ public class SQLConstant {
 	public static final String GET_ROLE="SELECT role FROM user WHERE username = ?;";
 	public static final String GET_USER_ID = "SELECT userID FROM user WHERE username = ?";
 	public static final String GET_USER_NAME = "SELECT username FROM user WHERE userID = ?";
+	
 
 }

@@ -61,7 +61,7 @@ public class RegistrationDAOImpl implements RegistrationDAOInterface{
 				stmt = conn.prepareStatement(SQLConstant.ADD_COURSE);
 				stmt.setString(1, rs.getString("userID"));
 				stmt.setString(2, courseCode);
-				stmt.setString(3, "-");
+				stmt.setString(3, "NOT_GRADED");
 				stmt.executeUpdate();
 				logger.debug("Primary course added!");
 			}

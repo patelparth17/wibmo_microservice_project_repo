@@ -22,7 +22,7 @@ public class Professor extends User implements Serializable{
 	private String designation;
 	
 	/**
-	 * 
+	 * Constructor
 	 * @param userID
 	 */
 	public Professor(String userID) {

@@ -17,6 +17,7 @@ import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
+import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotFoundException;
@@ -34,14 +35,18 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	}
 	
 	@Override
-	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException{
+	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException, StudentAlreadyApprovedException{
 		try {
 			
 			if(AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {
 				
 				throw new StudentNotFoundForApprovalException(studentId);
 			}
-			adminDaoOperation.approveStudent(studentId);
+			try {
+				adminDaoOperation.approveStudent(studentId);
+			} catch (StudentAlreadyApprovedException e) {
+				throw e;
+			}
 		}
 		catch(StudentNotFoundForApprovalException e) {
 			
@@ -106,5 +111,10 @@ public class AdminOperationImpl implements AdminOperationInterface{
 	@Override
 	public List<Student> viewPendingAdmissions() {
 		return adminDaoOperation.viewPendingAdmissions();
+	}
+	
+	@Override
+	public void approveAllStudents(List<Student> studentList) {
+		adminDaoOperation.approveAllStudents(studentList);
 	}
 }

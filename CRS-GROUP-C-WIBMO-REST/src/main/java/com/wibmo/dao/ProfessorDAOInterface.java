@@ -41,19 +41,4 @@ public interface ProfessorDAOInterface {
 	 * @return status
 	 */
 	public Boolean addGrade(String studentId,String courseCode,String grade);
-	
-	/**
-	 * Method to add secondary courses
-	 * @param courseCode
-	 * @param studentName
-	 * @return
-	 */
-	public boolean addSecondaryCourse(String courseCode, String studentName);
-
-	/**
-	 * Method to get the number of registered secondary courses 
-	 * @param studentName
-	 * @return
-	 */
-	public int numSecondaryCourses(String studentName);
 }

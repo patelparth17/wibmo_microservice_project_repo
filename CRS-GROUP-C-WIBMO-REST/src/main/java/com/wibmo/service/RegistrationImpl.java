@@ -23,22 +23,6 @@ public class RegistrationImpl implements RegistrationInterface{
 	
 	@Autowired
 	private RegistrationDAOInterface registrationDAOInterface;
-//	private RegistrationImpl() {}
-//
-//	/**
-//	 * Method to make RegistrationImpl Singleton
-//	 * @return instance
-//	 */
-//	public static RegistrationImpl getInstance() {
-//		if (instance == null) {
-//			synchronized (RegistrationImpl.class) {
-//				instance = new RegistrationImpl();
-//			}
-//		}
-//		return instance;
-//	}
-//
-//	RegistrationDAOInterface registrationDAOInterface = RegistrationDAOImpl.getInstance();
 
 	@Override
 	public boolean addCourse(String courseCode, String studentName,List<Course> availableCourseList) throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, SQLException 

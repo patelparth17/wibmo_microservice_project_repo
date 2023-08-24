@@ -26,9 +26,10 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 	@Autowired
 	private static Logger logger = Logger.getLogger(NotificationDAOImpl.class);
 	
+	Connection connection=DBUtils.getConnection();
+	
 	@Override
 	public void sendNotification(NotificationTypeConstant type, String studentName,PaymentModeConstant modeOfPayment,double amount) {
-		Connection connection=DBUtils.getConnection();
 		try
 		{
 			PreparedStatement ps = connection.prepareStatement(SQLConstant.INSERT_NOTIFICATION_QUERY);
@@ -73,7 +74,6 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 	public UUID addPayment(String studentId, PaymentModeConstant modeOfPayment,double amount) throws SQLException
 	{
 		UUID referenceId = null;
-		Connection connection=DBUtils.getConnection();
 		try
 		{
 			referenceId=UUID.randomUUID();

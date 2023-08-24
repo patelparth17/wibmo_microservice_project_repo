@@ -14,6 +14,7 @@ import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
+import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotFoundException;
@@ -35,8 +36,9 @@ public interface AdminOperationInterface {
 	 * @param studentId
 	 * @param studentList
 	 * @throws StudentNotFoundForApprovalException
+	 * @throws StudentAlreadyApprovedException 
 	 */
-	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException;
+	public void approveStudent(String studentId, List<Student> studentList) throws StudentNotFoundForApprovalException, StudentAlreadyApprovedException;
 	
 	/**
 	 * Method to add Professor
@@ -88,4 +90,7 @@ public interface AdminOperationInterface {
 	 * @return The list of students
 	 */
 	public List<Student> viewPendingAdmissions();
+
+
+	public void approveAllStudents(List<Student> studentList);
 }

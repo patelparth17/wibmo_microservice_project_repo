@@ -16,6 +16,7 @@ import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
+import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
@@ -45,8 +46,9 @@ public interface AdminDAOInterface {
 	 * Method to approve a Student
 	 * @param studentName
 	 * @throws StudentNotFoundForApprovalException
+	 * @throws StudentAlreadyApprovedException 
 	 */
-	public void approveStudent(String studentName) throws StudentNotFoundForApprovalException;
+	public void approveStudent(String studentName) throws StudentNotFoundForApprovalException, StudentAlreadyApprovedException;
 	
 	
 	/**
@@ -103,4 +105,6 @@ public interface AdminDAOInterface {
 	 * @return the list of students having pending approvals
 	 */
 	public List<Student> viewPendingAdmissions();
+	
+	public void approveAllStudents(List<Student> studentList);
 }
