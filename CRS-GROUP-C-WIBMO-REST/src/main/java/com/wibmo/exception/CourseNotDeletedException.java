@@ -4,11 +4,15 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when course is not deleted
  */
 public class CourseNotDeletedException extends Exception{
 	private String courseCode;
 	
+	/**
+	 * Constructor
+	 * @param courseCode : String
+	 */
 	public CourseNotDeletedException(String courseCode)
 	{	
 		this.courseCode = courseCode;
@@ -16,7 +20,7 @@ public class CourseNotDeletedException extends Exception{
 
 	/**
 	 * Getter function for course code
-	 * @return
+	 * @return courseCode
 	 */
 	public String getCourseCode()
 	{

@@ -10,7 +10,7 @@ import com.wibmo.constants.PaymentModeConstant;
 
 
 /**
- *
+ * Interface of methods which calls Notification DAO methods 
  */
 @Service
 public interface NotificationInterface {

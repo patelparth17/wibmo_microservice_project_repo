@@ -9,7 +9,7 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Student;
 
 /**
- * 
+ * Validates admin related operations
  */
 public class AdminValidator {
 	

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.wibmo.exception.UserNotFoundException;
 
 /**
- * 
+ * Interface of methods which performs read and write operations of User in Database
  */
 @Repository
 public interface UserDAOInterface {

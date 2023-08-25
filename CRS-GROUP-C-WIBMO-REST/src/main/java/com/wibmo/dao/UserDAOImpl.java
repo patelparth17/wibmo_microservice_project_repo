@@ -19,7 +19,7 @@ import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.DBUtils;
 
 /**
- * 
+ * Implementation of methods which performs read and write operations of User in Database
  */
 @Repository
 public class UserDAOImpl implements UserDAOInterface {

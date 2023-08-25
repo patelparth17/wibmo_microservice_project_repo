@@ -7,18 +7,15 @@ import com.wibmo.bean.EnrolledStudent;
 
 
 /**
- * 
- * @author Parth
- * Class for Professor Validator
- * 
+ * Validates professor related operations
  */
 public class ProfessorValidator {
 	
 	/**
 	 * Method to check if Student exist in the database
-	 * @param students: list of students in the database
-	 * @param studentId: current student
-	 * @return true, if student is valid. else, false.
+	 * @param enrolledStudents
+	 * @param studentId
+	 * @return status
 	 */
 	public static boolean isValidStudent(List<EnrolledStudent> enrolledStudents,String studentId)
 	{
@@ -36,9 +33,9 @@ public class ProfessorValidator {
 	
 	/**
 	 * Method to check if course exist in the database
-	 * @param courses: list of courses assigned to the professor
-	 * @param courseId: course id for which grade needs to be added
-	 * @return true, if course is valid and taught by professor, else false.
+	 * @param assignedCourses
+	 * @param courseCode
+	 * @return status
 	 */
 	public static boolean isValidCourse(List<Course> assignedCourses,String courseCode)
 	{

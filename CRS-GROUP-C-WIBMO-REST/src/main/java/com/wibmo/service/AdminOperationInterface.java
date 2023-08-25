@@ -19,7 +19,7 @@ import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotFoundException;
 /**
- * 
+ * Interface of methods which calls Admin DAO methods 
  */
 @Service
 public interface AdminOperationInterface {

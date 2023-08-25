@@ -1,6 +1,7 @@
 package com.wibmo.exception;
 
 /**
+ * Exception to throw when UserID already exists
  * @author vedasree
  *
  */
@@ -10,7 +11,7 @@ public class UserIdAlreadyExists extends Exception{
 	
 	/***
 	 * Setter function for UserId
-	 * @param userId
+	 * @param id
 	 */
 	
 	public UserIdAlreadyExists(String id) {
@@ -19,7 +20,7 @@ public class UserIdAlreadyExists extends Exception{
 	
 	/***
 	 * Getter function for UserId
-	 * @param userId
+	 * @return userId
 	 */
 	
 	public String getUserId() {

@@ -4,8 +4,8 @@
 package com.wibmo.constants;
 
 /**
+ * Enumeration class for Notification types
  * @author parth.patel
- *
  */
 public enum NotificationTypeConstant
 

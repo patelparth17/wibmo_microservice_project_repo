@@ -12,11 +12,15 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Grade;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.CourseLimitExceededException;
+import com.wibmo.exception.CourseLimitExceededForPrimaryException;
+import com.wibmo.exception.CourseLimitExceededForSecondaryException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.CourseSizeViolation;
 import com.wibmo.exception.SeatNotAvailableException;
+import com.wibmo.exception.StudentAlreadyRegistered;
 
 /**
- * 
+ * Interface of methods which calls Registration DAO methods 
  */
 @Service
 public interface RegistrationInterface {
@@ -119,5 +123,30 @@ public interface RegistrationInterface {
 	 */
 	public void setPaymentStatus(String studentName, PaymentModeConstant mode, double amount) throws SQLException;
 	
+	/**
+	 * Method to add secondary course
+	 * @param courseCode
+	 * @param studentName
+	 * @param secondarycourseList
+	 * @return status
+	 * @throws SQLException
+	 * @throws SeatNotAvailableException
+	 * @throws CourseNotFoundException
+	 */
 	public boolean addSecondaryCourse(String courseCode, String studentName, List<Course> secondarycourseList) throws SQLException, SeatNotAvailableException, CourseNotFoundException;
+	
+	/**
+	 * Method for course registration
+	 * @param studentName
+	 * @param availableCourseList
+	 * @return status
+	 * @throws CourseNotFoundException
+	 * @throws SeatNotAvailableException
+	 * @throws SQLException
+	 * @throws CourseSizeViolation
+	 * @throws CourseLimitExceededForPrimaryException
+	 * @throws CourseLimitExceededForSecondaryException
+	 * @throws StudentAlreadyRegistered
+	 */
+	public boolean registerCourse(String studentName, List<String> availableCourseList) throws CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegistered;
 }

@@ -8,9 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.bean.Student;
@@ -19,13 +18,13 @@ import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.utils.DBUtils;
 
 /**
- * 
+ * Implementation of methods which performs read and write operations of Student in Database
  */
 @Repository
 public class StudentDAOImpl implements StudentDAOInterface {
 	
 	@Autowired
-	private static Logger logger;
+	private static Logger logger = Logger.getLogger(StudentDAOImpl.class);
 	
 	Connection connection=DBUtils.getConnection();
 	
@@ -59,7 +58,7 @@ public class StudentDAOImpl implements StudentDAOInterface {
 		}
 		catch(SQLException ex)
 		{
-			throw new StudentNotRegisteredException(ex.getMessage());
+			throw new StudentNotRegisteredException(student.getUserId());
 		}
 		
 	}

@@ -15,6 +15,9 @@ import com.wibmo.dao.ProfessorDAOImpl;
 import com.wibmo.exception.GradeNotAllotedException;
 import com.wibmo.exception.UserNotFoundException;
 
+/**
+ * Implementation of methods which calls Professor DAO methods 
+ */
 @Service
 public class ProfessorImpl implements ProfessorInterface{
 	

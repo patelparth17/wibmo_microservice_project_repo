@@ -34,7 +34,7 @@ import com.wibmo.utils.DBUtils;
 
 
 /**
- * 
+ * Implementation of methods which performs read and write operations of Admin in Database
  */
 @Repository
 public class AdminDAOImpl implements AdminDAOInterface{

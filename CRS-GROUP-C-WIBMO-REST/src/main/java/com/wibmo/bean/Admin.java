@@ -6,14 +6,11 @@ import com.wibmo.constants.GenderConstant;
 import com.wibmo.constants.RoleConstant;
 
 /**
+ * Bean class for Admin
  * @author parth.patel
- *
  */
 public class Admin extends User implements Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -28,9 +25,5 @@ public class Admin extends User implements Serializable
 	public Admin(String userID, String name, GenderConstant gender, RoleConstant role, String password, String address) 
 	{
 		super(userID, name, role, password, gender, address);
-	}
-	
-	public Admin() {
-		
 	}
 }

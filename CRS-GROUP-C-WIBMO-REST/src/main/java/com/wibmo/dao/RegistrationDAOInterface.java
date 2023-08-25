@@ -10,6 +10,9 @@ import com.wibmo.bean.Course;
 import com.wibmo.bean.Grade;
 import com.wibmo.constants.PaymentModeConstant;
 
+/**
+ * Interface of methods which performs read and write operations of Registration in Database
+ */
 @Repository
 public interface RegistrationDAOInterface {
 	
@@ -136,9 +139,18 @@ public interface RegistrationDAOInterface {
 	 */
 	public void setPaymentStatus(String studentId, PaymentModeConstant modeOfPayment, double amount) throws SQLException;
 
-
+	/**
+	 * Method to get the number of secondary courses registered by the student
+	 * @param studentName
+	 * @return number of secondary courses
+	 */
 	public int numSecondaryCourses(String studentName);
 
-
+	/**
+	 * Method to add secondary courses
+	 * @param courseCode
+	 * @param studentName
+	 * @return status
+	 */
 	public boolean addSecondaryCourse(String courseCode, String studentName);
 }

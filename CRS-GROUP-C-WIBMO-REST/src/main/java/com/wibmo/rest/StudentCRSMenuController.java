@@ -4,7 +4,6 @@
 package com.wibmo.rest;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -22,37 +21,41 @@ import com.wibmo.bean.Course;
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.CourseLimitExceededException;
+import com.wibmo.exception.CourseLimitExceededForPrimaryException;
+import com.wibmo.exception.CourseLimitExceededForSecondaryException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.CourseSizeViolation;
 import com.wibmo.exception.SeatNotAvailableException;
+import com.wibmo.exception.StudentAlreadyRegistered;
 import com.wibmo.service.AdminOperationInterface;
 import com.wibmo.service.NotificationInterface;
 import com.wibmo.service.ProfessorInterface;
 import com.wibmo.service.RegistrationInterface;
 
-
 /**
- * 
+ * REST Controller for Student activities
  */
 @RestController
 @RequestMapping("/student")
 public class StudentCRSMenuController {
-	
+
 	private static Logger logger = Logger.getLogger(StudentCRSMenuController.class);
-	
+
 	@Autowired
 	RegistrationInterface registrationInterface;
-	
+
 	@Autowired
 	AdminOperationInterface adminInterface;
-	
+
 	@Autowired
 	ProfessorInterface professorInterface;
-	
+
 	@Autowired
 	NotificationInterface notificationInterface;
-	
+
 	/**
 	 * Method to view registered courses of student
+	 * 
 	 * @param studentName
 	 * @return List of registered courses
 	 */
@@ -64,9 +67,10 @@ public class StudentCRSMenuController {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Method to view available courses
+	 * 
 	 * @param studentName
 	 * @return List of available courses
 	 */
@@ -79,135 +83,71 @@ public class StudentCRSMenuController {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Method to view gradecard of the student
+	 * 
 	 * @param studentName
 	 * @return List of registered courses with grades
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/viewGradeCard/{studentName}", method = RequestMethod.GET)
-	private ResponseEntity viewGradeCard(@PathVariable("studentName") String studentName){
+	private ResponseEntity viewGradeCard(@PathVariable("studentName") String studentName) {
 		try {
 			return new ResponseEntity(registrationInterface.viewGradeCard(studentName), HttpStatus.OK);
 		} catch (SQLException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	/**
 	 * Method to check if student is already registered
+	 * 
 	 * @param studentName
 	 * @return Registration Status
 	 */
 	@RequestMapping(value = "/getRegistrationStatus/{studentName}")
-	private boolean getRegistrationStatus(@PathVariable("studentName") String studentName)
-	{
-		try 
-		{
+	private boolean getRegistrationStatus(@PathVariable("studentName") String studentName) {
+		try {
 			return registrationInterface.getRegistrationStatus(studentName);
-		} 
-		catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			logger.error(e.getMessage());
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Method to register courses
+	 * Method for course registration
 	 * @param studentName
-	 * @param courseCode
-	 * @return status message
+	 * @param courseList
+	 * @return course registration status
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping(value = "/registerCourses", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT} )
-	private ResponseEntity registerCourses( 
-			@RequestParam String studentName, 
-			@RequestBody List<String> courseCode) 
-	{
-		if(getRegistrationStatus(studentName))
-		{
-			return new ResponseEntity(" Registration is already completed", HttpStatus.NOT_IMPLEMENTED);
-		}
-		int indexOfUnregisteredCourse = (viewRegisteredCourse(studentName)==null)? 1:viewRegisteredCourse(studentName).size()+1;
-		int index=0;
-		List<String> messages = new ArrayList<>();
-		while(indexOfUnregisteredCourse <= 4)
-		{
-			try
-			{
-				List<Course> courseList=viewCourse(studentName);
-				if(courseList==null)
-					return new ResponseEntity("Course list is empty!",HttpStatus.NOT_IMPLEMENTED);
-				if(registrationInterface.addCourse(courseCode.get(index++),studentName,courseList))
-				{
-					messages.add("Course " + courseCode + " registered sucessfully.");
-					indexOfUnregisteredCourse++;
-				}
-				else
-				{
-					messages.add(" You have already registered for Course : " + courseCode);
-				}
-			}	
-			catch(CourseNotFoundException | CourseLimitExceededException | SQLException | SeatNotAvailableException e)
-			{
-				messages.add(e.getMessage());
-			}
-		}
-		logger.debug("\n*******************************************************");
-		logger.debug("        Primary Course Registration Successful");
-		logger.debug("*******************************************************\n");
-		
-		
-		int indexOfSecondaryCourse=1;
-		while(indexOfSecondaryCourse <=2) {
-			try {
-				List<Course> secondarycourseList=viewCourse(studentName);
-				if(secondarycourseList==null)
-					return new ResponseEntity("Course list is empty!",HttpStatus.NOT_IMPLEMENTED);
-				if(registrationInterface.addSecondaryCourse(courseCode.get(index++),studentName,secondarycourseList))
-				{
-					messages.add("Course " + courseCode + " registered sucessfully.");
-					indexOfSecondaryCourse++;
-				}
-				else
-				{
-					messages.add(" You have already registered for Course : " + courseCode);
-				}
-			}	
-			catch(CourseNotFoundException | SQLException | SeatNotAvailableException e)
-			{
-				messages.add(e.getMessage());
-			}
-		}
-
-		logger.debug("\n*******************************************************");
-		logger.debug("        Secondary Course Registration Successful");
-		logger.debug("*******************************************************\n");
-
+	@RequestMapping(value = "/registerCourses", method = RequestMethod.POST)
+	private ResponseEntity registerCourses(
+			@RequestParam String studentName,
+			@RequestBody List<String> courseList
+	) {
 		try {
-			registrationInterface.setRegistrationStatus(studentName);
+			registrationInterface.registerCourse(studentName, courseList);
+		} catch (CourseNotFoundException | SeatNotAvailableException | SQLException | CourseSizeViolation
+				| CourseLimitExceededForPrimaryException | CourseLimitExceededForSecondaryException
+				| StudentAlreadyRegistered e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		catch(SQLException e)
-		{
-			messages.add(e.getMessage());
-		}
-		return new ResponseEntity("Course is registered for "+ studentName + "\n" + messages, HttpStatus.CREATED);
+		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
 	}
-	
+
 	/**
 	 * Method to add courses
+	 * 
 	 * @param studentName
 	 * @param courseCode
 	 * @return status message
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/addCourse")
-	private ResponseEntity addCourse(
-			@RequestParam String studentName,
-			@RequestParam String courseCode
-			) {
+	private ResponseEntity addCourse(@RequestParam String studentName, @RequestParam String courseCode) {
 		List<Course> courseList;
 		try {
 			courseList = registrationInterface.viewCourses(studentName);
@@ -215,25 +155,23 @@ public class StudentCRSMenuController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		try {
-			registrationInterface.addCourse(courseCode,studentName,courseList);
+			registrationInterface.addCourse(courseCode, studentName, courseList);
 		} catch (CourseNotFoundException | CourseLimitExceededException | SeatNotAvailableException | SQLException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity("Course is registered for "+ studentName, HttpStatus.CREATED);
+		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
 	}
-	
+
 	/**
 	 * Method to drop course
+	 * 
 	 * @param studentName
 	 * @param courseCode
 	 * @return status message
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/dropCourse")
-	private ResponseEntity dropCourse(
-			@RequestParam String studentName,
-			@RequestParam String courseCode
-			) {
+	private ResponseEntity dropCourse(@RequestParam String studentName, @RequestParam String courseCode) {
 		List<Course> registeredCourseList;
 		try {
 			registeredCourseList = registrationInterface.viewRegisteredCourses(studentName);
@@ -247,51 +185,41 @@ public class StudentCRSMenuController {
 		} catch (SQLException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity("Course deleted for "+ studentName, HttpStatus.OK);
+		return new ResponseEntity("Course deleted for " + studentName, HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Method to make payment
+	 * 
 	 * @param studentName
 	 * @param mode
 	 * @return status message
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/makePayment")
-	private ResponseEntity makePayment(
-			@RequestParam String studentName,
-			@RequestParam String mode
-			) {
-		boolean isreg,ispaid = false;
+	private ResponseEntity makePayment(@RequestParam String studentName, @RequestParam String mode) {
+		boolean isreg, ispaid = false;
 		double fee = 0.0;
-		try
-		{
+		try {
 			isreg = registrationInterface.getRegistrationStatus(studentName);
 			ispaid = registrationInterface.getPaymentStatus(studentName);
-			fee=registrationInterface.calculateFee(studentName);
-		}catch (SQLException e) 
-		{
-			return new ResponseEntity(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+			fee = registrationInterface.calculateFee(studentName);
+		} catch (SQLException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-
-		if(!isreg)
-		{
-			return new ResponseEntity("You have not registered yet",HttpStatus.NOT_IMPLEMENTED);
-		}
-		else if(isreg && !ispaid)
-		{
-			try 
-			{
+		if (!isreg) {
+			return new ResponseEntity("You have not registered yet", HttpStatus.NOT_IMPLEMENTED);
+		} else if (isreg && !ispaid) {
+			try {
 				PaymentModeConstant paymentMode = PaymentModeConstant.stringToPaymentMode(mode);
 				registrationInterface.setPaymentStatus(studentName, paymentMode, fee);
-				notificationInterface.sendNotification(NotificationTypeConstant.PAID, studentName, paymentMode, fee);	
-				return new ResponseEntity("Payment Successful by studentName :" + studentName,HttpStatus.OK);	
-			}catch (Exception e) 
-			{
-				return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+				notificationInterface.sendNotification(NotificationTypeConstant.PAID, studentName, paymentMode, fee);
+				return new ResponseEntity("Payment Successful by studentName :" + studentName, HttpStatus.OK);
+			} catch (Exception e) {
+				return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 			}
 		}
-		return new ResponseEntity("You have already paid the fees",HttpStatus.NOT_IMPLEMENTED);
+		return new ResponseEntity("You have already paid the fees", HttpStatus.NOT_IMPLEMENTED);
 	}
 }

@@ -25,12 +25,10 @@ import com.wibmo.service.UserImpl;
  
 
 /**
-* 
+* REST Controller for CRS Application activities
 */
 @RestController
 public class CRSApplicationController {
-
- 
 
     @Autowired
     private StudentImpl studentImpl;
@@ -43,10 +41,10 @@ public class CRSApplicationController {
 
     /**
      * Method to authenticate user
-     * @param username
-     * @param password
-     * @param role
-     * @return status
+     * @param username : String
+     * @param password : String
+     * @param role : String
+     * @return ResponseEntity
      * @throws UserNotFoundException
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -95,7 +93,7 @@ public class CRSApplicationController {
 
             return new ResponseEntity("Student Details Registered Successfully!", HttpStatus.CREATED);
         }catch(StudentNotRegisteredException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 

@@ -15,32 +15,13 @@ import com.wibmo.dao.StudentDAOInterface;
 import com.wibmo.exception.StudentNotRegisteredException;
 
 /**
- * 
+ * Implementation of methods which calls Student DAO methods 
  */
 @Service
 public class StudentImpl implements StudentInterface{
-//	private static Logger logger = Logger.getLogger(StudentImpl.class);
 	
 	@Autowired
 	private StudentDAOInterface studentDaoInterface;
-	
-//	StudentDAOInterface studentDaoInterface=StudentDAOImpl.getInstance();
-//	private StudentImpl(){}
-//	
-//	/**
-//	 * Method to make StudentOperation Singleton
-//	 * @return
-//	 */
-//	public static StudentImpl getInstance()
-//	{
-//		if(instance==null)
-//		{
-//			synchronized(StudentImpl.class){
-//				instance=new StudentImpl();
-//			}
-//		}
-//		return instance;
-//	}
 	
 	@Override
 	public void register(String name, String userId, String password, GenderConstant gender, int gradYear, String dept,
@@ -48,7 +29,6 @@ public class StudentImpl implements StudentInterface{
 		try
 		{
 			Student newStudent=new Student(userId,name,RoleConstant.STUDENT,password,gender,address,dept,userId,gradYear,false);
-//			logger.debug("\nYour account has been created and pending for Approval by Admin.\n");
 			studentDaoInterface.registerStudent(newStudent);
 		}
 		catch(StudentNotRegisteredException ex)

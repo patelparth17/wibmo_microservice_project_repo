@@ -4,7 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * @author Parth
+ * Exception to throw when grade is not alloted
  *
  */
 public class GradeNotAllotedException extends Exception{

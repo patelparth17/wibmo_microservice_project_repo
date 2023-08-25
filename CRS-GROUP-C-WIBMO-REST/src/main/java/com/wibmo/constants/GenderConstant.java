@@ -1,10 +1,7 @@
 package com.wibmo.constants;
 
 /**
- * 
- * @author parth.patel
  * Enumeration class for GenderConstant
- *
  */
 public enum GenderConstant {
 	MALE(1),FEMALE(2),OTHER(3);

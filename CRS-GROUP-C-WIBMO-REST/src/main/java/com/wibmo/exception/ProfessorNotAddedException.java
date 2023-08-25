@@ -3,7 +3,6 @@ package com.wibmo.exception;
 /**
  * Exception to check if the professor is not added successfully by admin
  * @author vedasree
- *
  */
 public class ProfessorNotAddedException extends Exception{
 	private String professorId;

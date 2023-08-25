@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.wibmo.application"},{"l":"com.wibmo.bean"},{"l":"com.wibmo.constants"},{"l":"com.wibmo.dao"},{"l":"com.wibmo.exception"},{"l":"com.wibmo.rest"},{"l":"com.wibmo.service"},{"l":"com.wibmo.utils"},{"l":"com.wibmo.validator"}];updateSearchResults();

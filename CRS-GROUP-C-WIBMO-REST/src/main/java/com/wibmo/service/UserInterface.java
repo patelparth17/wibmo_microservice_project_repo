@@ -3,8 +3,14 @@
  */
 package com.wibmo.service;
 
+import org.jvnet.hk2.annotations.Service;
+
 import com.wibmo.exception.UserNotFoundException;
 
+/**
+ * Interface of methods which calls User DAO methods 
+ */
+@Service
 public interface UserInterface {
 	
 	/**

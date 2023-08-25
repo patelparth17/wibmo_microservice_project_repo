@@ -4,7 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when student is not found for approval
  */
 public class StudentNotFoundForApprovalException extends Exception{
 	

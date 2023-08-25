@@ -1,9 +1,8 @@
 package com.wibmo.constants;
 
 /**
- * 
- * @author parth.patel
  * Enumeration class for RoleConstant Types
+ * @author parth.patel
  *
  */
 public enum RoleConstant {

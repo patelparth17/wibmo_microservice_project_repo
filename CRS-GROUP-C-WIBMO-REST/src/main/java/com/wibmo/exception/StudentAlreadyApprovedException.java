@@ -4,7 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when student is already approved
  */
 public class StudentAlreadyApprovedException extends Exception{
 	
@@ -15,7 +15,7 @@ public class StudentAlreadyApprovedException extends Exception{
 	
 	/***
 	 * Getter function for studentId
-	 * @param studentId
+	 * @return studentId
 	 */
 	
 	public String getstudentId() {

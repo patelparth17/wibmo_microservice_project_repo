@@ -9,7 +9,7 @@ import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
 
 /**
- *
+ * Interface of methods which performs read and write operations of Notification in Database
  */
 @Repository
 public interface NotificationDAOInterface {

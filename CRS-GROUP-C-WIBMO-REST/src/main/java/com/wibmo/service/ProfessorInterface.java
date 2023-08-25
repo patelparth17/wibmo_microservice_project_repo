@@ -13,6 +13,9 @@ import com.wibmo.bean.EnrolledStudent;
 import com.wibmo.exception.GradeNotAllotedException;
 import com.wibmo.exception.UserNotFoundException;
 
+/**
+ * Interface of methods which calls Professor DAO methods 
+ */
 @Service
 public interface ProfessorInterface {
 	

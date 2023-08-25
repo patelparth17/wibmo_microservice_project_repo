@@ -1,9 +1,8 @@
 package com.wibmo.constants;
 
 /**
- * 
- * @author parth.patel
  * Enumeration class for Mode of Payments
+ * @author parth.patel
  *
  */
 public enum PaymentModeConstant {

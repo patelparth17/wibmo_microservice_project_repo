@@ -9,8 +9,7 @@ import com.wibmo.constants.GenderConstant;
 import com.wibmo.constants.RoleConstant;
 
 /**
- * @author parth.patel
- *
+ * Bean class for Student
  */
 public class Student extends User implements Serializable
 {
@@ -77,7 +76,7 @@ public class Student extends User implements Serializable
 	
 	/**
 	 * Method to set the studentID
-	 * @param studentID
+	 * @param studentId
 	 */
 	public void setStudentId(String studentId) 
 	{

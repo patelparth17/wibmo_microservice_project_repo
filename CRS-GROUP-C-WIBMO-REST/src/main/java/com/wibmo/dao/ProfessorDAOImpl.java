@@ -21,6 +21,9 @@ import com.wibmo.constants.SQLConstant;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.utils.DBUtils;
 
+/**
+ * Implementation of methods which performs read and write operations of Professor in Database
+ */
 @Repository
 public class ProfessorDAOImpl implements ProfessorDAOInterface{
 	

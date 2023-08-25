@@ -9,13 +9,10 @@ import com.wibmo.constants.GenderConstant;
 import com.wibmo.constants.RoleConstant;
 
 /**
- * @author parth.patel
- *
+ * Bean class for Professor
  */
 public class Professor extends User implements Serializable{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private String professorID;
 	private String department;

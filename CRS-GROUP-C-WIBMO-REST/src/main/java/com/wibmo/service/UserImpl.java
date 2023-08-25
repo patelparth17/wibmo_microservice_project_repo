@@ -6,31 +6,14 @@ import org.springframework.stereotype.Service;
 import com.wibmo.dao.UserDAOInterface;
 import com.wibmo.exception.UserNotFoundException;
 
+/**
+ * Implementation of methods which calls User DAO methods 
+ */
 @Service
 public class UserImpl implements UserInterface {
 	
 	@Autowired
 	private UserDAOInterface userDaoInterface;
-//	UserDAOInterface userDaoInterface= UserDAOImpl.getInstance();
-//	private UserImpl()
-//	{
-//		
-//	}
-//	
-//	/**
-//	 * Method to make UserImpl Singleton
-//	 * @return instance
-//	 */
-//	public static UserImpl getInstance()
-//	{
-//		if(instance==null)
-//		{
-//			synchronized(UserImpl.class){
-//				instance=new UserImpl();
-//			}
-//		}
-//		return instance;
-//	}
 	
 	@Override
 	public boolean updatePassword(String username,String newPassword) throws UserNotFoundException {

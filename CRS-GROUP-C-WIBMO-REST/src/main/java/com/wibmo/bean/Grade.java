@@ -6,7 +6,7 @@ package com.wibmo.bean;
 import java.io.Serializable;
 
 /**
- * 
+ * Bean class for Grade
  */
 public class Grade implements Serializable{
 	

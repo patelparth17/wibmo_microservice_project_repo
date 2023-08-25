@@ -4,14 +4,14 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when course already registered
  */
 public class CourseAlreadyRegisteredException extends Exception{
 	
 	private String courseId;
 	
 	/**
-	 * 
+	 * Constructor
 	 * @param courseId
 	 */
 	public CourseAlreadyRegisteredException(String courseId) {

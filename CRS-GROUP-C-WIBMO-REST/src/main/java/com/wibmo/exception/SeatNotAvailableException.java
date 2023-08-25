@@ -3,7 +3,6 @@ package com.wibmo.exception;
 /**
  * Exception to check if seats are available for course registration
  * @author Vedasree
- *
  */
 public class SeatNotAvailableException extends Exception{
 	

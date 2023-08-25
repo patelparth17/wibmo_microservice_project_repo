@@ -35,7 +35,7 @@ import com.wibmo.service.NotificationInterface;
 
 
 /**
- * 
+ * REST Controller for Admin activities
  */
 
 @RestController

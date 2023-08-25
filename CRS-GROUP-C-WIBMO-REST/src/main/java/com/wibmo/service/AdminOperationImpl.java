@@ -23,6 +23,9 @@ import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.validator.AdminValidator;
 
+/**
+ * Implementation of methods which calls Admin DAO methods 
+ */
 @Service
 public class AdminOperationImpl implements AdminOperationInterface{
 	

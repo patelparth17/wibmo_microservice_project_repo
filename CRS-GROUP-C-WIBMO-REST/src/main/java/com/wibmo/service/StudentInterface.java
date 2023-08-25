@@ -9,7 +9,7 @@ import com.wibmo.constants.GenderConstant;
 import com.wibmo.exception.StudentNotRegisteredException;
 
 /**
- * 
+ * Interface of methods which calls Student DAO methods 
  */
 @Service
 public interface StudentInterface {
@@ -22,7 +22,6 @@ public interface StudentInterface {
 	 * @param gradYear
 	 * @param dept
 	 * @param address
-	 * @return registration status: String
 	 * @throws StudentNotRegisteredException 
 	 */
 	public void register(String name,String userId,String password,GenderConstant gender,int gradYear,String dept,String address) throws StudentNotRegisteredException;

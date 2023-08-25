@@ -1,10 +1,8 @@
 package com.wibmo.constants;
 
 /**
- * 
- * @author parth.patel
  * Enumeration class for GradeConstant
- * 
+ * @author parth.patel
  */
 public enum GradeConstant {
     A(10),

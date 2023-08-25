@@ -6,10 +6,8 @@ import com.wibmo.bean.Course;
 import com.wibmo.exception.CourseNotFoundException;
 
 /**
- * 
- * @author vedasree
- * Class for Student Validator 
- * 
+ * Validates student related operations
+ * @author vedasree 
  */
 public class StudentValidator {
 

@@ -12,7 +12,7 @@ import com.wibmo.bean.EnrolledStudent;
 import com.wibmo.exception.UserNotFoundException;
 
 /**
- * 
+ * Interface of methods which performs read and write operations of Professor in Database
  */
 @Repository
 public interface ProfessorDAOInterface {
@@ -27,8 +27,8 @@ public interface ProfessorDAOInterface {
 	
 	/**
 	 * Method to view list of enrolled Students using SQL Commands
-	 * @param: courseCode
-	 * @return: return the enrolled students for the corresponding professor and course code. 
+	 * @param courseId : courseCode
+	 * @return List : return the enrolled students for the corresponding professor and course code. 
 	 * @throws UserNotFoundException 
 	 */
 	public List<EnrolledStudent> getEnrolledStudents(String courseId) throws UserNotFoundException;

@@ -6,12 +6,10 @@ package com.wibmo.bean;
 import java.io.Serializable;
 
 /**
- * 
+ * Bean class for EnrolledStudent
  */
 public class EnrolledStudent implements Serializable{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	String courseCode;
 	String courseName;

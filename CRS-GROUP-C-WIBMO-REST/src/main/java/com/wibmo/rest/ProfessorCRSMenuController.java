@@ -6,6 +6,8 @@ package com.wibmo.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.ProfessorImpl;
 import com.wibmo.validator.ProfessorValidator;
 
+/**
+ * REST Controller for Professor activities
+ */
 @RestController
 @RequestMapping("/professor")
 public class ProfessorCRSMenuController {
@@ -28,9 +33,12 @@ public class ProfessorCRSMenuController {
 	@Autowired
 	private ProfessorImpl professorImpl;
 	
+	private static Logger logger = Logger.getLogger(ProfessorCRSMenuController.class);
+	
 	/**
 	 * Method to get the signed-up courses 
-	 * @param username
+	 * @param username : Username 
+	 * @return ResponseEntity
 	 */
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -41,14 +49,13 @@ public class ProfessorCRSMenuController {
 
 	/**
 	 * Method to view the list of enrolled students
-	 * @param username
+	 * @param username : Username 
+	 * @return ResponseEntity
 	 */
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-
-	    @RequestMapping(value = "/enrolledstudents")
-
-	    public ResponseEntity viewEnrolledStudents(@RequestParam("username") String username) {
+    @RequestMapping(value = "/enrolledstudents")
+	public ResponseEntity viewEnrolledStudents(@RequestParam("username") String username) {
 	        try {
 	            return new ResponseEntity(professorImpl.viewEnrolledStudents(username),HttpStatus.OK);
 	        } catch(UserNotFoundException ex) {
@@ -58,7 +65,8 @@ public class ProfessorCRSMenuController {
 	
 	/**
 	 * Method to add grade to the student's course
-	 * @param username
+	 * @param username : Username 
+	 * @return ResponseEntity
 	 */
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -74,34 +82,34 @@ public class ProfessorCRSMenuController {
 			} catch (UserNotFoundException e) {
 				e.getMessage();
 			}
-			System.out.println("The list of enrolled students:");
-			System.out.println(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","Student ID" ));
+			logger.debug("The list of enrolled students:");
+			logger.debug(String.format("%20s %20s %20s","COURSE CODE","COURSE NAME","Student ID" ));
 			for (EnrolledStudent obj: enrolledStudents) {
-				System.out.println(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
+				logger.debug(String.format("%20s %20s %20s",obj.getCourseCode(), obj.getCourseName(),obj.getStudentId()));
 			}
 			List<Course> coursesEnrolled = new ArrayList<>();
 			coursesEnrolled	= professorImpl.viewCourses(username);
-			System.out.println("----------------Add Grade--------------");
-			System.out.println("Enter student id: ");
+			logger.debug("----------------Add Grade--------------");
+			logger.debug("Enter student id: ");
 			studentId = in.nextLine();
 			
-			System.out.println("Enter course code: ");
+			logger.debug("Enter course code: ");
 			courseCode = in.nextLine();
 			
-			System.out.println("Enter grade: ");
+			logger.debug("Enter grade: ");
 			grade = in.nextLine();
 			
 			if (!(ProfessorValidator.isValidStudent(enrolledStudents, studentId)
 					&& ProfessorValidator.isValidCourse(coursesEnrolled, courseCode))) {
 				professorImpl.addGrade(studentId, courseCode, grade);
-				System.out.println("GradeConstant added successfully for student ID : "+studentId);
+				logger.debug("GradeConstant added successfully for student ID : "+studentId);
 				return new ResponseEntity("GradeConstant added successfully for student ID : "+studentId, HttpStatus.OK);
 			} else {
-				System.out.println("Invalid data entered, try again!");
+				logger.debug("Invalid data entered, try again!");
 				return new ResponseEntity("Invalid data entered", HttpStatus.NOT_FOUND);
 			}
 		} catch(GradeNotAllotedException ex) {
-			System.out.println("GradeConstant cannot be added for student ID : "+ex.getStudentId());
+			logger.error("GradeConstant cannot be added for student ID : "+ex.getStudentId());
 			return new ResponseEntity(ex.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}

@@ -4,7 +4,7 @@
 package com.wibmo.constants;
 
 /**
- * 
+ * SQL Query constants
  */
 public class SQLConstant {
 	//Admin's Queries

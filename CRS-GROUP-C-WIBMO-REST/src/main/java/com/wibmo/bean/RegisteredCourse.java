@@ -3,13 +3,11 @@
  */
 package com.wibmo.bean;
 
- 
-
 import java.io.Serializable;
 
 import com.wibmo.constants.GradeConstant;
 /**
-* 
+* Bean class for Registered course
 */
 public class RegisteredCourse implements Serializable
 {

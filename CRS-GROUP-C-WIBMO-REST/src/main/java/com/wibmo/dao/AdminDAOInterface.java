@@ -23,7 +23,7 @@ import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 
 /**
- * 
+ * Interface of methods which performs read and write operations of Admin in Database
  */
 @Repository
 public interface AdminDAOInterface {
@@ -106,5 +106,9 @@ public interface AdminDAOInterface {
 	 */
 	public List<Student> viewPendingAdmissions();
 	
+	/**
+	 * Method to approve all students
+	 * @param studentList
+	 */
 	public void approveAllStudents(List<Student> studentList);
 }

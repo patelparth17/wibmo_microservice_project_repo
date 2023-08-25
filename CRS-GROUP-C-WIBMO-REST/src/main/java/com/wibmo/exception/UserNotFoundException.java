@@ -4,14 +4,14 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when user is not found
  */
 public class UserNotFoundException extends Exception{
 	private String userId;
 
 	/***
 	 * Setter function for UserId
-	 * @param userId
+	 * @param id
 	 */
 	public UserNotFoundException(String id) {
 		userId = id;

@@ -8,13 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ * Bean class for Sem Registration
  */
 public class SemRegisteration implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	int studentID;
 	int sem;

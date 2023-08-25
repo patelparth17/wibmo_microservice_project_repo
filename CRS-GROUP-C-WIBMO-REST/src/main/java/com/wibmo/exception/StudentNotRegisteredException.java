@@ -1,5 +1,5 @@
 /**
- * 
+ *  @author kuragayala.vs
  */
 package com.wibmo.exception;
 
@@ -7,20 +7,24 @@ package com.wibmo.exception;
  * Exception to check if student is not registered
  */
 public class StudentNotRegisteredException extends Exception{
-	 private String studentName;
+	 private String studentID;
 	 
-	 public StudentNotRegisteredException(String studentName)
+	 public StudentNotRegisteredException(String studentID)
 	 {
-		 this.studentName=studentName;
+		 this.studentID=studentID;
 	 }
 	 
 	 /**
-	  * getter function for studentName
+	  * getter function for studentID
 	  * @return
 	  */
-	 public String getStudentName()
+	 public String getstudentID()
 	 {
-		 return studentName;
+		 return studentID;
+	 }
+	 
+	 public String getMessage() {
+		 return  "Student ID: "+ studentID + " not registered!";
 	 }
 	 
 }

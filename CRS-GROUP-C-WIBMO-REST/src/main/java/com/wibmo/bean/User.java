@@ -8,13 +8,10 @@ import java.io.Serializable;
 import com.wibmo.constants.GenderConstant;
 import com.wibmo.constants.RoleConstant;
 
-//import jakarta.persistence.Entity;
-
 /**
- * @author parth.patel
- *
+ * Bean class for User
  */
-//@Entity
+
 public abstract class User implements Serializable{
 	/**
 	 * 

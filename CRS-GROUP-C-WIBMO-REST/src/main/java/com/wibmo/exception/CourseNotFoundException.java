@@ -4,11 +4,15 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when course is not found 
  */
 public class CourseNotFoundException extends Exception{
 	private String courseCode;
 	
+	/**
+	 * Constructor
+	 * @param courseCode
+	 */
 	public CourseNotFoundException(String courseCode)
 	{	
 		this.courseCode = courseCode;
@@ -16,7 +20,7 @@ public class CourseNotFoundException extends Exception{
 
 	/**
 	 * Getter function for course code
-	 * @return
+	 * @return courseCode
 	 */
 	public String getCourseCode()
 	{

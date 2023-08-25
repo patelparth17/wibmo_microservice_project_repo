@@ -4,7 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * 
+ * Exception to throw when course already exists
  */
 public class CourseAlreadyExistsException extends Exception{
 	private String courseId;

@@ -18,7 +18,7 @@ import com.wibmo.utils.DBUtils;
 import org.apache.log4j.Logger;
 
 /**
- *
+ * Implementation of methods which performs read and write operations of Notification in Database
  */
 @Repository
 public class NotificationDAOImpl implements NotificationDAOInterface{
@@ -59,13 +59,13 @@ public class NotificationDAOImpl implements NotificationDAOInterface{
 		}
 		catch(SQLException ex)
 		{
-//			logger.error(ex.getMessage());
+			ex.getMessage();
 		}
 	}
 
 	/**
 	 * Method to perform payment
-	 * @param studentName
+	 * @param studentId
 	 * @param modeOfPayment
 	 * @param amount 
 	 * @return reference id of the transaction

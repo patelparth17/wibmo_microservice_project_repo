@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.wibmo.bean.Course;
@@ -20,9 +19,12 @@ import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.constants.SQLConstant;
 import com.wibmo.utils.DBUtils;
 
+/**
+ * Implementation of methods which performs read and write operations of Registration in Database
+ */
 @Repository
 public class RegistrationDAOImpl implements RegistrationDAOInterface{
-	@Autowired
+	
 	private static Logger logger = Logger.getLogger(RegistrationDAOImpl.class);
 	
 	Connection conn = DBUtils.getConnection();

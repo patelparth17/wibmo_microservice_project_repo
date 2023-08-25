@@ -6,8 +6,8 @@ package com.wibmo.bean;
 import java.io.Serializable;
 
 /**
+ * Bean class for Course
  * @author parth.patel
- *
  */
 public class Course implements Serializable
 {

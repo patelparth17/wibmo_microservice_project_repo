@@ -4,8 +4,7 @@
 package com.wibmo.exception;
 
 /**
- * @author Parth
- *
+ * Exception to throw when course limit exceeded
  */
 public class CourseLimitExceededException extends Exception {
 	
