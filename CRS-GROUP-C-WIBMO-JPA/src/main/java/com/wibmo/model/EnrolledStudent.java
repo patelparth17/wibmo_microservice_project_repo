@@ -5,9 +5,12 @@ package com.wibmo.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+
 /**
  * 
  */
+
 public class EnrolledStudent implements Serializable{
 	/**
 	 * 
@@ -29,6 +32,10 @@ public class EnrolledStudent implements Serializable{
 		this.studentId=studentId;
 	}
 	
+	public EnrolledStudent() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * Method to get the course code
 	 * @return Course code

@@ -5,23 +5,43 @@ package com.wibmo.model;
 
 import java.io.Serializable;
 
-import com.wibmo.constants.GenderConstant;
-import com.wibmo.constants.RoleConstant;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author parth.patel
  *
  */
+@Entity
+@Table(name="student")
 public class Student extends User implements Serializable
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Column(name="dept")
 	private String department;
+	
+	@Column(name="studentID")
 	private String studentId;
+	
+	@Column(name="gradYear")
 	private int gradYear;
+	
+	@Column(name="isApproved")
 	boolean isApproved;
+	
+	@Column(name="isReportGenerated")
+	boolean isReportGenerated;
+
+	@Column(name="isRegistered")
+	boolean isRegistered;
+	
+	@Column(name="isPaid")
+	boolean isPaid;
 	
 	/**
 	 * Constructing User of a Student type.
@@ -36,7 +56,7 @@ public class Student extends User implements Serializable
 	 * @param gradYear
 	 * @param isApproved
 	 */
-	public Student(String userId, String name, RoleConstant role, String password, GenderConstant gender, String address,String dept,String studentId,int gradYear,boolean isApproved) {
+	public Student(String userId, String name, String role, String password, String gender, String address,String dept,String studentId,int gradYear,boolean isApproved) {
 		super(userId, name, role, password,gender,address);
 		this.department = dept;
 		this.studentId = studentId;
@@ -100,5 +120,37 @@ public class Student extends User implements Serializable
 	public void setGradYear(int gradYear) 
 	{
 		this.gradYear = gradYear;
+	}
+	
+	public boolean isApproved() {
+		return isApproved;
+	}
+
+	public void setApproved(boolean isApproved) {
+		this.isApproved = isApproved;
+	}
+
+	public boolean isReportGenerated() {
+		return isReportGenerated;
+	}
+
+	public void setReportGenerated(boolean isReportGenerated) {
+		this.isReportGenerated = isReportGenerated;
+	}
+
+	public boolean isRegistered() {
+		return isRegistered;
+	}
+
+	public void setRegistered(boolean isRegistered) {
+		this.isRegistered = isRegistered;
+	}
+
+	public boolean isPaid() {
+		return isPaid;
+	}
+
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
 	}
 }

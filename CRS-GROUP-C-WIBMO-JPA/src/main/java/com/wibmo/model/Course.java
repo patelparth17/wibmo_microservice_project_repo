@@ -15,32 +15,32 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table
+@Table(name="course")
 public class Course implements Serializable
 {
 	/**
 	 * 
 	 */
-	@Column
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@Column
+	@Column(name="courseID")
 	private String courseId;
 	
-	@Column
+	@Column(name="courseCode")
 	private String courseCode;
 	
-	@Column
+	@Column(name="courseName")
 	private String courseName;
 	
-	@Column
+	@Column(name="professorID")
 	private String professorID;
 	
-	@Column
+	@Column(name="seats")
 	private int seats = 10;
 	
-	@Column
+	@Column(name="courseFee")
 	private double fee;
 	
 	/**

@@ -4,10 +4,15 @@
 package com.wibmo.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.wibmo.constants.GenderConstant;
@@ -20,8 +25,9 @@ import com.wibmo.constants.RoleConstant;
  *
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="user")
-public abstract class User implements Serializable{
+public class User implements Serializable{
 	/**
 	 * 
 	 */
@@ -34,16 +40,20 @@ public abstract class User implements Serializable{
 	private String username;
 	
 	@Column
-	private GenderConstant gender;
+	private String gender;
 	
 	@Column
-	protected RoleConstant role;
+	protected String role;
 	
 	@Column
 	private String password;
 	
 	@Column
 	private String address;
+	
+//	@OneToMany
+//	@JoinColumn(name="userID")
+//	private Set<Course> courses;
 	
 	/**
 	 * Constructor of User
@@ -62,7 +72,7 @@ public abstract class User implements Serializable{
 	 * @param gender
 	 * @param address
 	 */
-	public User(String userID, String username,RoleConstant role,String password ,GenderConstant gender, String address) {
+	public User(String userID, String username,String role,String password ,String gender, String address) {
 		this.userID = userID;
 		this.username = username;
 		this.gender = gender;
@@ -95,7 +105,7 @@ public abstract class User implements Serializable{
 	 * Method to get the gender of user
 	 * @return gender
 	 */
-	public GenderConstant getGender() {
+	public String getGender() {
 		return gender;
 	}
 	
@@ -103,7 +113,7 @@ public abstract class User implements Serializable{
 	 * Method to set the gender of user
 	 * @param gender
 	 */
-	public void setGender(GenderConstant gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 	
@@ -111,7 +121,7 @@ public abstract class User implements Serializable{
 	 * Method to get the role of user
 	 * @return role
 	 */
-	public RoleConstant getRole() {
+	public String getRole() {
 		return role;
 	}
 	
@@ -119,7 +129,7 @@ public abstract class User implements Serializable{
 	 * Method to set the role of user
 	 * @param role
 	 */
-	public void setRole(RoleConstant role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 	

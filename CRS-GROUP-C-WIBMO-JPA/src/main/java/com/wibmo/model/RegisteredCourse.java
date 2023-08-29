@@ -7,10 +7,18 @@ package com.wibmo.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.wibmo.constants.GradeConstant;
 /**
 * 
 */
+
+@Entity
+@Table(name="registeredcourse")
 public class RegisteredCourse implements Serializable
 {
     /**
@@ -18,8 +26,16 @@ public class RegisteredCourse implements Serializable
 	 */
 	private static final long serialVersionUID = 1L;
 	Course course;
+	
+	@Id
+	@Column(name="studentID")
     String studentId;
-    GradeConstant grade;
+	
+	@Column(name="grade")
+    String grade;
+	
+	@Column(name="courseCode")
+	String courseCode;
 
 
     /**
@@ -58,7 +74,7 @@ public class RegisteredCourse implements Serializable
      * Method to get the grade of respective course
      * @return grade
      */
-    public GradeConstant getGrade() {
+    public String getGrade() {
         return grade;
     }
 
@@ -67,6 +83,6 @@ public class RegisteredCourse implements Serializable
      * @param grade
      */
     public void setGrade(String grade) {
-        this.grade = GradeConstant.valueOf(grade);
+        this.grade = grade;
     }
 }

@@ -62,7 +62,7 @@ public class SQLConstant {
 	public static final String ADD_PROFESSOR_QUERY = "INSERT INTO Professor(professorID, dept, designation) VALUES (?, ?, ?)";
 	public static final String VIEW_PROFESSOR_QUERY = "SELECT userId, username, gender, dept, designation, address FROM Professor natural join User WHERE userId = professorId";
 	public static final String CHECK_PROFESSOR_QUERY = "SELECT professorId FROM PROFESSOR WHERE professorId = ?";
-	public static final String GET_COURSES="SELECT c FROM Course c JOIN User u ON u.userID=c.professorID WHERE u.username=?1";
+	public static final String GET_COURSES="SELECT c.courseCode,c.courseName,c.professorID, c.seats,c.courseFee FROM Course AS c JOIN User u ON u.userID=c.professorID WHERE u.username=:username";
 	public static final String GET_ENROLLED_STUDENTS="SELECT course.courseCode,course.courseName,registeredcourse.studentId FROM course INNER JOIN registeredcourse ON course.courseCode = registeredcourse.courseCode JOIN user ON course.professorID = user.userID WHERE user.username = ? order by course.courseCode";
 	public static final String ADD_GRADE="UPDATE registeredcourse SET Grade=? WHERE courseCode=? AND studentId=?";
 	

@@ -2,13 +2,16 @@ package com.wibmo.model;
 
 import java.io.Serializable;
 
-import com.wibmo.constants.GenderConstant;
-import com.wibmo.constants.RoleConstant;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author parth.patel
  *
  */
+
+@Entity
+@Table(name="admin")
 public class Admin extends User implements Serializable
 {
 	/**
@@ -25,7 +28,7 @@ public class Admin extends User implements Serializable
 	 * @param password
 	 * @param address
 	 */
-	public Admin(String userID, String name, GenderConstant gender, RoleConstant role, String password, String address) 
+	public Admin(String userID, String name, String gender, String role, String password, String address) 
 	{
 		super(userID, name, role, password, gender, address);
 	}

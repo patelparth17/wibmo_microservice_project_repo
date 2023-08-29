@@ -24,7 +24,7 @@ public interface ProfessorInterface {
 	 * @return the status
 	 * @throws GradeNotAllotedException
 	 */
-//	public boolean addGrade(String studentName, String courseId, String grade) throws GradeNotAllotedException;
+	public boolean addGrade(String username,String studentName, String courseId, String grade) throws GradeNotAllotedException;
 	
 	/**
 	 * Method to view courses
@@ -41,5 +41,5 @@ public interface ProfessorInterface {
 	 * @throws SQLException 
 	 * @throws UserNotFoundException 
 	 */
-//	public List<EnrolledStudent> viewEnrolledStudents(String username) throws SQLException, UserNotFoundException;
+	public List<EnrolledStudent> viewEnrolledStudents(String username) throws SQLException, UserNotFoundException;
 }

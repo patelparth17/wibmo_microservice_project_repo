@@ -24,6 +24,7 @@ public class Professor extends User implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Column
 	private String professorID;
 	
@@ -50,7 +51,7 @@ public class Professor extends User implements Serializable{
 	 * @param password
 	 * @param address
 	 */
-	public Professor(String userID, String name, GenderConstant gender, RoleConstant role, String password, String address) {
+	public Professor(String userID, String name, String gender, String role, String password, String address) {
 		super(userID, name, role, password, gender, address);
 	}
 	
