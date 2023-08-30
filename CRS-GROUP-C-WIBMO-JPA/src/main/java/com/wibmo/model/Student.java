@@ -9,10 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-/**
- * @author parth.patel
- *
- */
 @Entity
 @Table(name="student")
 public class Student extends User implements Serializable
@@ -56,16 +52,31 @@ public class Student extends User implements Serializable
 	 * @param gradYear
 	 * @param isApproved
 	 */
-	public Student(String userId, String name, String role, String password, String gender, String address,String dept,String studentId,int gradYear,boolean isApproved) {
+	public Student(String userId, String name, String role, String password, String gender, String address,String dept,String studentId,int gradYear,boolean isApproved
+			,boolean isReportGenerated,boolean isRegistered, boolean isPaid) {
 		super(userId, name, role, password,gender,address);
 		this.department = dept;
 		this.studentId = studentId;
 		this.gradYear = gradYear;
 		this.isApproved = isApproved;
+		this.isRegistered = isRegistered;
+		this.isReportGenerated = isReportGenerated;
+		this.isPaid = isPaid;
 	}
 
 	public Student() {
 		
+	}
+	
+	public Student(String studentId,String dept,int gradYear,boolean isApproved
+			,boolean isReportGenerated,boolean isRegistered, boolean isPaid) {
+		this.department = dept;
+		this.studentId = studentId;
+		this.gradYear = gradYear;
+		this.isApproved = isApproved;
+		this.isRegistered = isRegistered;
+		this.isReportGenerated = isReportGenerated;
+		this.isPaid = isPaid;
 	}
 	
 	/**

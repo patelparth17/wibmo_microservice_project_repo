@@ -31,6 +31,11 @@ public class Grade implements Serializable{
 	}
 
 
+	public Grade() {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	/**
 	 * Method to get the course code
 	 * @return courseCode

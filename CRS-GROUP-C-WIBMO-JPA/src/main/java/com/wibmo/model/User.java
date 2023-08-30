@@ -4,26 +4,13 @@
 package com.wibmo.model;
 
 import java.io.Serializable;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.wibmo.constants.GenderConstant;
-import com.wibmo.constants.RoleConstant;
-
-//import jakarta.persistence.Entity;
-
-/**
- * @author parth.patel
- *
- */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="user")
@@ -33,27 +20,24 @@ public class User implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column
+	@Column(name="userID")
 	private String userID;
 	
-	@Column
+	@Column(name="username")
 	private String username;
 	
-	@Column
+	@Column(name="gender")
 	private String gender;
 	
-	@Column
+	@Column(name="role")
 	protected String role;
 	
-	@Column
+	@Column(name="password")
 	private String password;
 	
-	@Column
+	@Column(name="address")
 	private String address;
 	
-//	@OneToMany
-//	@JoinColumn(name="userID")
-//	private Set<Course> courses;
 	
 	/**
 	 * Constructor of User

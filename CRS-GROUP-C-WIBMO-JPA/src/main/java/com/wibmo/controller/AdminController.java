@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,12 +19,18 @@ import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
-import com.wibmo.exception.StudentNotFoundForApprovalException;
+import com.wibmo.exception.UserIdAlreadyExists;
+import com.wibmo.exception.UserNotAddedException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
+import com.wibmo.model.Professor;
+import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
 import com.wibmo.service.AdminService;
+import com.wibmo.service.UserService;
 
 /**
  * 
@@ -34,6 +41,10 @@ public class AdminController {
 	
 	@Autowired
 	AdminService adminService;
+	
+	@Autowired
+	UserService userService;
+	
 	/**
 	 * Method to view courses in catalog
 	 * @return List of courses in catalg
@@ -103,9 +114,10 @@ public class AdminController {
 	@RequestMapping(value = "/approveStudent/{studentId}", method = RequestMethod.PUT)
 	public ResponseEntity approveStudent(@PathVariable String studentId) {
 		List<Student> studentList = adminService.viewPendingAdmissions();
-		System.out.println(studentId);
 		try {
 			adminService.approveStudent(studentId, studentList);
+			String name = userService.findUserName(studentId);
+			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
 		} catch (StudentNotFoundForApprovalException | StudentAlreadyApprovedException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
@@ -126,10 +138,58 @@ public class AdminController {
 			return new ResponseEntity("No student pending for approval!", HttpStatus.NOT_IMPLEMENTED);
 		
 		adminService.approveAllStudents();
-//		for(Student studentObj:studentList) {
-//			String name = studentObj.getusername();	
-//			notificationObject.sendNotification(NotificationTypeConstant.APPROVED, name, null, 0);
-//		}
+		for(Student studentObj:studentList) {
+			String name = studentObj.getusername();	
+			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
+		}
 		return new ResponseEntity("Successfully approved all the pending approvals!", HttpStatus.OK);
+	}
+	
+	/**
+	 * Method to add professors
+	 * @param professor
+	 * @return status
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/addProfessor", method = RequestMethod.POST)
+	public ResponseEntity addProfessor(@RequestBody Professor professor) throws UserIdAlreadyExists{
+		try {
+			adminService.addProfessor(professor);
+		} catch (UserNotAddedException | ProfessorNotAddedException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		} 
+		return new ResponseEntity("Professor added Successfully!", HttpStatus.CREATED);
+	}
+	
+	/**
+	 * Method to assign course to professor
+	 * @param professorId
+	 * @param courseCode
+	 * @return status
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/assignCourseToProfessor/{professorId}", method = RequestMethod.PUT)
+	public ResponseEntity assignCourseToProfessor(
+			@PathVariable String professorId, 
+			@RequestParam String courseCode)  {
+		try {
+			
+			adminService.assignCourse(courseCode, professorId);
+			
+		} catch (CourseNotFoundException | UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity("Professor assigned to " + courseCode +"!", HttpStatus.OK);
+	}
+	
+	/**
+	 * Method to generate report card of student
+	 * @param studentId
+	 * @return report card
+	 */
+	@RequestMapping(value = "/generateReportCard/{studentId}", method = RequestMethod.GET)
+	public List<RegisteredCourse> generateReportCard(@PathVariable String studentId){
+		return adminService.generateGradeCard(studentId);
 	}
 }

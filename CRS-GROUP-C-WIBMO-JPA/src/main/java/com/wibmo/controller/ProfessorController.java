@@ -28,6 +28,7 @@ public class ProfessorController {
 	/**
 	 * Method to get the signed-up courses 
 	 * @param username
+	 * @return ResponseEntity
 	 */
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -36,6 +37,11 @@ public class ProfessorController {
 		return new ResponseEntity(professorService.viewCourses(username),HttpStatus.OK);
 	}
 	
+	/**
+	 * Method to view enrolled students
+	 * @param username
+	 * @return ResponseEntity
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     @RequestMapping(value = "/enrolledstudents")
 	public ResponseEntity viewEnrolledStudents(@RequestParam("username") String username) {

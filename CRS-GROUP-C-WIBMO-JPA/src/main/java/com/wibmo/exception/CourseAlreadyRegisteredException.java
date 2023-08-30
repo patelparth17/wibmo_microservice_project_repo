@@ -7,6 +7,7 @@ package com.wibmo.exception;
  * 
  */
 public class CourseAlreadyRegisteredException extends Exception{
+	private static final long serialVersionUID = 1L;
 	
 	private String courseId;
 	

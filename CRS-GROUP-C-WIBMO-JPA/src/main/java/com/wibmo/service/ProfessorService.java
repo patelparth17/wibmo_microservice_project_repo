@@ -6,10 +6,13 @@ package com.wibmo.service;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.model.EnrolledStudent;
+import com.wibmo.model.Professor;
 import com.wibmo.model.RegisteredCourse;
+import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
 import com.wibmo.repository.CourseRepository;
@@ -41,7 +44,7 @@ public class ProfessorService implements ProfessorInterface {
 		List<Course> coursesOffered= new ArrayList<Course>();
 		try
 		{
-			String userID = userRepo.findByUsername(username).getuserID();
+			String userID = userRepo.findByUsername(username).get().getuserID();
 			coursesOffered = courseRepo.findByProfessorID(userID);
 		}
 		catch(Exception ex)
@@ -54,7 +57,7 @@ public class ProfessorService implements ProfessorInterface {
 	@Override
 	public List<EnrolledStudent> viewEnrolledStudents(String username) throws UserNotFoundException{
 		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
-		String userID = userRepo.findByUsername(username).getuserID();
+		String userID = userRepo.findByUsername(username).get().getuserID();
 		
 		List<Course> courses = courseRepo.findAllByProfessorID(userID);
 			
@@ -73,7 +76,7 @@ public class ProfessorService implements ProfessorInterface {
 
 
 	public boolean addGrade(String username, String studentID, String courseCode, String grade) {
-		String userID = userRepo.findByUsername(username).getuserID();
+		String userID = userRepo.findByUsername(username).get().getuserID();
 		List<Course> courses = courseRepo.findAllByProfessorID(userID);
 		
 		for(Course course : courses ) {
@@ -86,5 +89,21 @@ public class ProfessorService implements ProfessorInterface {
 		
 		return false;
 		
+	}
+
+	@Modifying
+	public void addProfessor(Professor prof) throws ProfessorNotAddedException {
+		if(professorRepo.findByProfessorID(prof.getProfessorID()).isPresent()) {
+			throw new ProfessorNotAddedException(prof.getProfessorID());
+		}
+		professorRepo.save(prof);
+		
+	}
+
+	public boolean isProfessorExists(String professorId) {
+		if(professorRepo.findByProfessorID(professorId).isPresent()) {
+			return true;
+		}
+		return false;
 	}
 }

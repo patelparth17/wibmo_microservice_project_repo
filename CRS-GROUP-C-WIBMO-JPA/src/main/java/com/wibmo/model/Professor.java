@@ -7,16 +7,9 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.wibmo.constants.GenderConstant;
-import com.wibmo.constants.RoleConstant;
 
-/**
- * @author parth.patel
- *
- */
 @Entity
 @Table(name="professor")
 public class Professor extends User implements Serializable{
@@ -25,13 +18,13 @@ public class Professor extends User implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Column
+	@Column(name="professorID")
 	private String professorID;
 	
-	@Column
+	@Column(name="dept")
 	private String department;
 	
-	@Column
+	@Column(name="designation")
 	private String designation;
 	
 	/**

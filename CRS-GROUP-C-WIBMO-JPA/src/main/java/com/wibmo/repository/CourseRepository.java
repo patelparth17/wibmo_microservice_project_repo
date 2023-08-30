@@ -4,6 +4,7 @@
 package com.wibmo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -36,6 +37,20 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 	@Transactional
 	@Query(value="DELETE FROM Course WHERE courseCode = ?1",nativeQuery=true)
 	void removeCourse(String courseCode);
+
+
+	Optional<Course> findByCourseCode(String courseCode);
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Course SET professorID = ?2 WHERE courseCode = ?1",nativeQuery = true)
+	void assignCourse(String courseCode, String professorId);
+	
+	@Query(value="SELECT * FROM course WHERE courseCode NOT IN  (SELECT courseCode  FROM registeredcourse WHERE studentId = ?1 UNION SELECT courseCode  FROM secondarycourse WHERE studentId = ?1) AND seats > 0", nativeQuery = true)
+	List<Course> viewCourses(String userId);
+
+	@Query(value="SELECT sum(courseFee) FROM course WHERE courseCode IN (SELECT courseCode FROM registeredcourse WHERE studentId = ?1)", nativeQuery = true)
+	double calculateFee(String userID);
 	
 
 }

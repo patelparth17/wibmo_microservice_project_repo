@@ -5,18 +5,26 @@ package com.wibmo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.wibmo.constants.NotificationTypeConstant;
+//import com.wibmo.constants.NotificationTypeConstant;
+//import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
+import com.wibmo.exception.UserNotAddedException;
+import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
+import com.wibmo.model.Professor;
+import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
 import com.wibmo.repository.CourseRepository;
+import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;
 import com.wibmo.validator.AdminValidator;
 
@@ -25,13 +33,26 @@ import com.wibmo.validator.AdminValidator;
  */
 
 @Service
-public class AdminService {
+public class AdminService implements AdminInterface {
 
 	@Autowired
 	CourseRepository courseRepo;
 
 	@Autowired
 	StudentRepository studentRepo;
+	
+	@Autowired
+	NotificationService notificationService;
+	
+	@Autowired
+	UserService userService;
+	
+	@Autowired 
+	ProfessorService professorService;
+	
+	@Autowired
+	RegisteredCourseRepository registeredCourseRepo;
+	
 
 	public List<Course> viewCourses() {
 		List<Course> courses = new ArrayList<Course>();
@@ -72,5 +93,51 @@ public class AdminService {
 	
 	public void approveAllStudents() {
 		studentRepo.approveAllStudents();
+	}
+
+	public void sendNotification(NotificationTypeConstant type, String name) {
+		
+		notificationService.sendNotification(type, name);
+	}
+
+	public void addProfessor(Professor professor) throws UserNotAddedException, ProfessorNotAddedException {
+		try {
+			userService.addUser(professor);
+		} catch (UserNotAddedException e) {
+			throw e;
+		}
+		
+		try {
+			professorService.addProfessor(professor);
+		} catch (ProfessorNotAddedException e) {
+			throw e;
+		}
+		
+	}
+
+	public void assignCourse(String courseCode, String professorId) throws UserNotFoundException, CourseNotFoundException {
+		if(!professorService.isProfessorExists(professorId)) {
+			throw new UserNotFoundException(professorId);
+		}
+		if(courseRepo.findByCourseCode(courseCode).isEmpty()) {
+			throw new CourseNotFoundException(courseCode);
+		}
+		courseRepo.assignCourse(courseCode,professorId);
+		
+	}
+
+	
+	public List<RegisteredCourse> generateGradeCard(String studentId) {
+		
+		List<RegisteredCourse> registeredCourses = registeredCourseRepo.findByStudentId(studentId);
+		for(RegisteredCourse registeredCourse : registeredCourses) {
+			System.out.println(registeredCourse.getCourseCode());
+			if(courseRepo.findByCourseCode(registeredCourse.getCourseCode()).isPresent()) {
+				Course course = courseRepo.findByCourseCode(registeredCourse.getCourseCode()).get();
+				registeredCourse.setCourse(course);
+			}
+		}
+		
+		return registeredCourses;
 	}
 }

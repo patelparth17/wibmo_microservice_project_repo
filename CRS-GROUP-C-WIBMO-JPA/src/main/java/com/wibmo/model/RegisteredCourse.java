@@ -11,8 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.wibmo.constants.GradeConstant;
+import javax.persistence.Transient;
 /**
 * 
 */
@@ -25,6 +24,8 @@ public class RegisteredCourse implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@Transient
 	Course course;
 	
 	@Id
@@ -37,8 +38,7 @@ public class RegisteredCourse implements Serializable
 	@Column(name="courseCode")
 	String courseCode;
 
-
-    /**
+	/**
      * Method to get the course details
      * @return course
      */
@@ -85,4 +85,13 @@ public class RegisteredCourse implements Serializable
     public void setGrade(String grade) {
         this.grade = grade;
     }
+    
+
+    public String getCourseCode() {
+		return courseCode;
+	}
+
+	public void setCourseCode(String courseCode) {
+		this.courseCode = courseCode;
+	}
 }

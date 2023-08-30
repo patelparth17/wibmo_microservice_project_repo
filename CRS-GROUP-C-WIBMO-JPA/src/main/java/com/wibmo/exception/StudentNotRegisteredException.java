@@ -23,4 +23,9 @@ public class StudentNotRegisteredException extends Exception{
 		 return studentName;
 	 }
 	 
+	 public String getMessage() {
+		return "Student :"+ studentName+" not registered!";
+		 
+	 }
+	 
 }

@@ -19,7 +19,7 @@ public interface StudentRepository  extends CrudRepository<Student, String>{
 
 //	List<Student> findByIsApproved(boolean flag);
 
-	@Query(value="SELECT * FROM Student s, User u WHERE isApproved = 0 AND s.studentID = u.userID",nativeQuery=true)
+	@Query(value="SELECT * FROM Student s INNER JOIN User u WHERE isApproved = 0 AND s.studentID = u.userID",nativeQuery=true)
 	List<Student> viewPendingAdmissions();
 
 	@Query(value="SELECT isApproved FROM student WHERE studentId = ?1",nativeQuery=true)
@@ -34,5 +34,17 @@ public interface StudentRepository  extends CrudRepository<Student, String>{
 	@Transactional
 	@Query(value="UPDATE Student SET isApproved = 1",nativeQuery=true)
 	void approveAllStudents();
+
+	
+	@Query(value="SELECT isRegistered FROM Student WHERE StudentID = ?1", nativeQuery = true)
+	int getRegistrationStatus(String userID);
+
+	@Query(value="SELECT isPaid FROM Student WHERE StudentID = ?1", nativeQuery = true)
+	int getPaymentStatus(String userID);
+	
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Student SET isPaid = 1 WHERE studentId = ?1", nativeQuery = true)
+	void setPaymentStatus(String userID);
 	
 }

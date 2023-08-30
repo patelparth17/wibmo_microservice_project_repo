@@ -3,6 +3,8 @@
  */
 package com.wibmo.repository;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,6 +26,8 @@ public interface ProfessorRepository extends CrudRepository<Professor, String> {
 	@Transactional
 	@Query(value="UPDATE registeredcourse SET Grade=? WHERE courseCode=? AND studentId=?",nativeQuery = true)
 	public void addGrade(String grade, String courseCode, String studentID);
+
+	public Optional<Professor> findByProfessorID(String professorID);
 	
 	
 }

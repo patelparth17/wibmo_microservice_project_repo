@@ -5,22 +5,41 @@ package com.wibmo.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.wibmo.constants.PaymentModeConstant;
 
 /**
  * 
  */
+
+@Entity
+@Table(name="payment")
 public class Payment implements Serializable{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private double amount;
-	private int transcationId;
-	private boolean paymentStatus;
-	private PaymentModeConstant paymentMode;
 	
+	@Column(name="amount")
+	private double amount;
+	
+	@Column(name="referenceId")
+	private String transcationId;
+	
+	@Column(name="paymentStatus")
+	private String paymentStatus;
+	
+	@Column(name="modeOfPayment")
+	private String paymentMode;
+	
+	@Id
+	@Column(name="studentName")
+	private String studentName;
 
 	/**
 	 * Parametrized Constructor
@@ -29,12 +48,12 @@ public class Payment implements Serializable{
 	 * @param paymentStatus
 	 * @param paymentMode
 	 */
-	public Payment(double amount, int transcationId, boolean paymentStatus, PaymentModeConstant paymentMode) {
+	public Payment(double amount, String transcationId, String paymentStatus, PaymentModeConstant paymentMode) {
 		super();
 		this.amount = amount;
 		this.transcationId = transcationId;
 		this.paymentStatus = paymentStatus;
-		this.paymentMode = paymentMode;
+		this.paymentMode = paymentMode.toString();
 	}
 	
 	/**
@@ -57,7 +76,7 @@ public class Payment implements Serializable{
 	 * Method to get the transaction ID of payment
 	 * @return transcationId
 	 */
-	public int getTranscationId() {
+	public String getTranscationId() {
 		return transcationId;
 	}
 	
@@ -65,7 +84,7 @@ public class Payment implements Serializable{
 	 * Method to set the transaction ID of payment
 	 * @param transcationId
 	 */
-	public void setTranscationId(int transcationId) {
+	public void setTranscationId(String transcationId) {
 		this.transcationId = transcationId;
 	}
 	
@@ -73,7 +92,7 @@ public class Payment implements Serializable{
 	 * Method to get the payment status
 	 * @return payment status
 	 */
-	public boolean getPaymentStatus() {
+	public String getPaymentStatus() {
 		return paymentStatus;
 	}
 	
@@ -81,7 +100,7 @@ public class Payment implements Serializable{
 	 * Method to set the payment status
 	 * @param paymentStatus
 	 */
-	public void setPaymentStatus(boolean paymentStatus) {
+	public void setPaymentStatus(String paymentStatus) {
 		this.paymentStatus = paymentStatus;
 	}
 	
@@ -90,7 +109,7 @@ public class Payment implements Serializable{
 	 * Method to get the payment mode
 	 * @return payment mode
 	 */
-	public PaymentModeConstant getPaymentMode() {
+	public String getPaymentMode() {
 		return paymentMode;
 	}
 	
@@ -100,6 +119,23 @@ public class Payment implements Serializable{
 	 * @param paymentMode
 	 */
 	public void setPaymentMode(PaymentModeConstant paymentMode) {
-		this.paymentMode = paymentMode;
+		this.paymentMode = paymentMode.toString();
 	}
+	
+	/**
+	 * Method to get the student name 
+	 * @return studentName
+	 */
+	public String getStudentName() {
+		return studentName;
+	}
+
+	/**
+	 * Method to set the student name
+	 * @param studentName
+	 */
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
 }
