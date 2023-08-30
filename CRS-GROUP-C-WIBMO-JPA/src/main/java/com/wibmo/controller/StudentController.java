@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wibmo.model.Course;
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
-import com.wibmo.exception.CourseLimitExceededException;
+import com.wibmo.exception.*;
+import com.wibmo.exception.CourseLimitExceededForPrimaryException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.SeatNotAvailableException;
 import com.wibmo.exception.UserNotFoundException;
@@ -123,21 +125,20 @@ public class StudentController {
 	 * @param courseList
 	 * @return course registration status
 	 */
-//	@SuppressWarnings({ "unchecked", "rawtypes" })
-//	@RequestMapping(value = "/registerCourses", method = RequestMethod.POST)
-//	private ResponseEntity registerCourses(
-//			@RequestParam String studentName,
-//			@RequestBody List<String> courseList
-//	) {
-//		try {
-//			registrationService.registerCourse(studentName, courseList);
-//		} catch (CourseNotFoundException | SeatNotAvailableException | SQLException | CourseSizeViolation
-//				| CourseLimitExceededForPrimaryException | CourseLimitExceededForSecondaryException
-//				| StudentAlreadyRegistered e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-//		}
-//		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
-//	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value = "/registerCourses", method = RequestMethod.POST)
+	private ResponseEntity registerCourses(
+			@RequestParam String studentName,
+			@RequestBody List<String> courseList
+	) {
+		try {
+			registrationService.registerCourse(studentName, courseList);
+		} catch ( UserNotFoundException | SQLException | CourseSizeViolation | CourseLimitExceededForPrimaryException | CourseLimitExceededForSecondaryException
+				| StudentAlreadyRegistered  e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
+	}
 
 	/**
 	 * Method to add courses
@@ -172,24 +173,24 @@ public class StudentController {
 	 * @param courseCode
 	 * @return status message
 	 */
-//	@SuppressWarnings({ "rawtypes", "unchecked" })
-//	@RequestMapping(value = "/dropCourse")
-//	private ResponseEntity dropCourse(@RequestParam String studentName, @RequestParam String courseCode) {
-//		List<Course> registeredCourseList;
-//		try {
-//			registeredCourseList = registrationService.viewRegisteredCourses(studentName);
-//		} catch (SQLException e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//		}
-//		try {
-//			registrationService.dropCourse(courseCode, studentName, registeredCourseList);
-//		} catch (CourseNotFoundException e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//		} catch (SQLException e) {
-//			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-//		}
-//		return new ResponseEntity("Course deleted for " + studentName, HttpStatus.OK);
-//	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/dropCourse")
+	private ResponseEntity dropCourse(@RequestParam String studentName, @RequestParam String courseCode) {
+		List<Course> registeredCourseList;
+		try {
+			registeredCourseList = registrationService.viewRegisteredCourses(studentName);
+		} catch (SQLException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		try {
+			registrationService.dropCourse(courseCode, studentName, registeredCourseList);
+		} catch (CourseNotFoundException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		} catch (SQLException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity("Course deleted for " + studentName, HttpStatus.OK);
+	}
 
 	/**
 	 * Method to make payment

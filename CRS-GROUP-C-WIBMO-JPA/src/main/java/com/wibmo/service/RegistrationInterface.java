@@ -17,6 +17,7 @@ import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CourseSizeViolation;
 import com.wibmo.exception.SeatNotAvailableException;
 import com.wibmo.exception.StudentAlreadyRegistered;
+import com.wibmo.exception.UserNotFoundException;
 
 /**
  * Interface of methods which calls Registration DAO methods 
@@ -35,7 +36,7 @@ public interface RegistrationInterface {
 	 * @throws SeatNotAvailableException
 	 * @throws SQLException
 	 */
-	public boolean addCourse(String courseCode, String studentName, List<Course> availableCourseList)
+	public int addCourse(String courseCode, String studentName, List<Course> availableCourseList)
 			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, SQLException;
 
 	/**
@@ -79,9 +80,9 @@ public interface RegistrationInterface {
 	 * @throws CourseNotFoundException
 	 * @throws SQLException 
 	 */
-//	public boolean dropCourse(String courseCode, String studentName, List<Course> registeredCourseList)
-//			throws CourseNotFoundException, SQLException;
-//
+	public void dropCourse(String courseCode, String studentName, List<Course> registeredCourseList)
+			throws CourseNotFoundException, SQLException;
+
 
 	/**
 	 * Method to add secondary course
@@ -108,7 +109,7 @@ public interface RegistrationInterface {
 	 * @throws CourseLimitExceededForSecondaryException
 	 * @throws StudentAlreadyRegistered
 	 */
-//	public boolean registerCourse(String studentName, List<String> availableCourseList) throws CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegistered;
+	public boolean registerCourse(String studentName, List<String> availableCourseList) throws UserNotFoundException, CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegistered;
 
 
 	boolean addSecondaryCourse(String courseCode, String studentName) throws SQLException;

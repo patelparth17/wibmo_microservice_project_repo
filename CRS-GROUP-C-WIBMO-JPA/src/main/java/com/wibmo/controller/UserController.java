@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.constants.NotificationTypeConstant;
+import com.wibmo.exception.StudentNotApprovedException;
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
@@ -28,6 +29,7 @@ import com.wibmo.service.UserService;
  */
 
 @RestController
+@RequestMapping("/auth")
 public class UserController {
 	
 	@Autowired
@@ -59,7 +61,7 @@ public class UserController {
             return new ResponseEntity("Authentication Successful!", HttpStatus.FOUND);
         else
             return new ResponseEntity("Authentication failed. User deatils not found.", HttpStatus.NOT_FOUND);
-    	}catch(UserNotFoundException e)
+    	}catch(UserNotFoundException  e)
     	{
     		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
     	}

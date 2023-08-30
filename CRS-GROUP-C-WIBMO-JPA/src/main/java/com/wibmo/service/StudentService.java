@@ -71,4 +71,12 @@ public class StudentService implements StudentInterface{
 		studentRepo.setPaymentStatus(userID);		
 	}
 
+	public int getApprovalStatus(String studentName) throws UserNotFoundException {
+		if(userRepo.findByUsername(studentName).isEmpty()) {
+			throw new UserNotFoundException(studentName);
+		}
+		String userID = userRepo.findByUsername(studentName).get().getuserID();
+		return studentRepo.getApprovalStatus(userID);
+	}
+
 }

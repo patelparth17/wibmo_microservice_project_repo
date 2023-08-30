@@ -38,12 +38,16 @@ public interface RegisteredCourseRepository extends CrudRepository<RegisteredCou
 	@Modifying
 	@Transactional
 	@Query(value="INSERT INTO registeredcourse (studentId,courseCode,grade) VALUES ( ?1 , ?2, ?3)", nativeQuery = true)
-	boolean addCourse(String studentId ,String courseCode, String grade);
+	int addCourse(String studentId ,String courseCode, String grade);
 
 	List<RegisteredCourse> findAllByStudentId(String userId);
 	
 	@Query(value="SELECT DISTINCT courseCode FROM registeredcourse rc WHERE rc.studentID = :studentId", nativeQuery = true)
 	List<String> getCourseCodes(@Param("studentId") String studentId);
-
+	
+	@Modifying
+	@Transactional
+	@Query(value="DELETE * FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
+	void dropCourse(String userId, String courseCode);
 
 }
