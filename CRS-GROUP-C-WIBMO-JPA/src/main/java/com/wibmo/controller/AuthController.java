@@ -30,7 +30,7 @@ import com.wibmo.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
-public class UserController {
+public class AuthController {
 	
 	@Autowired
 	UserService userService;
@@ -55,16 +55,25 @@ public class UserController {
             @RequestParam String username, 
             @RequestParam String password, 
             @RequestParam String role) {
+    	boolean authenticationStatus = false; 
     	try {
-        boolean authenticationStatus = userService.authenticateUser(username, password, role);
+    		studentService.getApprovalStatus(username);
+    	} catch (StudentNotApprovedException e) {
+    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+    	} 
+    	
+    	try {
+    		authenticationStatus = userService.authenticateUser(username, password, role);
+    	}catch(UserNotFoundException e)
+    	{
+    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+    	}
+    	
         if(authenticationStatus == true)
             return new ResponseEntity("Authentication Successful!", HttpStatus.FOUND);
         else
             return new ResponseEntity("Authentication failed. User deatils not found.", HttpStatus.NOT_FOUND);
-    	}catch(UserNotFoundException  e)
-    	{
-    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
-    	}
+ 
     }
     
     /**

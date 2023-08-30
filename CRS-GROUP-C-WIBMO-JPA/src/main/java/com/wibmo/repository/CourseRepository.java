@@ -51,6 +51,15 @@ public interface CourseRepository extends CrudRepository<Course, Integer> {
 
 	@Query(value="SELECT sum(courseFee) FROM course WHERE courseCode IN (SELECT courseCode FROM registeredcourse WHERE studentId = ?1)", nativeQuery = true)
 	double calculateFee(String userID);
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE course SET seats = seats+1 WHERE courseCode=?1", nativeQuery = true)
+	void incrementSeats(String courseCode);
 	
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE course SET seats = seats-1 WHERE courseCode = ?1", nativeQuery = true)
+	void decrementSeats(String courseCode);
 
 }

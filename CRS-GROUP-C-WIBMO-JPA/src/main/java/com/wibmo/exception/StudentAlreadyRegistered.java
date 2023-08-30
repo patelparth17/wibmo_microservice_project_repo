@@ -12,18 +12,18 @@ public class StudentAlreadyRegistered extends Exception{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String studentName;
+	private String studentId;
 
-    public StudentAlreadyRegistered(String studentName) {
-        this.studentName = studentName;
+    public StudentAlreadyRegistered(String studentId) {
+        this.studentId = studentId;
     }
 
     /**
      * Getter function for professorId
      * @return studentName
      */
-    public String studentName() {
-        return this.studentName;
+    public String studentId() {
+        return this.studentId;
     }
 
     /**
@@ -32,6 +32,6 @@ public class StudentAlreadyRegistered extends Exception{
 
     @Override
     public String getMessage() {
-        return "Student " + studentName + " already Registered";
+        return "Student " + studentId + " already Registered";
     }
 }

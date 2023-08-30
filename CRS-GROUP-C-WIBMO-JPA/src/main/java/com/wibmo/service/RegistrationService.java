@@ -16,6 +16,7 @@ import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;
 import com.wibmo.repository.UserRepository;
 import com.wibmo.repository.CourseRepository;
+import com.wibmo.exception.CourseAlreadyRegisteredException;
 import com.wibmo.exception.CourseLimitExceededException;
 import com.wibmo.exception.CourseLimitExceededForPrimaryException;
 import com.wibmo.exception.CourseLimitExceededForSecondaryException;
@@ -49,10 +50,13 @@ public class RegistrationService implements RegistrationInterface {
 
 	@Override
 	public int addCourse(String courseCode, String studentName, List<Course> availableCourseList)
-			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, SQLException {
+			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 
-		if (registeredCourseRepo.numOfRegisteredCourses(userId) >= 4
+		if (registeredCourseRepo.getRegisteredCourses(userId, courseCode)!= null) {
+			throw new CourseAlreadyRegisteredException(courseCode);
+		}
+		else if (registeredCourseRepo.numOfRegisteredCourses(userId) >= 4
 				&& registeredCourseRepo.numSecondaryCourses(userId) >= 2) {
 			throw new CourseLimitExceededException(4);
 		} else if (registeredCourseRepo.numSecondaryCourses(userId) < 2) {
@@ -64,17 +68,25 @@ public class RegistrationService implements RegistrationInterface {
 			throw new SeatNotAvailableException(courseCode);
 		} else if (!StudentValidator.isValidCourseCode(courseCode, availableCourseList)) {
 			throw new CourseNotFoundException(courseCode);
-		}
+		} 
 		return registeredCourseRepo.addCourse(studentName, courseCode, "NOT_GRADED");
 
 	}
 
 	@Override
-	public void dropCourse(String courseCode, String studentName,List<Course> registeredCourseList) throws CourseNotFoundException, SQLException {
+	public void dropCourse(String courseCode, String studentName,List<Course> registeredCourseList) throws CourseNotFoundException {
 		  if(!StudentValidator.isRegistered(courseCode, studentName, registeredCourseList))
 	        	throw new CourseNotFoundException(courseCode);
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
-		registeredCourseRepo.dropCourse(courseCode, userId);
+		registeredCourseRepo.dropCourse(userId, courseCode);
+		courseRepo.incrementSeats(courseCode);
+		if( registeredCourseRepo.getSecondaryCourses(userId).isPresent())
+		{
+			String course = registeredCourseRepo.getSecondaryCourses(userId).get().get(0);
+			registeredCourseRepo.addCourse(userId, course, "NOT_GRADED");
+			registeredCourseRepo.dropSecondaryCourse(userId, course);
+			courseRepo.decrementSeats(course);
+		}
 	}
 
 	@Override
@@ -84,7 +96,7 @@ public class RegistrationService implements RegistrationInterface {
 	}
 
 	@Override
-	public List<Grade> viewGradeCard(String studentName) throws SQLException {
+	public List<Grade> viewGradeCard(String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 
 		List<Grade> grades = new ArrayList<Grade>();
@@ -100,13 +112,13 @@ public class RegistrationService implements RegistrationInterface {
 	}
 
 	@Override
-	public List<Course> viewCourses(String studentName) throws SQLException {
+	public List<Course> viewCourses(String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 		return courseRepo.viewCourses(userId);
 	}
 
 	@Override
-	public List<Course> viewRegisteredCourses(String studentName) throws SQLException {
+	public List<Course> viewRegisteredCourses(String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 
 		List<Course> courses = new ArrayList<Course>();
@@ -125,7 +137,7 @@ public class RegistrationService implements RegistrationInterface {
 	
 
 	@Override
-	public boolean registerCourse(String studentName, List<String> courseList) throws UserNotFoundException, SQLException, CourseSizeViolation,
+	public boolean registerCourse(String studentName, List<String> courseList) throws UserNotFoundException, CourseSizeViolation,
 			CourseLimitExceededForPrimaryException, CourseLimitExceededForSecondaryException, StudentAlreadyRegistered, UserNotFoundException {
 		String userID = userRepo.findByUsername(studentName).get().getuserID();
 		if (courseList.size() != 6) {
@@ -168,6 +180,7 @@ public class RegistrationService implements RegistrationInterface {
 //        logger.debug("\n*******************************************************");
 //        logger.debug("        Secondary Course Registration Successful");
 //        logger.debug("*******************************************************\n");
+		
 		return true;
 
 	}
@@ -175,7 +188,6 @@ public class RegistrationService implements RegistrationInterface {
 	@Override
 	public boolean addSecondaryCourse(String userId, String courseCode) {
 		registeredCourseRepo.addSecondaryCourse(userId, courseCode);
-		registeredCourseRepo.decrementSeats(courseCode);
 		return true;
 	}
 

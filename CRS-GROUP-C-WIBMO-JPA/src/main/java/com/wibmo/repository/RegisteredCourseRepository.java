@@ -1,6 +1,7 @@
 package com.wibmo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -30,10 +31,7 @@ public interface RegisteredCourseRepository extends CrudRepository<RegisteredCou
 	@Query(value="INSERT INTO secondarycourse (studentId, courseCode) VALUES (?1 , ?2)", nativeQuery = true)
 	void addSecondaryCourse(String studentId, String courseCode);
 
-	@Modifying
-	@Transactional
-	@Query(value="UPDATE course SET seats = seats-1 WHERE courseCode = ?1", nativeQuery = true)
-	void decrementSeats(String courseCode);
+	
 
 	@Modifying
 	@Transactional
@@ -47,7 +45,17 @@ public interface RegisteredCourseRepository extends CrudRepository<RegisteredCou
 	
 	@Modifying
 	@Transactional
-	@Query(value="DELETE * FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
+	@Query(value="DELETE registeredcourse FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
 	void dropCourse(String userId, String courseCode);
+	
+	@Query(value="SELECT courseCode FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2 ", nativeQuery = true)
+	String getRegisteredCourses(String userId, String courseCode);
+	
+	@Query(value="SELECT courseCode FROM secondarycourse WHERE studentID = ?1 ", nativeQuery = true)
+	Optional<List<String>> getSecondaryCourses(String userId);
 
+	@Modifying
+	@Transactional
+	@Query(value="DELETE secondarycourse FROM secondarycourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
+	void dropSecondaryCourse(String userId, String courseCode);
 }

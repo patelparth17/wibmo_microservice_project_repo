@@ -16,6 +16,7 @@ import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
+import com.wibmo.exception.StudentAlreadyRegistered;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
@@ -26,6 +27,7 @@ import com.wibmo.model.Student;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;
+import com.wibmo.repository.UserRepository;
 import com.wibmo.validator.AdminValidator;
 
 /**
@@ -40,6 +42,9 @@ public class AdminService implements AdminInterface {
 
 	@Autowired
 	StudentRepository studentRepo;
+	
+	@Autowired
+	UserRepository userRepo;
 	
 	@Autowired
 	NotificationService notificationService;
@@ -139,5 +144,17 @@ public class AdminService implements AdminInterface {
 		}
 		
 		return registeredCourses;
+	}
+	
+	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegistered, UserNotFoundException {
+		studentRepo.setRegisterationStatus(studentId);
+		String userId = userRepo.findByUserID(studentId).getuserID();
+		int registerationStatus = studentRepo.getRegistrationStatus(userId);
+		if(userId==null) {
+			throw new UserNotFoundException(userId);
+		}
+		if(registerationStatus==1) {
+			throw new StudentAlreadyRegistered(userId);
+		}
 	}
 }

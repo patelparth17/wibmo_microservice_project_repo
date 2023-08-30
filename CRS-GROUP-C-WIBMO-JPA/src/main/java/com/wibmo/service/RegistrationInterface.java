@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.wibmo.model.Course;
 import com.wibmo.model.Grade;
+import com.wibmo.exception.CourseAlreadyRegisteredException;
 import com.wibmo.exception.CourseLimitExceededException;
 import com.wibmo.exception.CourseLimitExceededForPrimaryException;
 import com.wibmo.exception.CourseLimitExceededForSecondaryException;
@@ -34,10 +35,11 @@ public interface RegistrationInterface {
 	 * @throws CourseNotFoundException
 	 * @throws CourseLimitExceededException
 	 * @throws SeatNotAvailableException
+	 * @throws CourseAlreadyRegisteredException 
 	 * @throws SQLException
 	 */
 	public int addCourse(String courseCode, String studentName, List<Course> availableCourseList)
-			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, SQLException;
+			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException;
 
 	/**
 	 * Method to view the list of courses registered by the student
@@ -45,7 +47,7 @@ public interface RegistrationInterface {
 	 * @return List of courses
 	 * @throws SQLException 
 	 */
-	public List<Course> viewRegisteredCourses(String studentName) throws SQLException;
+	public List<Course> viewRegisteredCourses(String studentName);
 
 	/**
 	 * Method to view the list of available courses
@@ -53,7 +55,7 @@ public interface RegistrationInterface {
 	 * @return List of courses
 	 * @throws SQLException 
 	 */
-	public List<Course> viewCourses(String studentName) throws SQLException;
+	public List<Course> viewCourses(String studentName);
 
 	/**
 	 * Method to view grade card for students
@@ -61,7 +63,7 @@ public interface RegistrationInterface {
 	 * @return List of Student's Grades
 	 * @throws SQLException 
 	 */
-	List<Grade> viewGradeCard(String studentName) throws SQLException;
+	List<Grade> viewGradeCard(String studentName);
 
 	/** 
 	 * Method for Fee Calculation for selected courses
@@ -81,20 +83,19 @@ public interface RegistrationInterface {
 	 * @throws SQLException 
 	 */
 	public void dropCourse(String courseCode, String studentName, List<Course> registeredCourseList)
-			throws CourseNotFoundException, SQLException;
+			throws CourseNotFoundException;
 
 
 	/**
 	 * Method to add secondary course
 	 * @param courseCode
 	 * @param studentName
-	 * @param secondarycourseList
 	 * @return status
 	 * @throws SQLException
 	 * @throws SeatNotAvailableException
 	 * @throws CourseNotFoundException
 	 */
-//	public boolean addSecondaryCourse(String courseCode, String studentName, List<Course> secondarycourseList) throws SQLException, SeatNotAvailableException, CourseNotFoundException;
+	public boolean addSecondaryCourse(String courseCode, String studentName) throws SeatNotAvailableException, CourseNotFoundException;
 	
 	/**
 	 * Method for course registration
@@ -111,6 +112,4 @@ public interface RegistrationInterface {
 	 */
 	public boolean registerCourse(String studentName, List<String> availableCourseList) throws UserNotFoundException, CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegistered;
 
-
-	boolean addSecondaryCourse(String courseCode, String studentName) throws SQLException;
 }

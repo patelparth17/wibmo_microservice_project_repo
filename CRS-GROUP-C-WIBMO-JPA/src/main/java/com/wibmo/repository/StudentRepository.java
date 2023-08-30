@@ -50,5 +50,10 @@ public interface StudentRepository  extends CrudRepository<Student, String>{
 	
 	@Query(value="SELECT isApproved FROM Student WHERE StudentID = ?1", nativeQuery = true)
 	int getApprovalStatus(String userID);
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Student SET isRegistered = 1 WHERE studentId = ?1", nativeQuery = true)
+	void setRegisterationStatus(String studentId);
 	
 }

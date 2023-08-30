@@ -21,6 +21,7 @@ import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
+import com.wibmo.exception.StudentAlreadyRegistered;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
@@ -122,7 +123,7 @@ public class AdminController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity("Student with "+ studentId + " is approved!", HttpStatus.OK);
+		return new ResponseEntity("Student with "+ studentId + " is approved for Registeration!", HttpStatus.OK);
 	}
 	
 	
@@ -142,7 +143,7 @@ public class AdminController {
 			String name = studentObj.getusername();	
 			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
 		}
-		return new ResponseEntity("Successfully approved all the pending approvals!", HttpStatus.OK);
+		return new ResponseEntity("Successfully approved all the approvals for Registeration!", HttpStatus.OK);
 	}
 	
 	/**
@@ -191,5 +192,24 @@ public class AdminController {
 	@RequestMapping(value = "/generateReportCard/{studentId}", method = RequestMethod.GET)
 	public List<RegisteredCourse> generateReportCard(@PathVariable String studentId){
 		return adminService.generateGradeCard(studentId);
+	}
+	
+	/**
+	 * Method to approve student by ID
+	 * @param studentId
+	 * @return status
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "/approveStudentRegisteration/{studentId}", method = RequestMethod.PUT)
+	public ResponseEntity approveStudentRegisteration(@PathVariable String studentId) {
+		try {
+			adminService.approveStudentRegisteration(studentId);
+			String name = userService.findUserName(studentId);
+			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
+		} catch (StudentAlreadyRegistered | UserNotFoundException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity("Student with "+ studentId + " is approved for Courses registered!", HttpStatus.OK);
 	}
 }
