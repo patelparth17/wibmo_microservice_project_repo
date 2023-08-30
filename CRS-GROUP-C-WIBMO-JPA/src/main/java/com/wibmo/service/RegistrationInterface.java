@@ -16,6 +16,7 @@ import com.wibmo.exception.CourseLimitExceededForPrimaryException;
 import com.wibmo.exception.CourseLimitExceededForSecondaryException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CourseSizeViolation;
+import com.wibmo.exception.ReportCardNotGeneratedException;
 import com.wibmo.exception.SeatNotAvailableException;
 import com.wibmo.exception.StudentAlreadyRegistered;
 import com.wibmo.exception.UserNotFoundException;
@@ -61,9 +62,10 @@ public interface RegistrationInterface {
 	 * Method to view grade card for students
 	 * @param studentName
 	 * @return List of Student's Grades
+	 * @throws ReportCardNotGeneratedException 
 	 * @throws SQLException 
 	 */
-	List<Grade> viewGradeCard(String studentName);
+	List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException;
 
 	/** 
 	 * Method for Fee Calculation for selected courses

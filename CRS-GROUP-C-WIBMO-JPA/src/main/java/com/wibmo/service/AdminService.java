@@ -5,6 +5,8 @@ package com.wibmo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
+import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
 import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
@@ -132,18 +135,27 @@ public class AdminService implements AdminInterface {
 	}
 
 	
-	public List<RegisteredCourse> generateGradeCard(String studentId) {
+	public List<Grade> generateGradeCard(String studentId) {
 		
-		List<RegisteredCourse> registeredCourses = registeredCourseRepo.findByStudentId(studentId);
-		for(RegisteredCourse registeredCourse : registeredCourses) {
-			System.out.println(registeredCourse.getCourseCode());
-			if(courseRepo.findByCourseCode(registeredCourse.getCourseCode()).isPresent()) {
-				Course course = courseRepo.findByCourseCode(registeredCourse.getCourseCode()).get();
-				registeredCourse.setCourse(course);
+		studentRepo.setGeneratedReportCardStatus(studentId);
+		
+		List<Map<String, String>> registeredCourses = registeredCourseRepo.findByStudentId(studentId);
+		
+		List<Grade> grades = new ArrayList<Grade>();
+		for(Map<String, String> map : registeredCourses) {
+			for(Map.Entry<String,String> entry : map.entrySet()) {
+				if(courseRepo.findByCourseCode(entry.getValue()).isPresent()) {
+					Course course = courseRepo.findByCourseCode(entry.getValue()).get();
+					Grade grade = new Grade();
+					grade.setCourseCode(entry.getValue());
+					grade.setCourseName(course.getCourseName());
+					grade.setGrade(map.get("grade"));
+					grades.add(grade);
+				}
 			}
 		}
 		
-		return registeredCourses;
+		return grades;
 	}
 	
 	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegistered, UserNotFoundException {

@@ -3,9 +3,9 @@
  */
 package com.wibmo.service;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import com.wibmo.exception.CourseLimitExceededForPrimaryException;
 import com.wibmo.exception.CourseLimitExceededForSecondaryException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CourseSizeViolation;
+import com.wibmo.exception.ReportCardNotGeneratedException;
 import com.wibmo.exception.SeatNotAvailableException;
 import com.wibmo.exception.StudentAlreadyRegistered;
 import com.wibmo.exception.UserNotFoundException;
@@ -96,17 +97,25 @@ public class RegistrationService implements RegistrationInterface {
 	}
 
 	@Override
-	public List<Grade> viewGradeCard(String studentName) {
+	public List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
-
+		if(studentRepo.getGeneratedReportCardStatus(userId)==0) {
+			throw new ReportCardNotGeneratedException(userId);
+		}
+		List<Map<String, String>> registeredCourses = registeredCourseRepo.findByStudentId(userId);
+		
 		List<Grade> grades = new ArrayList<Grade>();
-		List<RegisteredCourse> regCourses = registeredCourseRepo.findAllByStudentId(userId);
-		for (RegisteredCourse registeredCourse : regCourses) {
-			Grade grade = new Grade();
-			grade.setCourseCode(courseRepo.findByCourseCode(registeredCourse.getCourseCode()).get().getCourseCode());
-			grade.setCourseName(courseRepo.findByCourseCode(registeredCourse.getCourseCode()).get().getCourseName());
-			grade.setGrade(registeredCourse.getGrade());
-			grades.add(grade);
+		for(Map<String, String> map : registeredCourses) {
+			for(Map.Entry<String,String> entry : map.entrySet()) {
+				if(courseRepo.findByCourseCode(entry.getValue()).isPresent()) {
+					Course course = courseRepo.findByCourseCode(entry.getValue()).get();
+					Grade grade = new Grade();
+					grade.setCourseCode(entry.getValue());
+					grade.setCourseName(course.getCourseName());
+					grade.setGrade(map.get("grade"));
+					grades.add(grade);
+				}
+			}
 		}
 		return grades;
 	}

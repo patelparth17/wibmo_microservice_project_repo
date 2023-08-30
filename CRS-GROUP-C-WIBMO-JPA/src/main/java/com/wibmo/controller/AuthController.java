@@ -56,12 +56,13 @@ public class AuthController {
             @RequestParam String password, 
             @RequestParam String role) {
     	boolean authenticationStatus = false; 
-    	try {
-    		studentService.getApprovalStatus(username);
-    	} catch (StudentNotApprovedException e) {
-    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
-    	} 
-    	
+    	if(role.equalsIgnoreCase("student")) {
+	    	try {
+	    		studentService.getApprovalStatus(username);
+	    	} catch (StudentNotApprovedException e) {
+	    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+	    	} 
+    	}
     	try {
     		authenticationStatus = userService.authenticateUser(username, password, role);
     	}catch(UserNotFoundException e)

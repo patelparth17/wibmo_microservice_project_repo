@@ -1,6 +1,7 @@
 package com.wibmo.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -18,7 +19,8 @@ public interface RegisteredCourseRepository extends CrudRepository<RegisteredCou
 
 	List<RegisteredCourse> findAllByCourseCode(String courseCode);
 
-	List<RegisteredCourse> findByStudentId(String studentId);
+	@Query(value="SELECT courseCode, grade FROM registeredcourse WHERE studentId = ?1", nativeQuery = true)
+	List<Map<String, String>> findByStudentId(String studentId);
 	
 	@Query(value="SELECT count(studentId) FROM registeredcourse WHERE studentId = ?1", nativeQuery = true)
 	int numOfRegisteredCourses(String userId);

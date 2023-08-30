@@ -1,7 +1,6 @@
 
 package com.wibmo.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,6 @@ import com.wibmo.model.Course;
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.*;
-import com.wibmo.exception.CourseLimitExceededForPrimaryException;
-import com.wibmo.exception.CourseNotFoundException;
-import com.wibmo.exception.SeatNotAvailableException;
-import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.AdminService;
 import com.wibmo.service.NotificationService;
 import com.wibmo.service.PaymentService;
@@ -67,7 +62,6 @@ public class StudentController {
 
 	/**
 	 * Method to view available courses
-	 * 
 	 * @param studentName
 	 * @return List of available courses
 	 */
@@ -78,14 +72,17 @@ public class StudentController {
 
 	/**
 	 * Method to view gradecard of the student
-	 * 
 	 * @param studentName
 	 * @return List of registered courses with grades
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/viewGradeCard/{studentName}", method = RequestMethod.GET)
 	private ResponseEntity viewGradeCard(@PathVariable("studentName") String studentName) {
-		return new ResponseEntity(registrationService.viewGradeCard(studentName), HttpStatus.OK);
+		try {
+			return new ResponseEntity(registrationService.viewGradeCard(studentName), HttpStatus.OK);
+		} catch (ReportCardNotGeneratedException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -129,7 +126,6 @@ public class StudentController {
 
 	/**
 	 * Method to add courses
-	 * 
 	 * @param studentName
 	 * @param courseCode
 	 * @return status message
@@ -151,7 +147,6 @@ public class StudentController {
 
 	/**
 	 * Method to drop course
-	 * 
 	 * @param studentName
 	 * @param courseCode
 	 * @return status message

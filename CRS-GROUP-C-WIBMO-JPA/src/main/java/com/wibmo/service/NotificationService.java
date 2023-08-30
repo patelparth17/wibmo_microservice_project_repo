@@ -3,6 +3,8 @@
  */
 package com.wibmo.service;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class NotificationService implements NotificationInterface{
 	PaymentService paymentService;
 	
 	@Modifying
+	@Transactional
 	public void sendNotification(NotificationTypeConstant type, String name) {
 		String referenceID = "";
 		if(type==NotificationTypeConstant.PAID)

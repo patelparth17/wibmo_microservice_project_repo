@@ -55,5 +55,13 @@ public interface StudentRepository  extends CrudRepository<Student, String>{
 	@Transactional
 	@Query(value="UPDATE Student SET isRegistered = 1 WHERE studentId = ?1", nativeQuery = true)
 	void setRegisterationStatus(String studentId);
+
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Student SET isReportGenerated = 1 WHERE studentId = ?1", nativeQuery = true)
+	void setGeneratedReportCardStatus(String studentId);
+
+	@Query(value="SELECT isReportGenerated FROM Student WHERE StudentID = ?1", nativeQuery = true)
+	int getGeneratedReportCardStatus(String userId);
 	
 }

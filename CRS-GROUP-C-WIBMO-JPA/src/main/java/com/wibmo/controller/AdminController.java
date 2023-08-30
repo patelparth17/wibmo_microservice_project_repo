@@ -27,6 +27,7 @@ import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
+import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
 import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
@@ -189,9 +190,10 @@ public class AdminController {
 	 * @param studentId
 	 * @return report card
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/generateReportCard/{studentId}", method = RequestMethod.GET)
-	public List<RegisteredCourse> generateReportCard(@PathVariable String studentId){
-		return adminService.generateGradeCard(studentId);
+	public ResponseEntity generateReportCard(@PathVariable String studentId){
+		return new ResponseEntity(adminService.generateGradeCard(studentId),HttpStatus.OK);
 	}
 	
 	/**
@@ -205,7 +207,7 @@ public class AdminController {
 		try {
 			adminService.approveStudentRegisteration(studentId);
 			String name = userService.findUserName(studentId);
-			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
+			adminService.sendNotification(NotificationTypeConstant.REGISTERATION, name);
 		} catch (StudentAlreadyRegistered | UserNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
