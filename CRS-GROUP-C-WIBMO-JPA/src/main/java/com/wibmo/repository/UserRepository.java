@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import com.wibmo.constants.SQLConstant;
 import com.wibmo.model.User;
 
 /**
@@ -26,6 +27,6 @@ public interface UserRepository extends CrudRepository<User, String>{
 
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE User SET password=?2 WHERE username = ?1",nativeQuery=true)
+	@Query(value= SQLConstant.UPDATE_PASSWORD_QUERY,nativeQuery=true)
 	void updatePassword(String userName, String newPassword);
 }

@@ -82,7 +82,7 @@ public class ProfessorService implements ProfessorInterface {
 		for(Course course : courses ) {
 			if(course.getCourseCode().equals(courseCode))
 			{
-				professorRepo.addGrade(grade, courseCode, studentID);
+				registeredCourseRepo.addGrade(grade, courseCode, studentID);
 				return true;
 			}
 		}

@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.constants.NotificationTypeConstant;
-//import com.wibmo.constants.NotificationTypeConstant;
-//import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
@@ -25,7 +23,6 @@ import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
 import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
-import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.RegisteredCourseRepository;
@@ -93,7 +90,7 @@ public class AdminService implements AdminInterface {
 		if (AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {
 			throw new StudentNotFoundForApprovalException(studentId);
 		}
-		else if(studentRepo.checkIsApproved(studentId)==1) {
+		else if(studentRepo.getApprovalStatus(studentId)==1) {
 			throw new StudentAlreadyApprovedException(studentId);
 		}
 		studentRepo.approveStudent(studentId);

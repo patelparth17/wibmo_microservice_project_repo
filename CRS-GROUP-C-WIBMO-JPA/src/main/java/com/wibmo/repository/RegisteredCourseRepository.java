@@ -12,6 +12,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.wibmo.constants.SQLConstant;
 import com.wibmo.model.RegisteredCourse;
 
 @Repository
@@ -19,45 +20,50 @@ public interface RegisteredCourseRepository extends CrudRepository<RegisteredCou
 
 	List<RegisteredCourse> findAllByCourseCode(String courseCode);
 
-	@Query(value="SELECT courseCode, grade FROM registeredcourse WHERE studentId = ?1", nativeQuery = true)
+	@Query(value= SQLConstant.GET_GRADES_QUERY, nativeQuery = true)
 	List<Map<String, String>> findByStudentId(String studentId);
 	
-	@Query(value="SELECT count(studentId) FROM registeredcourse WHERE studentId = ?1", nativeQuery = true)
+	@Query(value= SQLConstant.NUM_OF_REGISTERED_COURSES, nativeQuery = true)
 	int numOfRegisteredCourses(String userId);
 
-	@Query(value="SELECT count(studentId) FROM secondarycourse WHERE studentId = ?1", nativeQuery = true)
+	@Query(value= SQLConstant.NUM_OF_SECONDARY_COURSES, nativeQuery = true)
 	int numSecondaryCourses(String userId);
 
 	@Modifying
 	@Transactional
-	@Query(value="INSERT INTO secondarycourse (studentId, courseCode) VALUES (?1 , ?2)", nativeQuery = true)
+	@Query(value= SQLConstant.ADD_SECONDARY_COURSE_QUERY, nativeQuery = true)
 	void addSecondaryCourse(String studentId, String courseCode);
 
 	
 
 	@Modifying
 	@Transactional
-	@Query(value="INSERT INTO registeredcourse (studentId,courseCode,grade) VALUES ( ?1 , ?2, ?3)", nativeQuery = true)
+	@Query(value= SQLConstant.ADD_PRIMARY_COURSE_QUERY, nativeQuery = true)
 	int addCourse(String studentId ,String courseCode, String grade);
 
 	List<RegisteredCourse> findAllByStudentId(String userId);
 	
-	@Query(value="SELECT DISTINCT courseCode FROM registeredcourse rc WHERE rc.studentID = :studentId", nativeQuery = true)
+	@Query(value= SQLConstant.GET_COURSES_QUERY, nativeQuery = true)
 	List<String> getCourseCodes(@Param("studentId") String studentId);
 	
 	@Modifying
 	@Transactional
-	@Query(value="DELETE registeredcourse FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
+	@Query(value= SQLConstant.DROP_COURSE_QUERY, nativeQuery = true)
 	void dropCourse(String userId, String courseCode);
 	
-	@Query(value="SELECT courseCode FROM registeredcourse WHERE studentID = ?1 AND courseCode = ?2 ", nativeQuery = true)
+	@Query(value= SQLConstant.GET_REGISTERED_COURSES, nativeQuery = true)
 	String getRegisteredCourses(String userId, String courseCode);
 	
-	@Query(value="SELECT courseCode FROM secondarycourse WHERE studentID = ?1 ", nativeQuery = true)
+	@Query(value= SQLConstant.GET_SECONDARY_COURSES, nativeQuery = true)
 	Optional<List<String>> getSecondaryCourses(String userId);
 
 	@Modifying
 	@Transactional
-	@Query(value="DELETE secondarycourse FROM secondarycourse WHERE studentID = ?1 AND courseCode = ?2", nativeQuery = true)
+	@Query(value= SQLConstant.DROP_SECONDARY_COURSE, nativeQuery = true)
 	void dropSecondaryCourse(String userId, String courseCode);
+	
+	@Modifying
+	@Transactional
+	@Query(value= SQLConstant.ADD_GRADE_QUERY,nativeQuery = true)
+	public void addGrade(String grade, String courseCode, String studentID);
 }
