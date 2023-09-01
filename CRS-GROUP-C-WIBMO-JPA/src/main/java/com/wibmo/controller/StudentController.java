@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,9 +54,14 @@ public class StudentController {
 	 * @param studentName
 	 * @return List of registered courses
 	 */
-	@RequestMapping(value = "/viewRegisteredCourse/{studentName}", method = RequestMethod.GET)
-	private List<Course> viewRegisteredCourse(@PathVariable("studentName") String studentName) {
-		return registrationService.viewRegisteredCourses(studentName);
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value = "/viewRegisteredCourse", method = RequestMethod.GET)
+	private ResponseEntity viewRegisteredCourse(@RequestParam("studentName") String studentName) {
+		try {
+			return new ResponseEntity(registrationService.viewRegisteredCourses(studentName), HttpStatus.OK);
+		} catch (StudentNotRegisteredException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -65,22 +69,23 @@ public class StudentController {
 	 * @param studentName
 	 * @return List of available courses
 	 */
-	@RequestMapping(value = "/viewAvailableCourses/{studentName}", method = RequestMethod.GET)
-	private List<Course> viewCourse(@PathVariable("studentName") String studentName) {
-		return registrationService.viewCourses(studentName);
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@RequestMapping(value = "/viewAvailableCourses", method = RequestMethod.GET)
+	private ResponseEntity viewAvailableCourse(@RequestParam("studentName") String studentName) {
+		return new ResponseEntity(registrationService.viewAvailableCourses(studentName), HttpStatus.OK);
 	}
 
 	/**
-	 * Method to view gradecard of the student
+	 * Method to view GradeCard of the student
 	 * @param studentName
 	 * @return List of registered courses with grades
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping(value = "/viewGradeCard/{studentName}", method = RequestMethod.GET)
-	private ResponseEntity viewGradeCard(@PathVariable("studentName") String studentName) {
+	@RequestMapping(value = "/viewGradeCard", method = RequestMethod.GET)
+	private ResponseEntity viewGradeCard(@RequestParam("studentName") String studentName) {
 		try {
 			return new ResponseEntity(registrationService.viewGradeCard(studentName), HttpStatus.OK);
-		} catch (ReportCardNotGeneratedException e) {
+		} catch (ReportCardNotGeneratedException | StudentNotRegisteredException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 	}
@@ -91,8 +96,8 @@ public class StudentController {
 	 * @return ResponseEntity
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/getRegistrationStatus/{studentName}")
-	private ResponseEntity getRegistrationStatus(@PathVariable("studentName") String studentName) {
+	@RequestMapping(value = "/getRegistrationStatus", method = RequestMethod.GET)
+	private ResponseEntity getRegistrationStatus(@RequestParam("studentName") String studentName) {
 		try {
 			if(studentService.getRegistrationStatus(studentName)==1)
 				return new ResponseEntity("Student "+ studentName+" is registered!",HttpStatus.OK);
@@ -118,7 +123,7 @@ public class StudentController {
 		try {
 			registrationService.registerCourse(studentName, courseList);
 		} catch ( UserNotFoundException | CourseSizeViolation | CourseLimitExceededForPrimaryException | CourseLimitExceededForSecondaryException
-				| StudentAlreadyRegistered  e) {
+				| StudentAlreadyRegisteredException  e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
@@ -131,18 +136,17 @@ public class StudentController {
 	 * @return status message
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping(value = "/addCourse")
+	@RequestMapping(value = "/addCourse", method = RequestMethod.POST)
 	private ResponseEntity addCourse(@RequestParam String studentName, @RequestParam String courseCode) {
-		List<Course> courseList = registrationService.viewCourses(studentName);
+		List<Course> courseList = registrationService.viewAvailableCourses(studentName);
 		try {
 			registrationService.addCourse(courseCode, studentName, courseList);
 		} catch (CourseAlreadyRegisteredException se) {
 			return new ResponseEntity("Course already added for student with username " + studentName, HttpStatus.NOT_FOUND);
-		}
-		catch (CourseNotFoundException | CourseLimitExceededException | SeatNotAvailableException e) {
+		} catch (CourseNotFoundException | CourseLimitExceededException | SeatNotAvailableException | StudentAlreadyRegisteredException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		} 
-		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
+		return new ResponseEntity("Course registered for " + studentName + " successfully!", HttpStatus.CREATED);
 	}
 
 	/**
@@ -152,12 +156,12 @@ public class StudentController {
 	 * @return status message
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/dropCourse")
+	@RequestMapping(value = "/dropCourse", method = RequestMethod.DELETE)
 	private ResponseEntity dropCourse(@RequestParam String studentName, @RequestParam String courseCode) {
-		List<Course> registeredCourseList = registrationService.viewRegisteredCourses(studentName);
+		List<Course> registeredCourseList = registrationService.viewPrimaryCourses(studentName);
 		try {
 			registrationService.dropCourse(courseCode, studentName, registeredCourseList);
-		} catch (CourseNotFoundException e) {
+		} catch (CourseNotFoundException | StudentAlreadyRegisteredException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		} 
 		return new ResponseEntity("Course deleted for " + studentName, HttpStatus.OK);
@@ -170,7 +174,7 @@ public class StudentController {
 	 * @return ResponseEntity 
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/makePayment")
+	@RequestMapping(value = "/makePayment", method = RequestMethod.POST)
 	private ResponseEntity makePayment(@RequestParam String studentName, @RequestParam String mode) {
 		int isreg, ispaid = 0;
 		double fee = 0.0;
@@ -193,7 +197,7 @@ public class StudentController {
 				studentService.setPaymentStatus(studentName);
 				paymentService.addPayment(studentName, paymentMode, "PAID", fee);
 				notificationService.sendNotification(NotificationTypeConstant.PAID, studentName);
-				return new ResponseEntity("Payment Successful by studentName :" + studentName, HttpStatus.OK);
+				return new ResponseEntity("Payment Successful by studentName: " + studentName, HttpStatus.OK);
 		}
 		return new ResponseEntity("You have already paid the fees", HttpStatus.NOT_IMPLEMENTED);
 	}

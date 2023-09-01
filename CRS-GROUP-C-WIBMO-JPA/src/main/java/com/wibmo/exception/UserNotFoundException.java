@@ -7,14 +7,18 @@ package com.wibmo.exception;
  * 
  */
 public class UserNotFoundException extends Exception{
-	private String userId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String username;
 
 	/***
 	 * Setter function for UserId
 	 * @param userId
 	 */
-	public UserNotFoundException(String id) {
-		userId = id;
+	public UserNotFoundException(String username) {
+		this.username = username;
 	}
 
 	/**
@@ -22,7 +26,7 @@ public class UserNotFoundException extends Exception{
 	 */
 	
 	public String getMessage() {
-		return "User with userId: " + userId + " not found.";
+		return "User with username: " + username + " is not found. Please get approved by Admin first if you are a Student or ask the Admin to add if you're a Professor!";
 	}
 
 }

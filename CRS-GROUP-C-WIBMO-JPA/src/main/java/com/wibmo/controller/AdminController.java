@@ -21,15 +21,13 @@ import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
-import com.wibmo.exception.StudentAlreadyRegistered;
+import com.wibmo.exception.StudentAlreadyRegisteredException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
-import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
-import com.wibmo.model.RegisteredCourse;
 import com.wibmo.model.Student;
 import com.wibmo.service.AdminService;
 import com.wibmo.service.UserService;
@@ -208,7 +206,7 @@ public class AdminController {
 			adminService.approveStudentRegisteration(studentId);
 			String name = userService.findUserName(studentId);
 			adminService.sendNotification(NotificationTypeConstant.REGISTERATION, name);
-		} catch (StudentAlreadyRegistered | UserNotFoundException e) {
+		} catch (StudentAlreadyRegisteredException | UserNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		

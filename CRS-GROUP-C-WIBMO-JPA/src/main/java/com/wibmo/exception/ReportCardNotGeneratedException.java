@@ -7,6 +7,10 @@ package com.wibmo.exception;
  * 
  */
 public class ReportCardNotGeneratedException extends Exception{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String studentId;
 	 
 	/**
@@ -16,15 +20,6 @@ public class ReportCardNotGeneratedException extends Exception{
 	 public ReportCardNotGeneratedException(String studentId)
 	 {
 		 this.studentId=studentId;
-	 }
-	 
-	 /**
-	  * Getter function for studentId
-	  * @return studentId
-	  */
-	 public String getStudentId()
-	 {
-		 return studentId;
 	 }
 	 
 	 public String getMessage() 

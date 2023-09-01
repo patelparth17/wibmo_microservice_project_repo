@@ -24,10 +24,9 @@ public class PaymentService implements PaymentInterface {
 	PaymentRepository paymentRepo;
 	
 	@Modifying
-	public String addPayment(String name,PaymentModeConstant mode, String type, double amount) {
+	public String addPayment(String name,PaymentModeConstant mode, String type, double fee) {
 		String referenceId=UUID.randomUUID().toString();
-		Payment payment = new Payment(amount, referenceId,type,mode);
-		paymentRepo.save(payment);
+		paymentRepo.addPayment(name, mode.toString(), fee, referenceId, type);
 		return referenceId;
 	}
 

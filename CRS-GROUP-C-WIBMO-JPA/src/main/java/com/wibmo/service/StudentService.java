@@ -37,7 +37,6 @@ public class StudentService implements StudentInterface{
 	@Transactional
 	public void register(Student student) throws UserIdAlreadyExists, UserNotAddedException {
 		if(userRepo.findById(student.getuserID()).isPresent()) {
-			System.out.println(student.getusername());
 			throw new UserIdAlreadyExists(student.getuserID());
 		}
 		
@@ -71,8 +70,13 @@ public class StudentService implements StudentInterface{
 		studentRepo.setPaymentStatus(userID);		
 	}
 
-	public int getApprovalStatus(String studentName) throws StudentNotApprovedException {
+	public int getApprovalStatus(String studentName) throws StudentNotApprovedException, UserNotFoundException {
+
+		if(userRepo.findByUsername(studentName).isEmpty()) {
+			throw new UserNotFoundException(studentName);
+		}
 		String userID = userRepo.findByUsername(studentName).get().getuserID();
+
 		int approvalStatus = studentRepo.getApprovalStatus(userID);
 		if(approvalStatus == 0) {
 			throw new StudentNotApprovedException(studentName);

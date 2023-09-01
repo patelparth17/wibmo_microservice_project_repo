@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.User;
 import com.wibmo.service.UserService;
@@ -44,7 +45,7 @@ public class TestUserRepository {
     }
     
     @Test
-    void updatePasswordTest() throws UserNotFoundException
+    void updatePasswordTest() throws UserNotFoundException, PasswordAlreadyInUseException
     {
         User user = new User();
         user.setusername("veda");

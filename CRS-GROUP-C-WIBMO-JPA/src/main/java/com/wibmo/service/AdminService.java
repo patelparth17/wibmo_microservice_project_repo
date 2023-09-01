@@ -16,7 +16,7 @@ import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
-import com.wibmo.exception.StudentAlreadyRegistered;
+import com.wibmo.exception.StudentAlreadyRegisteredException;
 import com.wibmo.exception.StudentNotFoundForApprovalException;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
@@ -155,7 +155,7 @@ public class AdminService implements AdminInterface {
 		return grades;
 	}
 	
-	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegistered, UserNotFoundException {
+	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegisteredException, UserNotFoundException {
 		studentRepo.setRegisterationStatus(studentId);
 		String userId = userRepo.findByUserID(studentId).getuserID();
 		int registerationStatus = studentRepo.getRegistrationStatus(userId);
@@ -163,7 +163,7 @@ public class AdminService implements AdminInterface {
 			throw new UserNotFoundException(userId);
 		}
 		if(registerationStatus==1) {
-			throw new StudentAlreadyRegistered(userId);
+			throw new StudentAlreadyRegisteredException(userId);
 		}
 	}
 }

@@ -32,8 +32,8 @@ public class ProfessorController {
 	 */
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/courses/{username}", method = RequestMethod.GET)
-	public ResponseEntity getCourses(@PathVariable("username") String username) {
+	@RequestMapping(value = "/viewCourses", method = RequestMethod.GET)
+	public ResponseEntity getCourses(@RequestParam("username") String username) {
 		return new ResponseEntity(professorService.viewCourses(username),HttpStatus.OK);
 	}
 	
@@ -43,7 +43,7 @@ public class ProfessorController {
 	 * @return ResponseEntity
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-    @RequestMapping(value = "/enrolledstudents")
+    @RequestMapping(value = "/enrolledStudents", method = RequestMethod.GET)
 	public ResponseEntity viewEnrolledStudents(@RequestParam("username") String username) {
 	        try {
 	            return new ResponseEntity(professorService.viewEnrolledStudents(username),HttpStatus.OK);
@@ -59,11 +59,11 @@ public class ProfessorController {
 	 */
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping("/addgrade/{username}/{studentID}/{courseCode}/{grade}")
-	public ResponseEntity addGrade(@PathVariable("username") String username,
-			@PathVariable("studentID") String studentID,
-			@PathVariable("courseCode") String courseCode,
-			@PathVariable("grade") String grade
+	@RequestMapping(value="/addGrade", method = RequestMethod.PUT)
+	public ResponseEntity addGrade(@RequestParam("username") String username,
+			@RequestParam("studentID") String studentID,
+			@RequestParam("courseCode") String courseCode,
+			@RequestParam("grade") String grade
 			) {
 		if(professorService.addGrade(username,studentID,courseCode,grade))
 			return new ResponseEntity("Successfully updated!",HttpStatus.OK);

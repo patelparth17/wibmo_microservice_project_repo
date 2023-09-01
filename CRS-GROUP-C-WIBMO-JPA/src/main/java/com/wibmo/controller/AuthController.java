@@ -6,7 +6,6 @@ package com.wibmo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.constants.NotificationTypeConstant;
+import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.StudentNotApprovedException;
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserIdAlreadyExists;
@@ -59,9 +59,9 @@ public class AuthController {
     	if(role.equalsIgnoreCase("student")) {
 	    	try {
 	    		studentService.getApprovalStatus(username);
-	    	} catch (StudentNotApprovedException e) {
+	    	} catch (StudentNotApprovedException | UserNotFoundException e) {
 	    		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
-	    	} 
+	    	}
     	}
     	try {
     		authenticationStatus = userService.authenticateUser(username, password, role);
@@ -73,7 +73,7 @@ public class AuthController {
         if(authenticationStatus == true)
             return new ResponseEntity("Authentication Successful!", HttpStatus.FOUND);
         else
-            return new ResponseEntity("Authentication failed. User deatils not found.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("Authentication failed. Invalid Credentials!", HttpStatus.NOT_FOUND);
  
     }
     
@@ -90,7 +90,7 @@ public class AuthController {
      * @throws StudentNotRegisteredException
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/registerStudent")
+	@RequestMapping(value = "/registerStudent", method = RequestMethod.POST)
     public ResponseEntity registerStudent(@RequestBody Student student) {
         try{
             studentService.register(student);
@@ -109,14 +109,14 @@ public class AuthController {
      * @return status
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/updatePassword/{newPassword}")
+	@RequestMapping(value = "/updatePassword", method = RequestMethod.PUT)
     public ResponseEntity updatePassword(
-            @PathVariable String newPassword, 
+    		@RequestParam String newPassword, 
             @RequestParam String userName) {
         try {
             userService.updatePassword(userName, newPassword);
             return new ResponseEntity("Password Updated Successfully!", HttpStatus.OK);
-        }catch(UserNotFoundException e) {
+        }catch(UserNotFoundException | PasswordAlreadyInUseException e) {
             return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }

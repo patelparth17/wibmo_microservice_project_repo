@@ -3,10 +3,13 @@
  */
 package com.wibmo.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.User;
@@ -28,6 +31,9 @@ public class UserService implements UserInterface {
 
 	@Modifying
 	public void addUser(User user) throws UserNotAddedException {
+		if(userRepo.findByUsername(user.getusername()).isPresent()) {
+			throw new UserNotAddedException(user.getusername());
+		}
 		userRepo.save(user);	
 			
 	}
@@ -44,11 +50,19 @@ public class UserService implements UserInterface {
 		return false;
 	}
 
-	public void updatePassword(String userName, String newPassword) throws UserNotFoundException {
+	public void updatePassword(String userName, String newPassword) throws UserNotFoundException, PasswordAlreadyInUseException {
 		if(userRepo.findByUsername(userName).isEmpty()) {
 			throw new UserNotFoundException(userName);
 		}
+		String oldPassword = userRepo.findByUsername(userName).get().getPassword();
+		if(oldPassword.equals(newPassword)) {
+			throw new PasswordAlreadyInUseException();
+		}
 		userRepo.updatePassword(userName,newPassword);
+	}
+
+	public Optional <User> findByUsername(String username) {
+		return userRepo.findByUsername(username);
 	}
 	
 }

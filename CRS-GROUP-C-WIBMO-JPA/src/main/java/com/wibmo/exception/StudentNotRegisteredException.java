@@ -7,7 +7,11 @@ package com.wibmo.exception;
  * Exception to check if student is not registered
  */
 public class StudentNotRegisteredException extends Exception{
-	 private String studentName;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String studentName;
 	 
 	 public StudentNotRegisteredException(String studentName)
 	 {
@@ -24,7 +28,7 @@ public class StudentNotRegisteredException extends Exception{
 	 }
 	 
 	 public String getMessage() {
-		return "Student :"+ studentName+" not registered!";
+		return "Student with username: "+ studentName+" is not registered!";
 		 
 	 }
 	 

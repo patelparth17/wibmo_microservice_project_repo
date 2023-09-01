@@ -49,11 +49,14 @@ public class Payment implements Serializable{
 	 * @param paymentMode
 	 */
 	public Payment(double amount, String transcationId, String paymentStatus, PaymentModeConstant paymentMode) {
-		super();
 		this.amount = amount;
 		this.transcationId = transcationId;
 		this.paymentStatus = paymentStatus;
 		this.paymentMode = paymentMode.toString();
+	}
+	
+	public Payment() {
+		
 	}
 	
 	/**

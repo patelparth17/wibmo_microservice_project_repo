@@ -44,4 +44,7 @@ public class SQLConstant {
 	
 	// User custom queries
 	public static final String UPDATE_PASSWORD_QUERY = "UPDATE User SET password=?2 WHERE username = ?1";
+	
+	// Payment Queries
+	public static final String ADD_PAYMENT = "INSERT INTO payment (studentName, modeOfPayment, amount, referenceId, paymentStatus) VALUES ( ?1 , ?2, ?3, ?4, ?5)";
 }

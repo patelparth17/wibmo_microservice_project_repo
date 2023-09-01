@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.wibmo.model.Course;
 import com.wibmo.model.Grade;
-import com.wibmo.model.RegisteredCourse;
 import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;
 import com.wibmo.repository.UserRepository;
@@ -24,7 +24,8 @@ import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CourseSizeViolation;
 import com.wibmo.exception.ReportCardNotGeneratedException;
 import com.wibmo.exception.SeatNotAvailableException;
-import com.wibmo.exception.StudentAlreadyRegistered;
+import com.wibmo.exception.StudentAlreadyRegisteredException;
+import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.validator.StudentValidator;
 
@@ -48,37 +49,46 @@ public class RegistrationService implements RegistrationInterface {
 	
 	@Autowired
 	StudentService studentService;
+	
+	private static final Logger logger = Logger.getLogger(RegistrationService.class);
 
 	@Override
 	public int addCourse(String courseCode, String studentName, List<Course> availableCourseList)
-			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException {
+			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException, StudentAlreadyRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 
-		if (registeredCourseRepo.getRegisteredCourses(userId, courseCode)!= null) {
+		if (studentRepo.getRegistrationStatus(userId)==1) {
+			throw new StudentAlreadyRegisteredException(userId);
+		} else if (registeredCourseRepo.getRegisteredCourses(userId, courseCode)!= null) {
 			throw new CourseAlreadyRegisteredException(courseCode);
 		}
 		else if (registeredCourseRepo.numOfRegisteredCourses(userId) >= 4
 				&& registeredCourseRepo.numSecondaryCourses(userId) >= 2) {
 			throw new CourseLimitExceededException(4);
-		} else if (registeredCourseRepo.numSecondaryCourses(userId) < 2) {
-			addSecondaryCourse(userId, courseCode);
-			return 1;
-		} else if (studentRepo.findById(userId).get().isRegistered()) {
-			return 0;
 		} else if (courseRepo.findByCourseCode(courseCode).get().getSeats() < 0) {
 			throw new SeatNotAvailableException(courseCode);
 		} else if (!StudentValidator.isValidCourseCode(courseCode, availableCourseList)) {
 			throw new CourseNotFoundException(courseCode);
 		} 
-		return registeredCourseRepo.addCourse(studentName, courseCode, "NOT_GRADED");
-
+		else {
+			if(registeredCourseRepo.numOfRegisteredCourses(userId) < 4) {
+				return registeredCourseRepo.addCourse(userId, courseCode, "NOT_GRADED");
+			}
+			else { 
+				addSecondaryCourse(userId, courseCode);
+				return 1;
+			}
+		}
 	}
 
 	@Override
-	public void dropCourse(String courseCode, String studentName,List<Course> registeredCourseList) throws CourseNotFoundException {
-		  if(!StudentValidator.isRegistered(courseCode, studentName, registeredCourseList))
-	        	throw new CourseNotFoundException(courseCode);
+	public void dropCourse(String courseCode, String studentName,List<Course> registeredCourseList) throws CourseNotFoundException, StudentAlreadyRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
+		if (studentRepo.getRegistrationStatus(userId)==1) {
+			throw new StudentAlreadyRegisteredException(userId);
+		}   
+		if(!StudentValidator.isRegistered(courseCode, studentName, registeredCourseList))
+	        	throw new CourseNotFoundException(courseCode);
 		registeredCourseRepo.dropCourse(userId, courseCode);
 		courseRepo.incrementSeats(courseCode);
 		if( registeredCourseRepo.getSecondaryCourses(userId).isPresent())
@@ -97,8 +107,11 @@ public class RegistrationService implements RegistrationInterface {
 	}
 
 	@Override
-	public List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException {
+	public List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException, StudentNotRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
+		if(studentRepo.getRegistrationStatus(userId)==0) {
+			throw new StudentNotRegisteredException(studentName);
+		}
 		if(studentRepo.getGeneratedReportCardStatus(userId)==0) {
 			throw new ReportCardNotGeneratedException(userId);
 		}
@@ -121,13 +134,7 @@ public class RegistrationService implements RegistrationInterface {
 	}
 
 	@Override
-	public List<Course> viewCourses(String studentName) {
-		String userId = userRepo.findByUsername(studentName).get().getuserID();
-		return courseRepo.viewCourses(userId);
-	}
-
-	@Override
-	public List<Course> viewRegisteredCourses(String studentName) {
+	public List<Course> viewPrimaryCourses (String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 
 		List<Course> courses = new ArrayList<Course>();
@@ -143,52 +150,65 @@ public class RegistrationService implements RegistrationInterface {
 		}
 		return courses;
 	}
+	@Override
+	public List<Course> viewAvailableCourses(String studentName) {
+		String userId = userRepo.findByUsername(studentName).get().getuserID();
+		return courseRepo.viewCourses(userId);
+	}
+
+	@Override
+	public List<Course> viewRegisteredCourses (String studentName) throws StudentNotRegisteredException {
+		String userId = userRepo.findByUsername(studentName).get().getuserID();
+		if(studentRepo.getRegistrationStatus(userId)==0) {
+			throw new StudentNotRegisteredException(studentName);
+		}
+		return viewPrimaryCourses(studentName);
+	}
 	
 
 	@Override
 	public boolean registerCourse(String studentName, List<String> courseList) throws UserNotFoundException, CourseSizeViolation,
-			CourseLimitExceededForPrimaryException, CourseLimitExceededForSecondaryException, StudentAlreadyRegistered, UserNotFoundException {
+			CourseLimitExceededForPrimaryException, CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, UserNotFoundException {
 		String userID = userRepo.findByUsername(studentName).get().getuserID();
 		if (courseList.size() != 6) {
 			throw new CourseSizeViolation();
+		} else if (studentService.getRegistrationStatus(studentName)==1) {
+			throw new StudentAlreadyRegisteredException(studentName);
 		} else if (registeredCourseRepo.numOfRegisteredCourses(studentName) > 4
 				&& registeredCourseRepo.numSecondaryCourses(studentName) <= 2) {
 			throw new CourseLimitExceededForPrimaryException();
 		} else if (registeredCourseRepo.numOfRegisteredCourses(studentName) <= 4
 				&& registeredCourseRepo.numSecondaryCourses(studentName) > 2) {
 			throw new CourseLimitExceededForSecondaryException();
-		} else if (studentService.getRegistrationStatus(studentName)==1) {
-			throw new StudentAlreadyRegistered(studentName);
-		}
-		int indexOfUnregisteredCourse = (viewRegisteredCourses(studentName) == null) ? 1
-				: viewRegisteredCourses(studentName).size() + 1;
+		} 
+		int indexOfUnregisteredCourse = (viewPrimaryCourses(studentName) == null) ? 1: viewPrimaryCourses(studentName).size() + 1;
 		int index = 0;
 		while (indexOfUnregisteredCourse <= 4) {
 			if (registeredCourseRepo.addCourse(userID, courseList.get(index), "NOT_GRADED")>0) {
-//                    logger.info("You have successfully enrolled for "+ courseList.get(index));
+                    logger.info("You have successfully enrolled for "+ courseList.get(index));
 				indexOfUnregisteredCourse++;
 			} else {
-//                    logger.info(" You have already registered for Course : " + courseList.get(index));
+                    logger.info(" You have already registered for Course : " + courseList.get(index));
 			}
 			index++;
 		}
-//        logger.debug("\n*******************************************************");
-//        logger.debug("        Primary Course Registration Successful");
-//        logger.debug("*******************************************************\n");       
+        logger.info("\n*******************************************************");
+        logger.info("        Primary Course Registration Successful");
+        logger.info("*******************************************************\n");       
 
 		int indexOfSecondaryCourse = 1;
 		while (indexOfSecondaryCourse <= 2) {
 			if (addSecondaryCourse(userID, courseList.get(index))) {
-//                    logger.info("You have successfully enrolled for "+ courseList.get(index));
+                    logger.info("You have successfully enrolled for "+ courseList.get(index));
 				indexOfSecondaryCourse++;
 			} else {
-//                    logger.info(" You have already registered for Course : " + courseList.get(index));
+                    logger.info(" You have already registered for Course : " + courseList.get(index));
 			}
 			index++;
 		}
-//        logger.debug("\n*******************************************************");
-//        logger.debug("        Secondary Course Registration Successful");
-//        logger.debug("*******************************************************\n");
+        logger.info("\n*******************************************************");
+        logger.info("        Secondary Course Registration Successful");
+        logger.info("*******************************************************\n");
 		
 		return true;
 

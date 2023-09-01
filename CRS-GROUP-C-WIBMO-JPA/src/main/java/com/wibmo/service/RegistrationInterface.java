@@ -18,7 +18,8 @@ import com.wibmo.exception.CourseNotFoundException;
 import com.wibmo.exception.CourseSizeViolation;
 import com.wibmo.exception.ReportCardNotGeneratedException;
 import com.wibmo.exception.SeatNotAvailableException;
-import com.wibmo.exception.StudentAlreadyRegistered;
+import com.wibmo.exception.StudentAlreadyRegisteredException;
+import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 
 /**
@@ -37,41 +38,39 @@ public interface RegistrationInterface {
 	 * @throws CourseLimitExceededException
 	 * @throws SeatNotAvailableException
 	 * @throws CourseAlreadyRegisteredException 
-	 * @throws SQLException
+	 * @throws StudentAlreadyRegisteredException 
 	 */
 	public int addCourse(String courseCode, String studentName, List<Course> availableCourseList)
-			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException;
+			throws CourseNotFoundException, CourseLimitExceededException, SeatNotAvailableException, CourseAlreadyRegisteredException, StudentAlreadyRegisteredException;
 
 	/**
 	 * Method to view the list of courses registered by the student
 	 * @param studentName
 	 * @return List of courses
-	 * @throws SQLException 
+	 * @throws StudentNotRegisteredException 
 	 */
-	public List<Course> viewRegisteredCourses(String studentName);
+	public List<Course> viewRegisteredCourses(String studentName) throws StudentNotRegisteredException;
 
 	/**
 	 * Method to view the list of available courses
 	 * @param studentName
 	 * @return List of courses
-	 * @throws SQLException 
 	 */
-	public List<Course> viewCourses(String studentName);
+	public List<Course> viewAvailableCourses(String studentName);
 
 	/**
 	 * Method to view grade card for students
 	 * @param studentName
 	 * @return List of Student's Grades
 	 * @throws ReportCardNotGeneratedException 
-	 * @throws SQLException 
+	 * @throws StudentNotRegisteredException 
 	 */
-	List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException;
+	List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException, StudentNotRegisteredException;
 
 	/** 
 	 * Method for Fee Calculation for selected courses
 	 * @param studentName
 	 * @return Fee Student has to pay
-	 * @throws SQLException 
 	 */
 	public double calculateFee(String studentName);
 
@@ -82,10 +81,10 @@ public interface RegistrationInterface {
 	 * @param registeredCourseList 
 	 * @return boolean indicating if the course is dropped successfully
 	 * @throws CourseNotFoundException
-	 * @throws SQLException 
+	 * @throws StudentAlreadyRegisteredException 
 	 */
 	public void dropCourse(String courseCode, String studentName, List<Course> registeredCourseList)
-			throws CourseNotFoundException;
+			throws CourseNotFoundException, StudentAlreadyRegisteredException;
 
 
 	/**
@@ -93,7 +92,6 @@ public interface RegistrationInterface {
 	 * @param courseCode
 	 * @param studentName
 	 * @return status
-	 * @throws SQLException
 	 * @throws SeatNotAvailableException
 	 * @throws CourseNotFoundException
 	 */
@@ -106,12 +104,20 @@ public interface RegistrationInterface {
 	 * @return status
 	 * @throws CourseNotFoundException
 	 * @throws SeatNotAvailableException
-	 * @throws SQLException
 	 * @throws CourseSizeViolation
 	 * @throws CourseLimitExceededForPrimaryException
 	 * @throws CourseLimitExceededForSecondaryException
-	 * @throws StudentAlreadyRegistered
+	 * @throws StudentAlreadyRegisteredException
+	 * @throws StudentNotRegisteredException 
+	 * @throws UserNotFoundException 
 	 */
-	public boolean registerCourse(String studentName, List<String> availableCourseList) throws UserNotFoundException, CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegistered;
+	public boolean registerCourse(String studentName, List<String> availableCourseList) throws UserNotFoundException, CourseNotFoundException, SeatNotAvailableException, SQLException,CourseSizeViolation, CourseLimitExceededForPrimaryException,CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, StudentNotRegisteredException, UserNotFoundException, UserNotFoundException;
+
+	/**
+	 * Method to view the list of primary courses registered by the student
+	 * @param studentName
+	 * @return List of courses
+	 */
+	List<Course> viewPrimaryCourses(String studentName);
 
 }

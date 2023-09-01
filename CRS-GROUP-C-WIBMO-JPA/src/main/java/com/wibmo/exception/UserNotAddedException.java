@@ -6,18 +6,22 @@ package com.wibmo.exception;
  *
  */
 public class UserNotAddedException extends Exception{
-	private String userId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String username;
 	
-	public UserNotAddedException(String id) {
-		userId = id;
+	public UserNotAddedException(String username) {
+		this.username = username;
 	}
 	
 	/**
-	 * Getter function for UserId
+	 * Getter function for username
 	 * @return
 	 */
 	public String getUserId() {
-		return userId;
+		return username;
 	}
 	
 
@@ -26,6 +30,6 @@ public class UserNotAddedException extends Exception{
 	 */
 	@Override
 	public String getMessage() {
-		return "UserId: " + userId + " not added!";
+		return "UserName: " + username + " already exists!";
 	}
 }
