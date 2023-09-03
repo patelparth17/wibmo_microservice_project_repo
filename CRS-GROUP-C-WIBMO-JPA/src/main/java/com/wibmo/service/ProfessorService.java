@@ -5,6 +5,9 @@ package com.wibmo.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
@@ -91,13 +94,12 @@ public class ProfessorService implements ProfessorInterface {
 		
 	}
 
-	@Modifying
 	public void addProfessor(Professor prof) throws ProfessorNotAddedException {
 		if(professorRepo.findByProfessorID(prof.getProfessorID()).isPresent()) {
 			throw new ProfessorNotAddedException(prof.getProfessorID());
+		} else {
+			professorRepo.save(prof);
 		}
-		professorRepo.save(prof);
-		
 	}
 
 	public boolean isProfessorExists(String professorId) {

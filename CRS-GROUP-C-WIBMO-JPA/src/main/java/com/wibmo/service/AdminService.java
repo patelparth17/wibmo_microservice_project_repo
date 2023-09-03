@@ -10,7 +10,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
@@ -69,7 +68,7 @@ public class AdminService implements AdminInterface {
 		if (!AdminValidator.isValidNewCourse(course, courseList)) {
 			throw new CourseAlreadyExistsException(course.getCourseCode());
 		}
-		courseRepo.addCourse(course.getCourseCode(), course.getCourseName(), 10, null, course.getFee());
+		courseRepo.addCourse(course.getCourseCode(), course.getCourseName(), course.getSeats(), course.getProfessorID(), course.getFee());
 	}
 
 	public void removeCourse(String courseCode, List<Course> courseList)
@@ -82,7 +81,6 @@ public class AdminService implements AdminInterface {
 
 	public List<Student> viewPendingAdmissions() {
 		return studentRepo.viewPendingAdmissions();
-//		return studentRepo.findByIsApproved(false);
 	}
 
 	public void approveStudent(String studentId, List<Student> studentList)
@@ -98,11 +96,6 @@ public class AdminService implements AdminInterface {
 	
 	public void approveAllStudents() {
 		studentRepo.approveAllStudents();
-	}
-
-	public void sendNotification(NotificationTypeConstant type, String name) {
-		
-		notificationService.sendNotification(type, name);
 	}
 
 	public void addProfessor(Professor professor) throws UserNotAddedException, ProfessorNotAddedException {

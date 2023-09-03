@@ -3,6 +3,7 @@
  */
 package com.wibmo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import com.wibmo.model.Course;
 import com.wibmo.model.Professor;
 import com.wibmo.model.Student;
 import com.wibmo.service.AdminService;
+import com.wibmo.service.NotificationService;
 import com.wibmo.service.UserService;
 
 /**
@@ -45,9 +47,12 @@ public class AdminController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	NotificationService notificationService;
+	
 	/**
 	 * Method to view courses in catalog
-	 * @return List of courses in catalg
+	 * @return List of courses in catalog
 	 */
 	@RequestMapping(value = "/viewCourseList", method = RequestMethod.GET)
 	public List<Course> viewCoursesInCatalogue(){
@@ -84,8 +89,8 @@ public class AdminController {
 	 * @return status
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/deleteCourse/{courseCode}", method = RequestMethod.DELETE)
-	public ResponseEntity deleteCourse(@PathVariable String courseCode) {
+	@RequestMapping(value = "/deleteCourse", method = RequestMethod.DELETE)
+	public ResponseEntity deleteCourse(@RequestParam String courseCode) {
 		List<Course> courseList = adminService.viewCourses();
 		try {
 			adminService.removeCourse(courseCode, courseList);
@@ -99,10 +104,20 @@ public class AdminController {
 	 * Method to view pending approvals 
 	 * @return List of students having pending approvals
 	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/viewPendingAdmissions", method = RequestMethod.GET)
-	public List<Student> viewPendingAdmissions(){
-		List<Student> pendingStudentsList= adminService.viewPendingAdmissions();
-		return pendingStudentsList;
+	public ResponseEntity viewPendingAdmissions(){
+		List<Student> pendingStudentsList = adminService.viewPendingAdmissions();
+		if(pendingStudentsList != null) {
+			List<String> pendingStudentNames = new ArrayList<String>();
+			for(Student students: pendingStudentsList) {
+				pendingStudentNames.add(students.getusername());
+			}
+			return new ResponseEntity("The pending students for approval are as follows : " + pendingStudentNames, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity("All students are approved and no student pending for approval!", HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	/**
@@ -111,13 +126,13 @@ public class AdminController {
 	 * @return status
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/approveStudent/{studentId}", method = RequestMethod.PUT)
-	public ResponseEntity approveStudent(@PathVariable String studentId) {
+	@RequestMapping(value = "/approveStudent", method = RequestMethod.PUT)
+	public ResponseEntity approveStudent(@RequestParam String studentId) {
 		List<Student> studentList = adminService.viewPendingAdmissions();
 		try {
 			adminService.approveStudent(studentId, studentList);
 			String name = userService.findUserName(studentId);
-			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
+			notificationService.sendNotification(NotificationTypeConstant.APPROVED, name);
 		} catch (StudentNotFoundForApprovalException | StudentAlreadyApprovedException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
@@ -133,14 +148,14 @@ public class AdminController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value = "/approveAllStudents", method = RequestMethod.PUT)
 	public ResponseEntity approveAllStudents() {
-		List<Student> studentList = viewPendingAdmissions();
+		List<Student> studentList = adminService.viewPendingAdmissions();
 		if(studentList.size() == 0)
 			return new ResponseEntity("No student pending for approval!", HttpStatus.NOT_IMPLEMENTED);
 		
 		adminService.approveAllStudents();
 		for(Student studentObj:studentList) {
 			String name = studentObj.getusername();	
-			adminService.sendNotification(NotificationTypeConstant.APPROVED, name);
+			notificationService.sendNotification(NotificationTypeConstant.APPROVED, name);
 		}
 		return new ResponseEntity("Successfully approved all the approvals for Registeration!", HttpStatus.OK);
 	}
@@ -205,7 +220,7 @@ public class AdminController {
 		try {
 			adminService.approveStudentRegisteration(studentId);
 			String name = userService.findUserName(studentId);
-			adminService.sendNotification(NotificationTypeConstant.REGISTERATION, name);
+			notificationService.sendNotification(NotificationTypeConstant.REGISTERATION, name);
 		} catch (StudentAlreadyRegisteredException | UserNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}

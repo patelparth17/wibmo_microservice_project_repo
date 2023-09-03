@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -22,6 +24,7 @@ public class Notification implements Serializable{
 	
 	@Id
 	@Column(name="notificationID")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE) 
 	private int notificationID;
 	
 	@Column(name="studentName")
@@ -32,7 +35,7 @@ public class Notification implements Serializable{
 	
 	@Column(name="referenceID")
 	private String referenceID;
-
+	
 	public int getNotificationID() {
 		return notificationID;
 	}

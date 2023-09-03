@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
@@ -67,15 +66,6 @@ public interface AdminInterface {
 	 * @param studentList
 	 */
 	public void approveAllStudents();
-	
-	/**
-	 * Method to send notification
-	 * @param type
-	 * @param studentId
-	 * @param modeOfPayment
-	 * @param amount
-	 */
-	public void sendNotification(NotificationTypeConstant type, String studentId);
 	
 	/**
 	 * Method to add professor
