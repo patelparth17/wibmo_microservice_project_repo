@@ -20,6 +20,7 @@ import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.NoCoursesRegisteredException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentAlreadyRegisteredException;
@@ -183,9 +184,9 @@ public class AdminController {
 	 * @return status
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/assignCourseToProfessor/{professorId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/assignCourseToProfessor", method = RequestMethod.PUT)
 	public ResponseEntity assignCourseToProfessor(
-			@PathVariable String professorId, 
+			@RequestParam String professorId, 
 			@RequestParam String courseCode)  {
 		try {
 			
@@ -195,7 +196,7 @@ public class AdminController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity("Professor assigned to " + courseCode +"!", HttpStatus.OK);
+		return new ResponseEntity("Professor with ID: "+ professorId +" assigned to course code: " + courseCode +"!", HttpStatus.OK);
 	}
 	
 	/**
@@ -204,9 +205,13 @@ public class AdminController {
 	 * @return report card
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/generateReportCard/{studentId}", method = RequestMethod.GET)
-	public ResponseEntity generateReportCard(@PathVariable String studentId){
-		return new ResponseEntity(adminService.generateGradeCard(studentId),HttpStatus.OK);
+	@RequestMapping(value = "/generateReportCard", method = RequestMethod.GET)
+	public ResponseEntity generateReportCard(@RequestParam String studentId){
+		try {
+			return new ResponseEntity(adminService.generateGradeCard(studentId),HttpStatus.OK);
+		} catch (UserNotFoundException | NoCoursesRegisteredException e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	/**
@@ -215,8 +220,8 @@ public class AdminController {
 	 * @return status
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/approveStudentRegisteration/{studentId}", method = RequestMethod.PUT)
-	public ResponseEntity approveStudentRegisteration(@PathVariable String studentId) {
+	@RequestMapping(value = "/approveStudentRegisteration", method = RequestMethod.PUT)
+	public ResponseEntity approveStudentRegisteration(@RequestParam String studentId) {
 		try {
 			adminService.approveStudentRegisteration(studentId);
 			String name = userService.findUserName(studentId);
@@ -225,6 +230,6 @@ public class AdminController {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity("Student with "+ studentId + " is approved for Courses registered!", HttpStatus.OK);
+		return new ResponseEntity("Student with "+ studentId + " is approved for course registration!", HttpStatus.OK);
 	}
 }

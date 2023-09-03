@@ -6,6 +6,7 @@ package com.wibmo.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.wibmo.exception.CourseAlreadyExistsException;
 import com.wibmo.exception.CourseNotDeletedException;
 import com.wibmo.exception.CourseNotFoundException;
+import com.wibmo.exception.NoCoursesRegisteredException;
 import com.wibmo.exception.ProfessorNotAddedException;
 import com.wibmo.exception.StudentAlreadyApprovedException;
 import com.wibmo.exception.StudentAlreadyRegisteredException;
@@ -23,6 +25,7 @@ import com.wibmo.model.Course;
 import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
 import com.wibmo.model.Student;
+import com.wibmo.model.User;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;
@@ -104,13 +107,6 @@ public class AdminService implements AdminInterface {
 		} catch (UserNotAddedException e) {
 			throw e;
 		}
-		
-		try {
-			professorService.addProfessor(professor);
-		} catch (ProfessorNotAddedException e) {
-			throw e;
-		}
-		
 	}
 
 	public void assignCourse(String courseCode, String professorId) throws UserNotFoundException, CourseNotFoundException {
@@ -125,11 +121,17 @@ public class AdminService implements AdminInterface {
 	}
 
 	
-	public List<Grade> generateGradeCard(String studentId) {
-		
+	public List<Grade> generateGradeCard(String studentId) throws UserNotFoundException, NoCoursesRegisteredException {
+		Optional<Student> student = studentRepo.findByStudentId(studentId);
+		if(student.isEmpty()) {
+			throw new UserNotFoundException(studentId);
+		}
 		studentRepo.setGeneratedReportCardStatus(studentId);
 		
 		List<Map<String, String>> registeredCourses = registeredCourseRepo.findByStudentId(studentId);
+		if(registeredCourses.size()==0) {
+			throw new NoCoursesRegisteredException(studentId);
+		}
 		
 		List<Grade> grades = new ArrayList<Grade>();
 		for(Map<String, String> map : registeredCourses) {
@@ -149,14 +151,15 @@ public class AdminService implements AdminInterface {
 	}
 	
 	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegisteredException, UserNotFoundException {
-		studentRepo.setRegisterationStatus(studentId);
-		String userId = userRepo.findByUserID(studentId).getuserID();
-		int registerationStatus = studentRepo.getRegistrationStatus(userId);
-		if(userId==null) {
-			throw new UserNotFoundException(userId);
+		Optional<Student> student = studentRepo.findByStudentId(studentId);
+		if(student.isEmpty()) {
+			throw new UserNotFoundException(studentId);
 		}
+		int registerationStatus = studentRepo.getRegistrationStatus(studentId);
 		if(registerationStatus==1) {
-			throw new StudentAlreadyRegisteredException(userId);
+			throw new StudentAlreadyRegisteredException(studentId);
 		}
+		studentRepo.setRegisterationStatus(studentId);
+		
 	}
 }

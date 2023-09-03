@@ -32,6 +32,6 @@ public class StudentAlreadyRegisteredException extends Exception{
 
     @Override
     public String getMessage() {
-        return "Student " + studentId + " already Registered";
+        return "Student " + studentId + " is already Registered";
     }
 }

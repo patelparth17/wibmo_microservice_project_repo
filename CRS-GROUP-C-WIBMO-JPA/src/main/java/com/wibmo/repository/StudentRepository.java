@@ -4,6 +4,7 @@
 package com.wibmo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -61,5 +62,7 @@ public interface StudentRepository  extends CrudRepository<Student, String>{
 
 	@Query(value= SQLConstant.GET_REPORT_CARD_STATUS, nativeQuery = true)
 	int getGeneratedReportCardStatus(String userId);
+
+	Optional<Student> findByStudentId(String studentId);
 	
 }

@@ -94,14 +94,6 @@ public class ProfessorService implements ProfessorInterface {
 		
 	}
 
-	public void addProfessor(Professor prof) throws ProfessorNotAddedException {
-		if(professorRepo.findByProfessorID(prof.getProfessorID()).isPresent()) {
-			throw new ProfessorNotAddedException(prof.getProfessorID());
-		} else {
-			professorRepo.save(prof);
-		}
-	}
-
 	public boolean isProfessorExists(String professorId) {
 		if(professorRepo.findByProfessorID(professorId).isPresent()) {
 			return true;

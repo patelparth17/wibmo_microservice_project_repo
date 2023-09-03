@@ -45,7 +45,6 @@ public class StudentService implements StudentInterface{
 		} catch (UserNotAddedException e) {
 			throw e;
 		}
-		studentRepo.save(student);
 	}
 
 	public int getRegistrationStatus(String studentName) throws UserNotFoundException {
