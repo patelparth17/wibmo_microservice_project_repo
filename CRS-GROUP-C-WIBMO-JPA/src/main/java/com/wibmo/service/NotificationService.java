@@ -40,6 +40,5 @@ public class NotificationService implements NotificationInterface{
 		notification.setStudentName(name);
 		
 		notificationRepo.save(notification);
-		
 	}
 }

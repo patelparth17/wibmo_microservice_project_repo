@@ -8,6 +8,10 @@ package com.wibmo.exception;
  */
 public class StudentNotFoundForApprovalException extends Exception{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String StudentId;
 	
 	public StudentNotFoundForApprovalException(String Id) {

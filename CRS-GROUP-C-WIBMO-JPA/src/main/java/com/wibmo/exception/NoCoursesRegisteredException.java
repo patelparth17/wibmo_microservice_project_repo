@@ -7,6 +7,10 @@ package com.wibmo.exception;
  * 
  */
 public class NoCoursesRegisteredException extends Exception{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String studentId;
 	 
 	/**

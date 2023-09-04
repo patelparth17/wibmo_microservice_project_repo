@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.ProfessorService;
 
@@ -64,10 +65,15 @@ public class ProfessorController {
 			@RequestParam("courseCode") String courseCode,
 			@RequestParam("grade") String grade
 			) {
-		if(professorService.addGrade(username,studentID,courseCode,grade))
-			return new ResponseEntity("Successfully updated!",HttpStatus.OK);
-		
-		return new ResponseEntity("You didn't signup for the course: "+ courseCode+".",HttpStatus.NOT_FOUND);
+		try {
+			if(professorService.addGrade(username,studentID,courseCode,grade)) {
+				return new ResponseEntity("Successfully updated!",HttpStatus.OK);
+			} else {
+				return new ResponseEntity("You didn't signup for the course: "+ courseCode+".",HttpStatus.NOT_FOUND);
+			}		
+		} catch(UserNotFoundException | StudentNotRegisteredException e) {
+			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+		}
 	}
 }
 

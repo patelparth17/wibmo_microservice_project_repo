@@ -2,7 +2,6 @@ package com.wibmo.validator;
 
 import java.util.List;
 
-import com.wibmo.model.Course;
 import com.wibmo.model.EnrolledStudent;
 
 
@@ -27,27 +26,9 @@ public class ProfessorValidator {
 		for(int i=0;i<enrolledStudents.size();i++)
 		{
 			//role.equalsIgnoreCase("ADMIN")
-			if(enrolledStudents.get(i).getStudentId()==studentId)
+			if(enrolledStudents.get(i).getStudentId().equals(studentId))
 				result=true;
 				
-		}
-		return result;
-	}
-	
-	/**
-	 * Method to check if course exist in the database
-	 * @param courses: list of courses assigned to the professor
-	 * @param courseId: course id for which grade needs to be added
-	 * @return true, if course is valid and taught by professor, else false.
-	 */
-	public static boolean isValidCourse(List<Course> assignedCourses,String courseCode)
-	{
-		//check if course is valid
-		boolean result=false;
-		for(int i=0;i<assignedCourses.size();i++)
-		{
-			if(assignedCourses.get(i).getCourseCode().equalsIgnoreCase(courseCode))
-				result= true;
 		}
 		return result;
 	}

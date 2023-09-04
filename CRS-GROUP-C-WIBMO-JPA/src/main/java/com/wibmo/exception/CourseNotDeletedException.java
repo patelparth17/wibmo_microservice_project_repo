@@ -7,6 +7,10 @@ package com.wibmo.exception;
  * 
  */
 public class CourseNotDeletedException extends Exception{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String courseCode;
 	
 	public CourseNotDeletedException(String courseCode)

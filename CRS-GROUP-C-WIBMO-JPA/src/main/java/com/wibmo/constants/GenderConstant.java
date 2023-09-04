@@ -8,15 +8,12 @@ package com.wibmo.constants;
  */
 public enum GenderConstant {
 	MALE(1),FEMALE(2),OTHER(3);
-	private final int gender;
-	
 	/**
 	 * Parameterized Constructor
 	 * @param gender
 	 */
 	private GenderConstant(int gender)
 	{
-		this.gender=gender;
 	}
 	
 	/**

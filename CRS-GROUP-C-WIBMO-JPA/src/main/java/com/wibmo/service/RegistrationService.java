@@ -150,6 +150,7 @@ public class RegistrationService implements RegistrationInterface {
 		}
 		return courses;
 	}
+	
 	@Override
 	public List<Course> viewAvailableCourses(String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();

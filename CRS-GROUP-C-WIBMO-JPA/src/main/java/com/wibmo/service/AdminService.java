@@ -25,7 +25,6 @@ import com.wibmo.model.Course;
 import com.wibmo.model.Grade;
 import com.wibmo.model.Professor;
 import com.wibmo.model.Student;
-import com.wibmo.model.User;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.StudentRepository;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.wibmo.model.Course;
 import com.wibmo.model.EnrolledStudent;
 import com.wibmo.exception.GradeNotAllotedException;
+import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 
 @Service
@@ -23,8 +24,10 @@ public interface ProfessorInterface {
 	 * @param grade
 	 * @return the status
 	 * @throws GradeNotAllotedException
+	 * @throws StudentNotRegisteredException 
+	 * @throws UserNotFoundException 
 	 */
-	public boolean addGrade(String username,String studentName, String courseId, String grade) throws GradeNotAllotedException;
+	public boolean addGrade(String username,String studentName, String courseId, String grade) throws GradeNotAllotedException, StudentNotRegisteredException, UserNotFoundException;
 	
 	/**
 	 * Method to view courses

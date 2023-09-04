@@ -6,22 +6,19 @@ package com.wibmo.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.model.EnrolledStudent;
-import com.wibmo.model.Professor;
 import com.wibmo.model.RegisteredCourse;
-import com.wibmo.exception.ProfessorNotAddedException;
+import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
 import com.wibmo.repository.CourseRepository;
 import com.wibmo.repository.ProfessorRepository;
 import com.wibmo.repository.RegisteredCourseRepository;
 import com.wibmo.repository.UserRepository;
+import com.wibmo.validator.ProfessorValidator;
 
 /**
  * 
@@ -78,7 +75,15 @@ public class ProfessorService implements ProfessorInterface {
 	}
 
 
-	public boolean addGrade(String username, String studentID, String courseCode, String grade) {
+	public boolean addGrade(String username, String studentID, String courseCode, String grade) throws StudentNotRegisteredException, UserNotFoundException {
+		String studentName = userRepo.findByUserID(studentID).getusername();
+		try {
+			if (!ProfessorValidator.isValidStudent(viewEnrolledStudents(username), studentID)) {
+				throw new StudentNotRegisteredException(studentName);
+			}
+		} catch (UserNotFoundException e) {
+			throw e;
+		} 
 		String userID = userRepo.findByUsername(username).get().getuserID();
 		List<Course> courses = courseRepo.findAllByProfessorID(userID);
 		

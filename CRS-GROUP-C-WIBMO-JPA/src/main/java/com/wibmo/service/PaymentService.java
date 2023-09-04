@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.constants.PaymentModeConstant;
-import com.wibmo.model.Payment;
 import com.wibmo.repository.PaymentRepository;
 
 /**

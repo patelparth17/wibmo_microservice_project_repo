@@ -9,6 +9,10 @@ package com.wibmo.exception;
  */
 public class GradeNotAllotedException extends Exception{
 	 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String studentId;
 	 
 	/**
