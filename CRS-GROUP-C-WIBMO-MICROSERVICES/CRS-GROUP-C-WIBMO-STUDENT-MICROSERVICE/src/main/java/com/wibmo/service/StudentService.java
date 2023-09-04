@@ -123,6 +123,7 @@ public class StudentService implements StudentInterface{
 		if(userRepo.findByUsername(user.getusername()).isPresent()) {
 			throw new UserNotAddedException(user.getusername());
 		}
+		user.setRole(user.getRole().toUpperCase());
 		userRepo.save(user);	
 			
 	}

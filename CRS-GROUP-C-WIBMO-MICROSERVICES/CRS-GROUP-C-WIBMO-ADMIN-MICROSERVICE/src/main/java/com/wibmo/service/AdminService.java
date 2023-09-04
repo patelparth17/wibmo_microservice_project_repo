@@ -171,8 +171,8 @@ public class AdminService implements AdminInterface {
 		if(userRepo.findByUsername(user.getusername()).isPresent()) {
 			throw new UserNotAddedException(user.getusername());
 		}
+		user.setRole(user.getRole().toUpperCase());
 		userRepo.save(user);	
-			
 	}
 	
 	public String findUserName(String studentId) {

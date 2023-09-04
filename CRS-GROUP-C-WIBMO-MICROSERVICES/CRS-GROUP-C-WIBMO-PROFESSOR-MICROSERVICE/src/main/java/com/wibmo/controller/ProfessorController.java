@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.ProfessorService;
 
-@RestController
 @RequestMapping("/api/professor")
 @CrossOrigin
+@PreAuthorize("hasAuthority('Role.PROFESSOR')")
+@RestController
 public class ProfessorController {
 
 	@Autowired

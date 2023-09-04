@@ -33,10 +33,12 @@ import com.wibmo.model.Course;
 import com.wibmo.model.Professor;
 import com.wibmo.model.Student;
 import com.wibmo.service.AdminService;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/admin")
 @CrossOrigin
+@PreAuthorize("hasAuthority('Role.ADMIN')")
 public class AdminController {
 	
 	@Autowired

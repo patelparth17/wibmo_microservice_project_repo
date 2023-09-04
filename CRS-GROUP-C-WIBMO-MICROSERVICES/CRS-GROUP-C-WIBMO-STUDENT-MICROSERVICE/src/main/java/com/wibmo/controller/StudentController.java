@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wibmo.model.Course;
+import org.springframework.security.access.prepost.PreAuthorize;
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
 import com.wibmo.exception.*;
@@ -22,9 +23,11 @@ import com.wibmo.service.StudentService;
 /**
  * JPA Controller for Student activities
  */
-@RestController
+
 @RequestMapping("/api/student")
 @CrossOrigin
+@PreAuthorize("hasAuthority('Role.STUDENT')")
+@RestController
 public class StudentController {
 
 	@Autowired

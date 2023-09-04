@@ -7,6 +7,7 @@ package com.wibmo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,9 @@ import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Student;
+import com.wibmo.security.JwtUserDetailsService;
 import com.wibmo.service.UserService;
+import com.wibmo.security.JwtTokenUtil;
 
 /**
  * 
@@ -35,6 +38,12 @@ public class AuthController {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Autowired
+	private JwtUserDetailsService userDetailsService;
+	
 	/**
      * Method to authenticate user
      * @param username : String
@@ -43,12 +52,12 @@ public class AuthController {
      * @return ResponseEntity
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	@RequestMapping(value = "/authenticateUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResponseEntity authenticateUser(
             @RequestParam String username, 
             @RequestParam String password, 
             @RequestParam String role) {
-    	boolean authenticationStatus = false; 
+    	boolean authenticationStatus = false;
     	if(role.equalsIgnoreCase("student")) {
 	    	try {
 	    		userService.getApprovalStatus(username);
@@ -62,13 +71,16 @@ public class AuthController {
     	{
     		return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
     	}
-    	
-        if(authenticationStatus == true)
-            return new ResponseEntity("Authentication Successful!", HttpStatus.FOUND);
-        else
-            return new ResponseEntity("Authentication failed. Invalid Credentials!", HttpStatus.NOT_FOUND);
- 
-    }
+
+    	if(authenticationStatus) {
+    		final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    		final String token = jwtTokenUtil.generateToken(userDetails);
+    		return ResponseEntity.ok(token);
+    	} else {
+    		return new ResponseEntity("Invalid password or Invalid role! Please check your credentials again.",HttpStatus.NOT_FOUND);
+    	}
+		
+	}
     
     /**
      * Method for student registration
