@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +28,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EntityScan("com.wibmo.model")
 @EnableJpaRepositories("com.wibmo.repository")
-@EnableWebMvc
 @EnableSwagger2
+@EnableWebMvc
 @EnableAutoConfiguration
+@EnableEurekaClient
 @Configuration
 @ComponentScan("com.wibmo.*")
 @SpringBootApplication
@@ -49,7 +51,7 @@ public class CrsWibmoGroupCStudentMicroServiceApplication {
     }
 
     private SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(List.of(basicAuthReference(), bearerAuthReference())).forPaths(PathSelectors.ant("/admin/**")).build();
+        return SecurityContext.builder().securityReferences(List.of(basicAuthReference(), bearerAuthReference())).forPaths(PathSelectors.ant("/api/**")).build();
     }
     private SecurityReference basicAuthReference() {
         return new SecurityReference("basicAuth", new AuthorizationScope[0]);

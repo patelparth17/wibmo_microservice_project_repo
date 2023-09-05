@@ -49,7 +49,7 @@ public class CrsGroupCWibmoProfessorMicroserviceApplication {
     }
 
     private SecurityContext securityContext() {
-        return SecurityContext.builder().securityReferences(List.of(basicAuthReference(), bearerAuthReference())).forPaths(PathSelectors.ant("/admin/**")).build();
+        return SecurityContext.builder().securityReferences(List.of(basicAuthReference(), bearerAuthReference())).forPaths(PathSelectors.ant("/api/**")).build();
     }
     private SecurityReference basicAuthReference() {
         return new SecurityReference("basicAuth", new AuthorizationScope[0]);
