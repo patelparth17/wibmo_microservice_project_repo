@@ -168,7 +168,7 @@ public class AdminService implements AdminInterface {
 	
 	@Modifying
 	public void addUser(User user) throws UserNotAddedException {
-		if(userRepo.findByUsername(user.getusername()).isPresent()) {
+		if(userRepo.findByUsername(user.getusername()).isPresent() || userRepo.findByUserID(user.getuserID())!= null) {
 			throw new UserNotAddedException(user.getusername());
 		}
 		user.setRole(user.getRole().toUpperCase());

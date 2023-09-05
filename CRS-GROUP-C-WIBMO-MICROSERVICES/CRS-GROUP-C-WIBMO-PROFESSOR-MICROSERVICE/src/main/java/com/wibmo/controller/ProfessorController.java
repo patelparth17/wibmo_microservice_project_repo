@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import com.wibmo.exception.CourseNotAvailableException;
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.service.ProfessorService;
@@ -73,9 +74,9 @@ public class ProfessorController {
 			if(professorService.addGrade(username,studentID,courseCode,grade)) {
 				return new ResponseEntity("Successfully updated!",HttpStatus.OK);
 			} else {
-				return new ResponseEntity("You didn't signup for the course: "+ courseCode+".",HttpStatus.NOT_FOUND);
+				return new ResponseEntity("Student: "+ studentID + " didn't register for the course: "+ courseCode+".",HttpStatus.NOT_FOUND);
 			}		
-		} catch(UserNotFoundException | StudentNotRegisteredException e) {
+		} catch(UserNotFoundException | StudentNotRegisteredException | CourseNotAvailableException e) {
 			return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
 		}
 	}

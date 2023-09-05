@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.wibmo.model.Course;
 import com.wibmo.model.EnrolledStudent;
+import com.wibmo.exception.CourseNotAvailableException;
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 
@@ -25,7 +26,7 @@ public interface ProfessorInterface {
 	 * @throws StudentNotRegisteredException 
 	 * @throws UserNotFoundException 
 	 */
-	public boolean addGrade(String username,String studentId, String courseId, String grade) throws UserNotFoundException, StudentNotRegisteredException;
+	public boolean addGrade(String username,String studentId, String courseId, String grade) throws UserNotFoundException, StudentNotRegisteredException, CourseNotAvailableException;
 	
 	/**
 	 * Method to view courses

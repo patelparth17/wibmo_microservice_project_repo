@@ -21,6 +21,7 @@ import com.wibmo.exception.*;
 import com.wibmo.service.StudentService;
 
 /**
+ * @author vedasree
  * JPA Controller for Student activities
  */
 
@@ -45,7 +46,7 @@ public class StudentController {
 		try {
 			return new ResponseEntity(studentService.viewRegisteredCourses(studentName), HttpStatus.OK);
 		} catch (StudentNotRegisteredException e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+			return new ResponseEntity(studentName + " is not registered with courses yet! Please inform admin to approve it.", HttpStatus.NOT_FOUND);
 		}
 	}
 
@@ -108,7 +109,7 @@ public class StudentController {
 		try {
 			studentService.registerCourse(studentName, courseList);
 		} catch ( UserNotFoundException | CourseSizeViolation | CourseLimitExceededForPrimaryException | CourseLimitExceededForSecondaryException
-				| StudentAlreadyRegisteredException  e) {
+				| StudentAlreadyRegisteredException | CourseLimitExceededException  e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity("Course is registered for " + studentName, HttpStatus.CREATED);
@@ -131,7 +132,7 @@ public class StudentController {
 		} catch (CourseNotFoundException | CourseLimitExceededException | SeatNotAvailableException | StudentAlreadyRegisteredException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		} 
-		return new ResponseEntity("Course registered for " + studentName + " successfully!", HttpStatus.CREATED);
+		return new ResponseEntity("Course added for " + studentName + " successfully!", HttpStatus.CREATED);
 	}
 
 	/**

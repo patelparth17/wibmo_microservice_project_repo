@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.wibmo.model.EnrolledStudent;
 import com.wibmo.model.RegisteredCourse;
+import com.wibmo.exception.CourseNotAvailableException;
 import com.wibmo.exception.StudentNotRegisteredException;
 import com.wibmo.exception.UserNotFoundException;
 import com.wibmo.model.Course;
@@ -75,19 +76,20 @@ public class ProfessorService implements ProfessorInterface {
 	}
 
 
-	public boolean addGrade(String username, String studentID, String courseCode, String grade) throws UserNotFoundException, StudentNotRegisteredException {
+	public boolean addGrade(String username, String studentID, String courseCode, String grade) throws UserNotFoundException, StudentNotRegisteredException, CourseNotAvailableException {
 		String studentName = userRepo.findByUserID(studentID).getusername();
 		try {
 			if (!ProfessorValidator.isValidStudent(viewEnrolledStudents(username), studentID)) {
 				throw new StudentNotRegisteredException(studentName);
 			}
+			if(!ProfessorValidator.isValidCourse(viewCourses(username), courseCode)) {
+				throw new CourseNotAvailableException(courseCode);
+			}
 		} catch (UserNotFoundException e) {
 			throw e;
 		} 
-		String userID = userRepo.findByUsername(username).get().getuserID();
-		List<Course> courses = courseRepo.findAllByProfessorID(userID);
-		
-		for(Course course : courses ) {
+		List<RegisteredCourse> courses = registeredCourseRepo.findAllByStudentId(studentID);
+		for(RegisteredCourse course : courses ) {
 			if(course.getCourseCode().equals(courseCode))
 			{
 				registeredCourseRepo.addGrade(grade, courseCode, studentID);

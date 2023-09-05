@@ -2,6 +2,7 @@ package com.wibmo.validator;
 
 import java.util.List;
 
+import com.wibmo.model.Course;
 import com.wibmo.model.EnrolledStudent;
 
 
@@ -32,4 +33,21 @@ public class ProfessorValidator {
 		return result;
 	}
 
+	/**
+	 * Method to check if professor teaches the course
+	 * @param assignedCourses
+	 * @param courseCode
+	 * @return status
+	 */
+	public static boolean isValidCourse(List<Course> assignedCourses,String courseCode)
+	{
+		//check if course is valid
+		boolean result=false;
+		for(int i=0;i<assignedCourses.size();i++)
+		{
+			if(assignedCourses.get(i).getCourseCode().equalsIgnoreCase(courseCode))
+				result= true;
+		}
+		return result;
+	}
 }

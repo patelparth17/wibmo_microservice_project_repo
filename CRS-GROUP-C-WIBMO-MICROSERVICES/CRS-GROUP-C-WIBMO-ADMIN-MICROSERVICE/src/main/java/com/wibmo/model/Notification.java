@@ -24,7 +24,7 @@ public class Notification implements Serializable{
 	
 	@Id
 	@Column(name="notificationID")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int notificationID;
 	
 	@Column(name="studentName")

@@ -100,6 +100,7 @@ public class UserService implements UserInterface {
 		}
 		
 		try {
+			student.setRole(student.getRole().toUpperCase());
 			addUser(student);
 		} catch (UserNotAddedException e) {
 			throw e;

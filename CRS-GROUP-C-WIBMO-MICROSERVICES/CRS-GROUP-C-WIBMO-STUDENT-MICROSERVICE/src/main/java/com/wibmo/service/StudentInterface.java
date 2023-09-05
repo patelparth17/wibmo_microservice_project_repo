@@ -122,10 +122,11 @@ public interface StudentInterface {
 	 * @throws CourseLimitExceededForSecondaryException
 	 * @throws StudentAlreadyRegisteredException
 	 * @throws UserNotFoundException
+	 * @throws CourseLimitExceededException 
 	 */
 	boolean registerCourse(String studentName, List<String> courseList)
 			throws UserNotFoundException, CourseSizeViolation, CourseLimitExceededForPrimaryException,
-			CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, UserNotFoundException;
+			CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, UserNotFoundException, CourseLimitExceededException;
 
 	/**
 	 * Method to add Secondary Course

@@ -162,7 +162,7 @@ public class StudentService implements StudentInterface{
 			throw new StudentNotRegisteredException(studentName);
 		}
 		if(studentRepo.getGeneratedReportCardStatus(userId)==0) {
-			throw new ReportCardNotGeneratedException(userId);
+			throw new ReportCardNotGeneratedException(studentName);
 		}
 		List<Map<String, String>> registeredCourses = registeredCourseRepo.findByStudentId(userId);
 		
@@ -190,17 +190,20 @@ public class StudentService implements StudentInterface{
 	
 	@Override
 	public boolean registerCourse(String studentName, List<String> courseList) throws UserNotFoundException, CourseSizeViolation,
-			CourseLimitExceededForPrimaryException, CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, UserNotFoundException {
+			CourseLimitExceededForPrimaryException, CourseLimitExceededForSecondaryException, StudentAlreadyRegisteredException, UserNotFoundException, CourseLimitExceededException {
 		String userID = userRepo.findByUsername(studentName).get().getuserID();
 		if (courseList.size() != 6) {
 			throw new CourseSizeViolation();
 		} else if (getRegistrationStatus(studentName)==1) {
 			throw new StudentAlreadyRegisteredException(studentName);
-		} else if (registeredCourseRepo.numOfRegisteredCourses(studentName) > 4
-				&& registeredCourseRepo.numSecondaryCourses(studentName) <= 2) {
+		} else if (registeredCourseRepo.numOfRegisteredCourses(userID) >= 4
+				&& registeredCourseRepo.numSecondaryCourses(userID) >= 2) {
+			throw new CourseLimitExceededException(4);
+		}else if (registeredCourseRepo.numOfRegisteredCourses(userID) > 4
+				&& registeredCourseRepo.numSecondaryCourses(userID) <= 2) {
 			throw new CourseLimitExceededForPrimaryException();
-		} else if (registeredCourseRepo.numOfRegisteredCourses(studentName) <= 4
-				&& registeredCourseRepo.numSecondaryCourses(studentName) > 2) {
+		} else if (registeredCourseRepo.numOfRegisteredCourses(userID) <= 4
+				&& registeredCourseRepo.numSecondaryCourses(userID) > 2) {
 			throw new CourseLimitExceededForSecondaryException();
 		} 
 		int indexOfUnregisteredCourse = (viewPrimaryCourses(studentName) == null) ? 1: viewPrimaryCourses(studentName).size() + 1;
@@ -212,7 +215,7 @@ public class StudentService implements StudentInterface{
 			index++;
 		}     
 
-		int indexOfSecondaryCourse = 1;
+		int indexOfSecondaryCourse = registeredCourseRepo.numSecondaryCourses(userID)+1;
 		while (indexOfSecondaryCourse <= 2) {
 			if (addSecondaryCourse(userID, courseList.get(index))) {
 				indexOfSecondaryCourse++;
