@@ -11,8 +11,11 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.constants.PaymentModeConstant;
@@ -67,6 +70,15 @@ public class StudentService implements StudentInterface{
 	
 	@Autowired
 	NotificationRepository notificationRepo;
+	
+	@Autowired
+	KafkaTemplate<String, Notification> kafkaTemplate;
+	
+	@Value("${topic.payment.name}")
+    private String paymentTopic;
+	
+	@Value("${topic.approval.name}")
+    private String approvalTopic;
 	
 	@Modifying
 	@Transactional
@@ -289,19 +301,32 @@ public class StudentService implements StudentInterface{
 	
 	@Modifying
 	@Transactional
-	public void sendNotification(NotificationTypeConstant type, String name) {
+	public void sendNotification(NotificationTypeConstant type, String name, double fee) {
 		String referenceID = "";
 		if(type==NotificationTypeConstant.PAID)
 		{
 			referenceID=findByStudentName(name);
 		}
+		String message = String.format("Payment of INR %f recorded successfully", fee);
 		Notification notification = new Notification();
 		notification.setNotificationType(type.toString());
 		notification.setReferenceID(referenceID);
 		notification.setStudentName(name);
-		
-		notificationRepo.save(notification);
+		notification.setMessage(message);		
+		kafkaTemplate.send(paymentTopic, notification);
 	}
+	
+	@KafkaListener(topics = "${topic.payment.name}", groupId = "group_id", containerFactory="notificationListener")
+    public void consumePayment(Notification payload){
+		notificationRepo.save(payload);
+        System.out.println(payload.getMessage());
+    }
+	
+	@KafkaListener(topics = "${topic.approval.name}", groupId = "group_id", containerFactory="notificationListener")
+    public void consumeApproval(Notification payload){
+		notificationRepo.save(payload);
+        System.out.println(payload.getMessage());
+    }
 	
 	@Modifying
 	public String addPayment(String name,PaymentModeConstant mode, String type, double fee) {

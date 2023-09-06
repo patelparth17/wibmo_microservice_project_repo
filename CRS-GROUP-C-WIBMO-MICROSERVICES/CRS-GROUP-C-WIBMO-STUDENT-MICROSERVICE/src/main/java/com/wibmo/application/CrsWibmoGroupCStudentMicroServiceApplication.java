@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+//import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -34,6 +35,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableEurekaClient
 @Configuration
 @ComponentScan("com.wibmo.*")
+//@EnableKafka
 @SpringBootApplication
 public class CrsWibmoGroupCStudentMicroServiceApplication {
 

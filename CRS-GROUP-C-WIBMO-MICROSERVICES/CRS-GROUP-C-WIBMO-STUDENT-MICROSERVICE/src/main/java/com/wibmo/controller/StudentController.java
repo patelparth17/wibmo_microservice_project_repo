@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -182,7 +184,7 @@ public class StudentController {
 				PaymentModeConstant paymentMode = PaymentModeConstant.stringToPaymentMode(mode);
 				studentService.setPaymentStatus(studentName);
 				studentService.addPayment(studentName, paymentMode, "PAID", fee);
-				studentService.sendNotification(NotificationTypeConstant.PAID, studentName);
+				studentService.sendNotification(NotificationTypeConstant.PAID, studentName, fee);
 				return new ResponseEntity("Payment Successful by studentName: " + studentName, HttpStatus.OK);
 		}
 		return new ResponseEntity("You have already paid the fees", HttpStatus.NOT_IMPLEMENTED);

@@ -47,4 +47,7 @@ public class SQLConstant {
 	
 	// Payment Queries
 	public static final String ADD_PAYMENT = "INSERT INTO payment (studentName, modeOfPayment, amount, referenceId, paymentStatus) VALUES ( ?1 , ?2, ?3, ?4, ?5)";
+
+	//Notification Queries
+	public static final String ADD_NOTIFICATION = "INSERT INTO notification (studentName, type, referenceID) VALUES ( ?1, ?2, ?3)";
 }

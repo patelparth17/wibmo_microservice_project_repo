@@ -175,7 +175,7 @@ public interface StudentInterface {
 	 * @param type
 	 * @param name
 	 */
-	public void sendNotification(NotificationTypeConstant type, String name);
+	public void sendNotification(NotificationTypeConstant type, String name, double fee);
 	
 	/**
 	 * Method to add Payment details to Payment table

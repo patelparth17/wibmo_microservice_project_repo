@@ -24,7 +24,7 @@ public class Notification implements Serializable{
 	
 	@Id
 	@Column(name="notificationID")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE) 
+	@GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int notificationID;
 	
 	@Column(name="studentName")
@@ -35,6 +35,9 @@ public class Notification implements Serializable{
 	
 	@Column(name="referenceID")
 	private String referenceID;
+	
+	@Column(name="message")
+	private String message;
 	
 	public int getNotificationID() {
 		return notificationID;
@@ -66,5 +69,13 @@ public class Notification implements Serializable{
 
 	public void setReferenceID(String referenceID) {
 		this.referenceID = referenceID;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

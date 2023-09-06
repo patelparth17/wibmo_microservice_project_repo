@@ -11,7 +11,9 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.constants.NotificationTypeConstant;
@@ -63,6 +65,12 @@ public class AdminService implements AdminInterface {
 	
 	@Autowired
 	NotificationRepository notificationRepo;
+	
+	@Autowired
+	KafkaTemplate<String, Notification> kafkaTemplate;
+	
+	@Value("${topic.name}")
+    private String topicName;
 	
 	public List<Course> viewCourses() {
 		List<Course> courses = new ArrayList<Course>();
@@ -189,11 +197,12 @@ public class AdminService implements AdminInterface {
 	@Modifying
 	@Transactional
 	public void sendNotification(NotificationTypeConstant type, String name) {
+		String message = String.format("You are successfully approved by the admin!");
 		Notification notification = new Notification();
 		notification.setNotificationType(type.toString());
-		notification.setReferenceID("");
+		notification.setReferenceID("NULL");
 		notification.setStudentName(name);
-		
-		notificationRepo.save(notification);
+		notification.setMessage(message);
+		kafkaTemplate.send(topicName,notification);
 	}
 }
