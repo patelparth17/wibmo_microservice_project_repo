@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.wibmo.model.EnrolledStudent;
@@ -41,6 +43,7 @@ public class ProfessorService implements ProfessorInterface {
 	
 	//Method to get the courses for the professor
 	@Override
+	@Cacheable(value="viewCoursesByProfessor",key="#username")
 	public List<Course> viewCourses(String username) {
 		List<Course> coursesOffered= new ArrayList<Course>();
 		try
@@ -56,6 +59,7 @@ public class ProfessorService implements ProfessorInterface {
 	}
 	
 	@Override
+	@Cacheable(value="viewEnrolledStudents",key="#username")
 	public List<EnrolledStudent> viewEnrolledStudents(String username) throws UserNotFoundException{
 		List<EnrolledStudent> enrolledStudents=new ArrayList<EnrolledStudent>();
 		String userID = userRepo.findByUsername(username).get().getuserID();
@@ -75,7 +79,7 @@ public class ProfessorService implements ProfessorInterface {
 		return enrolledStudents;
 	}
 
-
+	@CachePut(value="addGradeByProfessor",key="#username")
 	public boolean addGrade(String username, String studentID, String courseCode, String grade) throws UserNotFoundException, StudentNotRegisteredException, CourseNotAvailableException {
 		String studentName = userRepo.findByUserID(studentID).getusername();
 		try {
@@ -88,9 +92,9 @@ public class ProfessorService implements ProfessorInterface {
 		} catch (UserNotFoundException e) {
 			throw e;
 		} 
-		List<RegisteredCourse> courses = registeredCourseRepo.findAllByStudentId(studentID);
-		for(RegisteredCourse course : courses ) {
-			if(course.getCourseCode().equals(courseCode))
+		List<String> courses = registeredCourseRepo.getCourseCodes(studentID);
+		for(String course : courses ) {
+			if(course.equals(courseCode))
 			{
 				registeredCourseRepo.addGrade(grade, courseCode, studentID);
 				return true;

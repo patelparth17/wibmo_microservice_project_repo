@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.StudentNotApprovedException;
 import com.wibmo.exception.UserIdAlreadyExists;
@@ -92,7 +91,6 @@ public class AuthController {
     public ResponseEntity registerStudent(@RequestBody Student student) {
         try{
         	userService.register(student);
-            userService.sendNotification(NotificationTypeConstant.REGISTERATION, student.getusername());
             return new ResponseEntity("Student Details Registered Successfully!", HttpStatus.CREATED);
         }catch(UserIdAlreadyExists | UserNotAddedException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);

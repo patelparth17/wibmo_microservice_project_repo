@@ -223,8 +223,6 @@ public class AdminController {
 	public ResponseEntity approveStudentRegisteration(@RequestParam String studentId) {
 		try {
 			adminService.approveStudentRegisteration(studentId);
-			String name = adminService.findUserName(studentId);
-			adminService.sendNotification(NotificationTypeConstant.REGISTERATION, name);
 		} catch (StudentAlreadyRegisteredException | UserNotFoundException e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
 		}

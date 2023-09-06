@@ -12,6 +12,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -94,6 +96,7 @@ public class StudentService implements StudentInterface{
 		}
 	}
 
+	@Cacheable(value="Student",key="#studentName")
 	public int getRegistrationStatus(String studentName) throws UserNotFoundException {
 		if(userRepo.findByUsername(studentName).isEmpty()) {
 			throw new UserNotFoundException(studentName);
@@ -103,6 +106,7 @@ public class StudentService implements StudentInterface{
 		return studentRepo.getRegistrationStatus(userID);
 	}
 
+	@Cacheable(value="Student",key="#studentName")
 	public int getPaymentStatus(String studentName) throws UserNotFoundException  {
 		if(userRepo.findByUsername(studentName).isEmpty()) {
 			throw new UserNotFoundException(studentName);
@@ -116,8 +120,8 @@ public class StudentService implements StudentInterface{
 		studentRepo.setPaymentStatus(userID);		
 	}
 
+	@Cacheable(value="Student",key="#studentName")
 	public int getApprovalStatus(String studentName) throws StudentNotApprovedException, UserNotFoundException {
-
 		if(userRepo.findByUsername(studentName).isEmpty()) {
 			throw new UserNotFoundException(studentName);
 		}
@@ -159,6 +163,7 @@ public class StudentService implements StudentInterface{
 	}
 	
 	@Override
+	@Cacheable(value="viewRegisteredCourses",key="#studentName")
 	public List<Course> viewRegisteredCourses (String studentName) throws StudentNotRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 		if(studentRepo.getRegistrationStatus(userId)==0) {
@@ -167,7 +172,9 @@ public class StudentService implements StudentInterface{
 		return viewPrimaryCourses(studentName);
 	}
 	
+	
 	@Override
+	@Cacheable(value="Grade",key="#studentName")
 	public List<Grade> viewGradeCard(String studentName) throws ReportCardNotGeneratedException, StudentNotRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 		if(studentRepo.getRegistrationStatus(userId)==0) {
@@ -195,6 +202,7 @@ public class StudentService implements StudentInterface{
 	}
 	
 	@Override
+	@Cacheable(value="Course",key="#studentName")
 	public List<Course> viewAvailableCourses(String studentName) {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 		return courseRepo.viewCourses(userId);
@@ -275,21 +283,21 @@ public class StudentService implements StudentInterface{
 	}
 
 	@Override
+	@CacheEvict(value="Course",key="#courseCode")
 	public void dropCourse(String courseCode, String studentName,List<Course> registeredCourseList) throws CourseNotFoundException, StudentAlreadyRegisteredException {
 		String userId = userRepo.findByUsername(studentName).get().getuserID();
 		if (studentRepo.getRegistrationStatus(userId)==1) {
 			throw new StudentAlreadyRegisteredException(userId);
 		}   
-		if(!StudentValidator.isRegistered(courseCode, studentName, registeredCourseList))
+		else if(!StudentValidator.isRegistered(courseCode, studentName, registeredCourseList))
 	        	throw new CourseNotFoundException(courseCode);
 		registeredCourseRepo.dropCourse(userId, courseCode);
 		courseRepo.incrementSeats(courseCode);
 		if( registeredCourseRepo.getSecondaryCourses(userId).isPresent())
 		{
-			String course = registeredCourseRepo.getSecondaryCourses(userId).get().get(0);
-			registeredCourseRepo.addCourse(userId, course, "NOT_GRADED");
-			registeredCourseRepo.dropSecondaryCourse(userId, course);
-			courseRepo.decrementSeats(course);
+			String secondaryCourse = registeredCourseRepo.getSecondaryCourses(userId).get().get(0);
+			registeredCourseRepo.addCourse(userId, secondaryCourse, "NOT_GRADED");
+			registeredCourseRepo.dropSecondaryCourse(userId, secondaryCourse);
 		}
 	}
 

@@ -6,7 +6,6 @@ package com.wibmo.service;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.StudentNotApprovedException;
 import com.wibmo.exception.UserIdAlreadyExists;
@@ -71,10 +70,4 @@ public interface UserInterface {
 	 */
 	public void register(Student student) throws UserIdAlreadyExists, UserNotAddedException;
 	
-	/**
-	 * Method to send notification
-	 * @param type
-	 * @param name
-	 */
-	public void sendNotification(NotificationTypeConstant type, String name);
 }

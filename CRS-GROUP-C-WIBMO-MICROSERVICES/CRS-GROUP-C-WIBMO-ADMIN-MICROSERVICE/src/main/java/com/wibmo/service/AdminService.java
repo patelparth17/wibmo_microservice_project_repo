@@ -12,6 +12,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -72,6 +75,7 @@ public class AdminService implements AdminInterface {
 	@Value("${topic.name}")
     private String topicName;
 	
+	@Cacheable(value="admin")
 	public List<Course> viewCourses() {
 		List<Course> courses = new ArrayList<Course>();
 		courseRepo.findAll().forEach(c -> courses.add(c));
@@ -85,6 +89,7 @@ public class AdminService implements AdminInterface {
 		courseRepo.addCourse(course.getCourseCode(), course.getCourseName(), course.getSeats(), course.getProfessorID(), course.getFee());
 	}
 
+	@CacheEvict(value="admin", allEntries = true)
 	public void removeCourse(String courseCode, List<Course> courseList)
 			throws CourseNotFoundException, CourseNotDeletedException {
 		if (!AdminValidator.isValidDropCourse(courseCode, courseList)) {
@@ -93,10 +98,12 @@ public class AdminService implements AdminInterface {
 		courseRepo.removeCourse(courseCode);
 	}
 
+	@Cacheable(value="viewPendingAdmissions")
 	public List<Student> viewPendingAdmissions() {
 		return studentRepo.viewPendingAdmissions();
 	}
 
+	@CachePut(value="admin")
 	public void approveStudent(String studentId, List<Student> studentList)
 			throws StudentNotFoundForApprovalException, StudentAlreadyApprovedException {
 		if (AdminValidator.isValidUnapprovedStudent(studentId, studentList)) {
@@ -108,6 +115,7 @@ public class AdminService implements AdminInterface {
 		studentRepo.approveStudent(studentId);
 	}
 	
+	@Cacheable(value="admin")
 	public void approveAllStudents() {
 		studentRepo.approveAllStudents();
 	}
@@ -120,6 +128,7 @@ public class AdminService implements AdminInterface {
 		}
 	}
 
+	@CachePut(value="assignCourse",key="#courseCode")
 	public void assignCourse(String courseCode, String professorId) throws UserNotFoundException, CourseNotFoundException {
 		if(!isProfessorExists(professorId)) {
 			throw new UserNotFoundException(professorId);
@@ -131,7 +140,7 @@ public class AdminService implements AdminInterface {
 		
 	}
 
-	
+	@Cacheable(value="generateGradeCard",key="#studentId")
 	public List<Grade> generateGradeCard(String studentId) throws UserNotFoundException, NoCoursesRegisteredException {
 		Optional<Student> student = studentRepo.findByStudentId(studentId);
 		if(student.isEmpty()) {
@@ -161,6 +170,7 @@ public class AdminService implements AdminInterface {
 		return grades;
 	}
 	
+	@CachePut(value="approveStudentRegisteration",key="#studentId")
 	public void approveStudentRegisteration(String studentId) throws StudentAlreadyRegisteredException, UserNotFoundException {
 		Optional<Student> student = studentRepo.findByStudentId(studentId);
 		if(student.isEmpty()) {
@@ -169,6 +179,10 @@ public class AdminService implements AdminInterface {
 		int registerationStatus = studentRepo.getRegistrationStatus(studentId);
 		if(registerationStatus==1) {
 			throw new StudentAlreadyRegisteredException(studentId);
+		}
+		List<String> courseCodes = registeredCourseRepo.getCourseCodes(studentId);
+		for(String courseCode : courseCodes) {
+			courseRepo.decrementSeats(courseCode);
 		}
 		studentRepo.setRegisterationStatus(studentId);
 		

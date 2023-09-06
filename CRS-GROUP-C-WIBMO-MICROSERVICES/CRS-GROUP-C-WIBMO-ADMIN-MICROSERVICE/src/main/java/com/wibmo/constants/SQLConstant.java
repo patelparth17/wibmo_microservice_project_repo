@@ -31,7 +31,7 @@ public class SQLConstant {
 	public static final String ADD_GRADE_QUERY = "UPDATE registeredcourse SET Grade=?1 WHERE courseCode=?2 AND studentId=?3";
 	
 	// Student custom queries
-	public static final String VIEW_PENDING_APPROVALS = "SELECT * FROM Student s INNER JOIN User u WHERE isApproved = 0 AND s.studentID = u.userID";
+	public static final String VIEW_PENDING_APPROVALS = "SELECT * FROM Student s INNER JOIN User u WHERE s.studentID = u.userID AND isApproved = 0";
 	public static final String APPROVE_STUDENT_QUERY = "UPDATE Student SET isApproved = 1 WHERE studentId = ?1";
 	public static final String APPROVE_ALL_STUDENTS = "UPDATE Student SET isApproved = 1";
 	public static final String GET_REGISTRATION_STATUS = "SELECT isRegistered FROM Student WHERE StudentID = ?1";

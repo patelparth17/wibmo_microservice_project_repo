@@ -5,19 +5,17 @@ package com.wibmo.service;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
-import com.wibmo.constants.NotificationTypeConstant;
 import com.wibmo.exception.PasswordAlreadyInUseException;
 import com.wibmo.exception.StudentNotApprovedException;
 import com.wibmo.exception.UserIdAlreadyExists;
 import com.wibmo.exception.UserNotAddedException;
 import com.wibmo.exception.UserNotFoundException;
-import com.wibmo.model.Notification;
 import com.wibmo.model.Student;
 import com.wibmo.model.User;
 import com.wibmo.repository.NotificationRepository;
@@ -53,6 +51,7 @@ public class UserService implements UserInterface {
 			
 	}
 
+	@Cacheable(value="User",key="#username")
 	public boolean authenticateUser(String username, String password, String role) throws UserNotFoundException {
 		if(userRepo.findByUsername(username).isEmpty()) {
 			throw new UserNotFoundException(username);
@@ -65,6 +64,7 @@ public class UserService implements UserInterface {
 		return false;
 	}
 
+	@CachePut(value="User",key="#username")
 	public void updatePassword(String userName, String newPassword) throws UserNotFoundException, PasswordAlreadyInUseException {
 		if(userRepo.findByUsername(userName).isEmpty()) {
 			throw new UserNotFoundException(userName);
@@ -105,17 +105,5 @@ public class UserService implements UserInterface {
 		} catch (UserNotAddedException e) {
 			throw e;
 		}
-	}
-	
-	@Modifying
-	@Transactional
-	public void sendNotification(NotificationTypeConstant type, String name) {
-		Notification notification = new Notification();
-		notification.setNotificationType(type.toString());
-		notification.setReferenceID("");
-		notification.setStudentName(name);
-		
-		notificationRepo.save(notification);
-		
 	}
 }
